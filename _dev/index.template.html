@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Slypee Play Portal</title>
+<meta name="theme-color" content="#221A16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap">
+<link rel="preload" as="image" href="assets/bg-portrait.jpg" media="(max-aspect-ratio: 1/1)">
+<link rel="preload" as="image" href="assets/bg-landscape.jpg" media="(min-aspect-ratio: 1/1)">
+<style>
+  /* Slypee tokens — single committed look (illustrated world), so no dark variant */
+  :root {
+    --red: #DB2417;
+    --red-deep: #A3180D;
+    --sun: #FACC3E;
+    --sun-deep: #B98208;
+    --ink: #221A16;
+    --paper: #FFFBF4;
+    --paper-2: #F4E6CF;
+    --muted: #7B604F;
+    --leaf: #2FA846;
+    --lift: 0 8px 22px rgba(28, 72, 120, .18);
+    --lift-lg: 0 12px 32px rgba(28, 72, 120, .24);
+    --glass: rgba(255, 255, 255, .74);
+    --glass-strong: rgba(255, 255, 255, .86);
+    --glass-line: rgba(255, 255, 255, .95);
+    --blur: blur(16px) saturate(1.4);
+    --display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif;
+    --nav-h: 64px;
+    --gutter: 16px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: #7CC4F2;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  /* ---------- World background (static painting) ---------- */
+  .world {
+    position: fixed; inset: 0; z-index: -1;
+    background: #7CC4F2 url("assets/bg-portrait.jpg") center top / cover no-repeat;
+  }
+  .world::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(34,26,22,.25) 0%, rgba(34,26,22,0) 20%, rgba(34,26,22,0) 70%, rgba(34,26,22,.2) 100%);
+  }
+  @media (min-aspect-ratio: 1/1) {
+    .world { background-image: url("assets/bg-landscape.jpg"); background-position: center; }
+  }
+
+  /* ---------- Continue playing shortcut ---------- */
+  .resume {
+    display: flex; align-items: center; gap: 10px; padding: 7px 8px 7px 7px; margin-top: -10px;
+    background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    border: 1.5px solid var(--glass-line); border-radius: 18px; box-shadow: var(--lift);
+  }
+  .resume img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; flex: none; }
+  .resume .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .resume small { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--leaf); line-height: 1.2; }
+  .resume b { font-family: var(--display); font-weight: 400; font-size: 16px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .resume .bar { height: 6px; margin-top: 3px; max-width: 160px; }
+  .resume .btn-play { font-size: 13px; padding: 9px 13px 7px; border-radius: 999px; }
+
+  /* ---------- Header ---------- */
+  .top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+    background: rgba(34, 26, 22, .55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    transition: background-color .25s, box-shadow .25s;
+  }
+  .top.scrolled { background: rgba(34, 26, 22, .88); box-shadow: 0 4px 16px rgba(34,26,22,.25); }
+  .top-in {
+    max-width: 1080px; margin: 0 auto;
+    padding-inline: var(--gutter); height: 56px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .brand img { height: 42px; width: auto; margin-left: -10px; }
+  .partner {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 11px 4px; border-radius: 999px;
+    background: rgba(255,247,232,.1);
+    color: var(--paper); font-family: var(--display); font-size: 14px; letter-spacing: .01em;
+    white-space: nowrap;
+  }
+  .partner small { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
+  .partner b { color: var(--sun); font-weight: 400; }
+  .partner img { height: 26px; width: auto; }
+  .desk-nav { display: none; }
+
+  /* ---------- Layout ---------- */
+  main {
+    max-width: 1080px; margin: 0 auto;
+    padding-inline: var(--gutter);
+    padding-block: 14px calc(var(--nav-h) + 28px + env(safe-area-inset-bottom, 0px));
+  }
+  .view { display: flex; flex-direction: column; gap: 24px; }
+  section { display: flex; flex-direction: column; gap: 12px; }
+
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .title {
+    margin: 0; font-family: var(--display); font-weight: 400;
+    font-size: clamp(21px, 6vw, 30px); line-height: 1.05; letter-spacing: .01em; color: #fff;
+    text-shadow: 0 1.5px 0 var(--ink), 1.5px 0 0 var(--ink), -1.5px 0 0 var(--ink), 0 -1.5px 0 var(--ink),
+                 0 3px 8px rgba(34,26,22,.45);
+    text-wrap: balance;
+  }
+  .title .hot { color: var(--sun); }
+  .more {
+    font-family: var(--display); font-size: 13px; color: var(--ink);
+    background: var(--sun); border: 0; border-radius: 999px;
+    padding: 6px 13px 5px; box-shadow: inset 0 -2px 0 var(--sun-deep), var(--lift); white-space: nowrap; cursor: pointer;
+  }
+  .more:active { transform: translateY(1px); }
+
+  /* ---------- Search ---------- */
+  .search { position: relative; display: block; }
+  .search input {
+    width: 100%; height: 46px; border-radius: 14px; border: 0;
+    background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    outline: 1.5px solid var(--glass-line); outline-offset: -1.5px;
+    padding: 0 14px 0 44px; font-size: 16px; font-weight: 600;
+    box-shadow: var(--lift);
+  }
+  .search input::placeholder { color: var(--muted); font-weight: 500; }
+  .search input:focus { background: #fff; box-shadow: 0 0 0 3px var(--sun), var(--lift); }
+  .search svg { position: absolute; z-index: 1; left: 13px; top: 12px; width: 22px; height: 22px; pointer-events: none; }
+
+  /* ---------- Trending carousel ---------- */
+  .live {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 11px;
+    letter-spacing: .1em; text-transform: uppercase; color: #fff;
+    background: var(--red); border-radius: 999px; padding: 3px 10px 2px;
+    box-shadow: 0 3px 10px rgba(219,36,23,.4); white-space: nowrap;
+  }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--sun); animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .track {
+    position: relative;
+    display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1); padding: 4px var(--gutter) 16px;
+    scroll-padding-inline: var(--gutter);
+  }
+  .track::-webkit-scrollbar { display: none; }
+  .tcard {
+    flex: 0 0 88%; scroll-snap-align: center;
+    background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    border: 1.5px solid var(--glass-line); border-radius: 22px; padding: 6px;
+    box-shadow: var(--lift-lg); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .tcard .banner { position: relative; aspect-ratio: 2.2 / 1; background: var(--paper-2); border-radius: 16px; overflow: hidden; }
+  .tcard .banner img { width: 100%; height: 100%; object-fit: cover; }
+  .rank {
+    position: absolute; left: 10px; top: 10px;
+    font-family: var(--display); font-size: 14px; line-height: 1;
+    background: var(--sun); color: var(--ink); border-radius: 9px;
+    padding: 5px 8px 3px; box-shadow: 0 3px 8px rgba(34,26,22,.3);
+  }
+  .tinfo { display: flex; align-items: center; gap: 10px; padding: 9px 6px 5px; }
+  .tinfo .ico { width: 44px; height: 44px; border-radius: 11px; object-fit: cover; flex: none; background: var(--paper-2); box-shadow: 0 2px 6px rgba(34,26,22,.2); }
+  .tinfo .txt { min-width: 0; flex: 1; }
+  .tinfo h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(15px, 4.2vw, 18px); line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tinfo p { margin: 3px 0 0; font-size: clamp(11.5px, 3.2vw, 13px); line-height: 1.25; font-weight: 600; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0 8px; font-variant-numeric: tabular-nums; }
+  .tinfo p .star { color: var(--sun-deep); font-weight: 800; }
+  .tinfo .btn-play { font-size: 14px; padding: 10px 14px 8px; border-radius: 999px; }
+  .dots { display: flex; justify-content: center; gap: 6px; margin-top: -6px; }
+  .dots button {
+    width: 9px; height: 9px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+    background: rgba(255,255,255,.75); box-shadow: 0 1px 4px rgba(34,26,22,.3); transition: width .25s, background .25s;
+  }
+  .dots button[aria-current="true"] { width: 24px; background: var(--sun); }
+
+  /* ---------- Buttons ---------- */
+  .btn-play {
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    font-family: var(--display); font-weight: 400; letter-spacing: .02em; line-height: 1;
+    color: #fff; background: var(--red); border: 0; border-radius: 10px;
+    box-shadow: inset 0 -3px 0 var(--red-deep), 0 4px 10px rgba(219,36,23,.3);
+    padding: 9px 14px 8px; font-size: 15px; white-space: nowrap; cursor: pointer;
+    transition: transform .08s, box-shadow .08s;
+  }
+  .btn-play:hover { background: #E83424; }
+  .btn-play:active { transform: translateY(1px); box-shadow: inset 0 -1px 0 var(--red-deep), 0 2px 4px rgba(219,36,23,.3); }
+  .btn-play svg { width: 10px; height: 10px; flex: none; }
+
+  /* ---------- Category selector ---------- */
+  .cats {
+    display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1); padding: 2px var(--gutter) 12px;
+    scroll-padding-inline: var(--gutter);
+  }
+  .cats::-webkit-scrollbar { display: none; }
+  .cats.sticky {
+    position: sticky; top: calc(env(safe-area-inset-top, 0px) + 56px); z-index: 10;
+    padding-top: 8px; margin-top: -8px;
+    transition: background-color .2s, box-shadow .2s;
+  }
+  .cats.sticky.stuck {
+    background: rgba(255,255,255,.5); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 6px 16px rgba(28,72,120,.14);
+  }
+  .cat {
+    flex: 1 0 70px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 8px 6px 7px; border: 0; border-radius: 16px; cursor: pointer;
+    background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    outline: 1.5px solid var(--glass-line); outline-offset: -1.5px; box-shadow: var(--lift);
+    font-weight: 700; font-size: 12px; line-height: 1.1; color: var(--muted); white-space: nowrap;
+    transition: transform .1s, box-shadow .1s, background-color .1s, color .1s;
+  }
+  .cat svg { width: 32px; height: 32px; transition: transform .15s; }
+  .cat svg .dim { opacity: .55; }
+  .cat[aria-selected="true"] {
+    background: var(--red); color: #fff; outline-color: rgba(255,255,255,.5);
+    box-shadow: inset 0 -3px 0 var(--red-deep), 0 8px 16px rgba(219,36,23,.35);
+    transform: translateY(-2px);
+  }
+  .cat[aria-selected="true"] svg { transform: scale(1.08) rotate(-6deg); }
+  .cat[aria-selected="true"] svg .dim { opacity: 1; }
+  .cat:active { transform: translateY(1px); }
+
+  /* ---------- Game grid: 4 per row ---------- */
+  /* Phones: 2 per row; 4 per row from 600px */
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .gcard {
+    display: flex; flex-direction: column; min-width: 0;
+    background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    border: 1.5px solid var(--glass-line); border-radius: 18px; padding: 5px;
+    box-shadow: var(--lift);
+    animation: pop .16s ease-out both;
+  }
+  @keyframes pop { from { opacity: .4; transform: translateY(3px); } }
+  .thumb { position: relative; display: block; aspect-ratio: 1; background: var(--paper-2); border-radius: 13px; overflow: hidden; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb .rk {
+    position: absolute; left: 5px; top: 5px; min-width: 22px; text-align: center;
+    font-family: var(--display); font-size: 12px; line-height: 1; padding: 4px 4px 2px;
+    background: var(--sun); border-radius: 7px; box-shadow: 0 2px 5px rgba(34,26,22,.35);
+  }
+  .gbody { display: flex; flex-direction: column; gap: 5px; flex: 1; padding: 9px 5px 3px; }
+  .gname {
+    margin: 0; font-weight: 800; font-size: 15px; line-height: 1.15;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    min-height: 2.3em; overflow-wrap: anywhere;
+  }
+  .gname a { color: inherit; }
+  .gmeta { display: flex; flex-wrap: wrap; gap: 0 6px; font-size: 12.5px; line-height: 1.25; font-weight: 700; color: #5E4A3E; font-variant-numeric: tabular-nums; }
+  .gmeta .star { color: var(--sun-deep); font-weight: 800; }
+  .gmeta .short { display: none; }
+  .gcard .btn-play {
+    margin-top: auto; width: 100%;
+    font-size: 15px; padding: 11px 4px 9px; border-radius: 999px;
+    box-shadow: inset 0 -2px 0 var(--red-deep), 0 3px 8px rgba(219,36,23,.28);
+  }
+  .panel { display: flex; flex-direction: column; gap: 14px; }
+  .show-all { align-self: center; }
+  .empty { background: var(--glass-strong); border-radius: 14px; padding: 16px; margin: 0; font-weight: 600; box-shadow: var(--lift); }
+
+  /* ---------- Library & profile ---------- */
+  .card-panel { background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1.5px solid var(--glass-line); border-radius: 22px; box-shadow: var(--lift-lg); padding: 16px; }
+  .note { font-size: 12px; font-weight: 600; color: var(--paper); background: rgba(34,26,22,.6); border-radius: 999px; padding: 3px 10px; align-self: flex-start; margin: 0; }
+  .cont { display: flex; flex-direction: column; gap: 10px; }
+  .crow { display: flex; align-items: center; gap: 12px; }
+  .crow img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; flex: none; }
+  .crow .txt { flex: 1; min-width: 0; }
+  .crow h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .crow small { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .crow .btn-play { font-size: 13px; padding: 9px 11px 8px; }
+  .bar { height: 7px; border-radius: 999px; background: var(--paper-2); overflow: hidden; margin-top: 4px; }
+  .bar i { display: block; height: 100%; background: var(--leaf); border-radius: 999px; }
+  .crow + .crow { border-top: 1px solid var(--paper-2); padding-top: 10px; }
+
+  .who { display: flex; align-items: center; gap: 14px; }
+  .avatar { width: 62px; height: 62px; border-radius: 18px; background: var(--sun); display: grid; place-items: center; flex: none; }
+  .avatar svg { width: 44px; height: 44px; }
+  .who h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 22px; line-height: 1.1; }
+  .who p { margin: 2px 0 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .stats div { background: rgba(255,255,255,.7); border-radius: 12px; padding: 8px 6px; text-align: center; }
+  .stats b { display: block; font-family: var(--display); font-weight: 400; font-size: 20px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stats span { font-size: 11px; font-weight: 700; color: var(--muted); }
+  .sub h2 { margin: 0 0 2px; font-family: var(--display); font-weight: 400; font-size: 20px; }
+  .sub p { margin: 0 0 12px; font-size: 14px; font-weight: 600; color: var(--muted); max-width: 44ch; }
+  .sub label { display: block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+  .sub .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sub input { flex: 1 1 180px; min-width: 0; height: 46px; border-radius: 12px; border: 2px solid var(--paper-2); background: #fff; padding: 0 12px; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sub input:focus { outline: none; border-color: var(--sun); }
+  .sub .btn-play { height: 46px; padding-inline: 18px; flex: 1 1 auto; }
+
+  .lockup {
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    align-self: center; padding: 6px 18px; border-radius: 999px;
+    background: rgba(34,26,22,.82); color: var(--paper);
+    font-family: var(--display); font-size: 15px;
+  }
+  .lockup img { height: 30px; width: auto; }
+  .lockup .x { color: var(--sun); font-size: 13px; }
+  .lockup b { font-weight: 400; color: var(--sun); }
+
+  /* ---------- Bottom nav ---------- */
+  .bottom {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px));
+    pointer-events: none;
+  }
+  .bottom nav {
+    pointer-events: auto; max-width: 520px; margin: 0 auto; height: var(--nav-h);
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    border: 1.5px solid var(--glass-line); border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(28,72,120,.28);
+  }
+  .tab {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0;
+    background: none; border: 0; cursor: pointer; color: #6F5A4C;
+    font-size: 11px; font-weight: 700; letter-spacing: .01em; white-space: nowrap;
+  }
+  .tab .ic { width: 44px; height: 28px; border-radius: 999px; display: grid; place-items: center; transition: background-color .12s; }
+  .tab svg { width: 22px; height: 22px; }
+  .tab[aria-current="page"] { color: var(--red); }
+  .tab[aria-current="page"] .ic { background: var(--red); color: #fff; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(var(--nav-h) + 26px + env(safe-area-inset-bottom, 0px)); z-index: 40;
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--ink); color: var(--paper); font-weight: 700; font-size: 13px;
+    padding: 9px 16px; border-radius: 999px; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------- Small phones ---------- */
+  @media (max-width: 374px) {
+    :root { --gutter: 12px; }
+    .grid { gap: 8px; }
+    .partner small { display: none; }
+    .tinfo .btn-play svg { display: none; }
+  }
+
+  /* ---------- Tablet & up ---------- */
+  @media (min-width: 600px) {
+    :root { --gutter: 24px; }
+    .tcard { flex-basis: 62%; }
+    .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .gname { font-size: clamp(13px, 1.9vw, 16px); }
+    .gmeta { font-size: clamp(11px, 1.5vw, 13px); }
+    .gcard .btn-play { font-size: clamp(12.5px, 1.6vw, 14px); }
+    .gcard { padding: 7px; border-radius: 20px; }
+    .gbody { gap: 5px; padding: 9px 4px 3px; }
+    .gcard .btn-play { padding: 10px 4px 8px; }
+    .cat { flex: 1 0 90px; font-size: 13px; }
+    .cat svg { width: 36px; height: 36px; }
+  }
+  @media (min-width: 960px) {
+    .top-in { height: 66px; }
+    .cats.sticky { top: 66px; overflow: visible; margin-inline: 0; padding-inline: 0; }
+    .cats.sticky.stuck { border-radius: 0 0 20px 20px; padding-inline: 12px; margin-inline: -12px; }
+    .resume { max-width: 520px; }
+    .brand img { height: 50px; }
+    .desk-nav { display: flex; gap: 6px; }
+    .desk-nav .tab { color: rgba(255,247,232,.7); flex-direction: row; gap: 4px; font-size: 14px; padding: 0 6px 0 0; border-radius: 999px; }
+    .desk-nav .tab .ic { width: 40px; height: 34px; }
+    .desk-nav .tab[aria-current="page"] { color: var(--sun); }
+    .bottom { display: none; }
+    main { padding-block: 24px 48px; }
+    .view { gap: 34px; }
+    .tcard { flex-basis: calc(50% - 6px); scroll-snap-align: start; }
+    .grid { gap: 20px; }
+    .cats { overflow: visible; }
+    .two { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items: start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="world" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#" data-go="home" aria-label="Slypee home"><img src="assets/slypee-logo.png" alt="Slypee" width="310" height="130"></a>
+    <nav class="desk-nav" aria-label="Main"></nav>
+    <!-- Partner slot: replace the text mark with <img src="assets/gamenow-logo.png" alt="GameNow"> once the official file is available -->
+    <span class="partner" aria-label="Partner: GameNow"><small>with</small>Game<b>Now</b></span>
+  </div>
+</header>
+
+<main>
+  <!-- HOME -->
+  <div class="view" data-view="home">
+    <label class="search" for="q">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#221A16" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5" fill="#FACC3E"/><path d="M15.5 15.5 21 21"/></svg>
+      <input id="q" type="search" placeholder="Search 86 games…" autocomplete="off" aria-label="Search games">
+    </label>
+
+    <a class="resume" id="resume" href="#"></a>
+
+    <section id="results" hidden>
+      <div class="head"><h2 class="title">Results</h2></div>
+      <div class="grid" id="resultsGrid"></div>
+    </section>
+
+    <section id="trending" aria-roledescription="carousel" aria-label="Trending games">
+      <div class="head">
+        <h2 class="title">Trending <span class="hot">Games</span></h2>
+        <span class="live"><i></i>Hot now</span>
+      </div>
+      <div class="track" id="track"></div>
+      <div class="dots" id="dots" role="group" aria-label="Choose slide"></div>
+    </section>
+
+    <section id="appGames">
+      <div class="head">
+        <h2 class="title">Games</h2>
+      </div>
+      <div class="browser" data-type="app"></div>
+    </section>
+
+    <section id="h5Preview">
+      <div class="head">
+        <h2 class="title">HTML5 <span class="hot">Games</span></h2>
+        <button class="more" type="button" data-go="html5">See more</button>
+      </div>
+      <p class="note">Instant play in your browser — no download</p>
+      <div class="grid" id="h5PreviewGrid"></div>
+    </section>
+
+    <div class="lockup"><span>Game<b>Now</b></span><span class="x">✕</span><img src="assets/slypee-logo.png" alt="Slypee" width="310" height="130"></div>
+  </div>
+
+  <!-- HTML5 -->
+  <div class="view" data-view="html5" hidden>
+    <section>
+      <div class="head"><h2 class="title">HTML5 <span class="hot">Games</span></h2></div>
+      <p class="note">Tap and play instantly — no install needed</p>
+      <div class="browser" data-type="h5"></div>
+    </section>
+  </div>
+
+  <!-- LIBRARY (was "Content") -->
+  <div class="view" data-view="library" hidden>
+    <div class="two">
+      <section>
+        <div class="head"><h2 class="title">Continue <span class="hot">Playing</span></h2></div>
+        <div class="card-panel cont" id="continue"></div>
+      </section>
+      <section>
+        <div class="head"><h2 class="title">Saved</h2></div>
+        <div class="grid" id="saved"></div>
+      </section>
+    </div>
+    <p class="note">Sample library — fills with your games once you play</p>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="view" data-view="profile" hidden>
+    <div class="two">
+      <section class="card-panel">
+        <div class="who">
+          <div class="avatar"><svg viewBox="0 0 44 44" fill="none" stroke="#221A16" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 38c1.5-7 6.5-10.5 13-10.5S33.5 31 35 38" fill="#DB2417"/><circle cx="22" cy="17" r="9" fill="#FFF7E8"/><circle cx="18.5" cy="16" r="1.3" fill="#221A16" stroke="none"/><circle cx="25.5" cy="16" r="1.3" fill="#221A16" stroke="none"/><path d="M18.5 20.5c2 1.8 5 1.8 7 0"/></svg></div>
+          <div><h2>Guest Player</h2><p>Level 7 · 1,240 XP</p></div>
+        </div>
+        <div class="stats">
+          <div><b>24</b><span>Games played</span></div>
+          <div><b>6.5h</b><span>Play time</span></div>
+          <div><b>Arcade</b><span>Top genre</span></div>
+        </div>
+      </section>
+      <section class="card-panel sub">
+        <h2>Play free for 1 day</h2>
+        <p>Enter your Jazz number to unlock every game on Slypee for 24 hours.</p>
+        <form id="subForm">
+          <label for="msisdn">Phone number</label>
+          <div class="row">
+            <input id="msisdn" type="tel" inputmode="numeric" placeholder="03XX XXXXXXX" maxlength="12" required>
+            <button class="btn-play" type="submit">Get free play</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <p class="note">Sample profile data</p>
+  </div>
+</main>
+
+<div class="bottom"><nav aria-label="Main" id="bottomNav"></nav></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const GAMES = /*DATA*/;
+
+const esc = s => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = n => n.toLocaleString("en-US");
+const short = n => n >= 1000 ? (n / 1000).toFixed(n < 10000 ? 1 : 0).replace(/\.0$/, "") + "K" : String(n);
+const PLAY_ICON = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1.2v7.6L8.6 5z" fill="#FACC3E"/></svg>';
+
+/* Custom Slypee-style icons: chunky ink outline, flat fills */
+const S = 'fill="none" stroke="#221A16" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
+const CAT_ICONS = {
+  "Top Chart": `<svg viewBox="0 0 36 36" ${S}><path class="dim" d="M11 8H6.5c0 5 2 7.5 5.5 8M25 8h4.5c0 5-2 7.5-5.5 8"/><path d="M11 5h14v8.5a7 7 0 0 1-14 0z" fill="#FACC3E"/><path d="M15.5 12l1.6-.3.9-1.7.9 1.7 1.6.3-1.2 1.2.3 1.8-1.6-.8-1.6.8.3-1.8z" fill="#fff" stroke-width="1.4"/><path d="M18 20.5v4"/><path d="M12 31h12l-1.6-6.5h-8.8z" fill="#DB2417"/></svg>`,
+  "Arcade": `<svg viewBox="0 0 36 36" ${S}><rect x="4" y="22" width="28" height="9" rx="3" fill="#2FA846"/><path d="M18 22v-9"/><circle cx="18" cy="9" r="5" fill="#DB2417"/><circle class="dim" cx="16.3" cy="7.5" r="1.3" fill="#fff" stroke="none"/><circle cx="26" cy="26.5" r="1.8" fill="#FACC3E" stroke-width="1.8"/><circle cx="9.5" cy="26.5" r="1.8" fill="#FFF7E8" stroke-width="1.8"/></svg>`,
+  "Sports": `<svg viewBox="0 0 36 36" ${S}><circle cx="18" cy="18" r="13" fill="#fff"/><path d="M18 12.5l5 3.6-1.9 5.9h-6.2l-1.9-5.9z" fill="#221A16"/><path class="dim" d="M18 12.5V5.5M23 16.1l6.3-2.4M21.1 22l3.7 5.8M14.9 22l-3.7 5.8M13 16.1l-6.3-2.4"/></svg>`,
+  "Card": `<svg viewBox="0 0 36 36" ${S}><rect class="dim" x="6" y="7" width="15" height="21" rx="2.5" fill="#FACC3E" transform="rotate(-14 13.5 17.5)"/><rect x="14" y="8" width="15" height="21" rx="2.5" fill="#FFF7E8" transform="rotate(9 21.5 18.5)"/><path d="M21.3 15.6c-1.3-2.3-4.6-1-3.6 1.6.6 1.6 3.3 3.7 3.3 3.7s2.9-1.8 3.7-3.3c1.2-2.5-2-4.2-3.4-2z" fill="#DB2417" stroke-width="1.6"/></svg>`,
+  "Strategy": `<svg viewBox="0 0 36 36" ${S}><path d="M9 31h18v-3.5l-2.5-2.5V14.5l2.5-2.5V5.5h-4v3h-3v-3h-4v3h-3v-3H9V12l2.5 2.5V25L9 27.5z" fill="#E8B77A"/><path class="dim" d="M15.5 20a2.5 2.5 0 0 1 5 0v5h-5z" fill="#221A16"/><path d="M25 5.5V1.8l5 1.9-5 1.8" fill="#DB2417" stroke-width="1.8"/></svg>`,
+  "Puzzle": `<svg viewBox="0 0 36 36" ${S}><path d="M6 12h6.3a3.7 3.7 0 1 1 7.4 0H26v6.3a3.7 3.7 0 1 1 0 7.4V31H6z" fill="#2FA846"/><path class="dim" d="M10 16.5v3" stroke="#FFF7E8"/></svg>`
+};
+const NAV = [
+  { id: "home", label: "Home", icon: `<svg viewBox="0 0 24 24" ${S.replace('#221A16','currentColor').replace('2.4','2.2')}><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></svg>` },
+  { id: "html5", label: "HTML5 Game", icon: `<svg viewBox="0 0 24 24" ${S.replace('#221A16','currentColor').replace('2.4','2.2')}><path d="M7 8h10a4.5 4.5 0 0 1 4.3 5.8l-1 3.4a2.6 2.6 0 0 1-4.5.9L14 16h-4l-1.8 2.1a2.6 2.6 0 0 1-4.5-.9l-1-3.4A4.5 4.5 0 0 1 7 8z"/><path d="M8 11v3M6.5 12.5h3"/><circle cx="16" cy="11.8" r=".4" fill="currentColor"/><circle cx="17.3" cy="13.4" r=".4" fill="currentColor"/></svg>` },
+  { id: "library", label: "Library", icon: `<svg viewBox="0 0 24 24" ${S.replace('#221A16','currentColor').replace('2.4','2.2')}><rect x="4" y="5" width="5" height="15" rx="1.2"/><rect x="10.5" y="5" width="5" height="15" rx="1.2"/><path d="m17 6.6 3-.8 2.6 13.5-3 .8z"/></svg>` },
+  { id: "profile", label: "Profile", icon: `<svg viewBox="0 0 24 24" ${S.replace('#221A16','currentColor').replace('2.4','2.2')}><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c.9-4 3.8-6 7.5-6s6.6 2 7.5 6"/></svg>` }
+];
+
+const byType = t => GAMES.filter(g => g.t === t);
+const topChart = t => [...byType(t)].sort((a, b) => b.p - a.p).slice(0, 12);
+const listFor = (t, cat) => cat === "Top Chart" ? topChart(t) : byType(t).filter(g => g.c.includes(cat));
+
+function gameCard(g, rank, eager) {
+  const el = document.createElement("article");
+  el.className = "gcard";
+  el.innerHTML =
+    `<a class="thumb" href="${g.u}" aria-label="${esc(g.n)}"><img src="${g.img}" alt="" width="256" height="256" loading="${eager ? "eager" : "lazy"}" decoding="async">${rank ? `<span class="rk">${rank}</span>` : ""}</a>` +
+    `<div class="gbody"><h3 class="gname"><a href="${g.u}">${esc(g.n)}</a></h3>` +
+    `<div class="gmeta"><span class="star">★ ${g.r.toFixed(1)}</span><span class="short">${short(g.p)} plays</span><span class="full">${fmt(g.p)} plays</span></div>` +
+    `<a class="btn-play" href="${g.u}">${PLAY_ICON}Play Now</a></div>`;
+  return el;
+}
+
+/* Category browser: every panel is pre-rendered once, switching only toggles `hidden` → instant, no refetch, no flicker */
+function mountBrowser(root, type, cats, cap) {
+  const bar = document.createElement("div");
+  bar.className = "cats"; bar.setAttribute("role", "tablist");
+  const stack = document.createElement("div");
+  const panels = {};
+  cats.forEach((cat, i) => {
+    const id = `${type}-${cat.replace(/\s/g, "")}`;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "cat"; b.id = `tab-${id}`;
+    b.setAttribute("role", "tab"); b.setAttribute("aria-selected", i === 0);
+    b.setAttribute("aria-controls", `panel-${id}`);
+    b.innerHTML = CAT_ICONS[cat] + `<span>${cat}</span>`;
+    bar.append(b);
+
+    const list = listFor(type, cat);
+    const panel = document.createElement("div");
+    panel.className = "panel"; panel.id = `panel-${id}`; panel.hidden = i !== 0;
+    panel.setAttribute("role", "tabpanel"); panel.setAttribute("aria-labelledby", b.id);
+    const grid = document.createElement("div"); grid.className = "grid";
+    // 12 fills whole rows at both 3 and 4 columns
+    const limit = Math.min(list.length, cap);
+    list.forEach((g, k) => {
+      const c = gameCard(g, cat === "Top Chart" ? k + 1 : 0, i === 0 && k < 8);
+      if (k >= limit) c.hidden = true;
+      grid.append(c);
+    });
+    panel.append(grid);
+    if (limit < list.length) {
+      const m = document.createElement("button");
+      m.type = "button"; m.className = "more show-all";
+      m.textContent = `Show all ${list.length} ${cat} games`;
+      m.onclick = () => { grid.querySelectorAll(".gcard[hidden]").forEach(c => c.hidden = false); m.remove(); };
+      panel.append(m);
+    }
+    stack.append(panel);
+    panels[cat] = { b, panel };
+    const warm = () => panel.querySelectorAll('img[loading="lazy"]').forEach(im => im.loading = "eager");
+    b.addEventListener("pointerenter", warm, { once: true });
+    b.addEventListener("touchstart", warm, { once: true, passive: true });
+    b.addEventListener("click", () => {
+      for (const k in panels) {
+        const on = k === cat;
+        panels[k].b.setAttribute("aria-selected", on);
+        panels[k].panel.hidden = !on;
+      }
+      // keep the chosen tab in view horizontally, and bring the grid top under the sticky bar
+      bar.scrollTo({ left: b.offsetLeft - (bar.clientWidth - b.offsetWidth) / 2, behavior: "smooth" });
+      const stickTop = document.querySelector(".top").offsetHeight + bar.offsetHeight;
+      const r = stack.getBoundingClientRect();
+      if (r.top < stickTop) window.scrollTo({ top: scrollY + r.top - stickTop - 4 });
+    });
+  });
+  bar.classList.add("sticky");
+  root.append(bar, stack);
+  return stack;
+}
+
+/* Warm every thumbnail after first paint so category switches never show empty tiles */
+const idle = window.requestIdleCallback || (fn => setTimeout(fn, 600));
+
+/* ---------- Trending carousel ---------- */
+function mountTrending() {
+  const track = document.getElementById("track");
+  const dots = document.getElementById("dots");
+  const items = GAMES.filter(g => g.b).sort((a, b) => b.p - a.p);
+  items.forEach((g, i) => {
+    const cat = g.c[0];
+    const card = document.createElement("article");
+    card.className = "tcard";
+    card.setAttribute("aria-roledescription", "slide");
+    card.setAttribute("aria-label", `${i + 1} of ${items.length}`);
+    card.innerHTML =
+      `<a class="banner" href="${g.u}" tabindex="-1"><img src="${g.b}" alt="" width="900" height="263" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}><span class="rank">#${i + 1}</span></a>` +
+      `<div class="tinfo"><img class="ico" src="${g.img}" alt="" width="46" height="46">` +
+      `<div class="txt"><h3>${esc(g.n)}</h3><p><span class="star">★ ${g.r.toFixed(1)}</span><span>${cat}</span><span>${fmt(g.p)} plays</span></p></div>` +
+      `<a class="btn-play" href="${g.u}">${PLAY_ICON}Play Now</a></div>`;
+    track.append(card);
+    const d = document.createElement("button");
+    d.type = "button"; d.setAttribute("aria-label", `Show ${g.n}`);
+    d.onclick = () => { go(i); hold(); };
+    dots.append(d);
+  });
+  const cards = [...track.children];
+  let idx = 0, timer = null, resumeT = null;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function go(i) {
+    idx = (i + cards.length) % cards.length;
+    const c = cards[idx];
+    const centered = getComputedStyle(c).scrollSnapAlign.includes("center");
+    const left = centered ? c.offsetLeft - (track.clientWidth - c.clientWidth) / 2 : c.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft);
+    track.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
+    mark();
+  }
+  function mark() { [...dots.children].forEach((d, k) => d.setAttribute("aria-current", k === idx)); }
+  function atEnd() { return track.scrollLeft + track.clientWidth >= track.scrollWidth - 4; }
+  function tick() {
+    if (document.hidden || document.querySelector('[data-view="home"]').hidden) return;
+    go(atEnd() || idx >= cards.length - 1 ? 0 : idx + 1);
+  }
+  function start() { if (!reduce && !timer) timer = setInterval(tick, 2600); }
+  function stop() { clearInterval(timer); timer = null; }
+  function hold() { stop(); clearTimeout(resumeT); resumeT = setTimeout(start, 4000); }
+
+  let raf = 0;
+  track.addEventListener("scroll", () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const mid = track.scrollLeft + track.clientWidth / 2;
+      let best = 0, bd = Infinity;
+      const startSnap = getComputedStyle(cards[0]).scrollSnapAlign.includes("start");
+      const pad = parseFloat(getComputedStyle(track).paddingLeft);
+      cards.forEach((c, k) => {
+        const d = startSnap ? Math.abs(c.offsetLeft - pad - track.scrollLeft) : Math.abs(c.offsetLeft + c.clientWidth / 2 - mid);
+        if (d < bd) { bd = d; best = k; }
+      });
+      idx = best; mark();
+    });
+  }, { passive: true });
+  ["pointerdown", "touchstart", "wheel", "focusin"].forEach(ev => track.addEventListener(ev, hold, { passive: true }));
+  track.addEventListener("mouseenter", stop);
+  track.addEventListener("mouseleave", hold);
+  mark(); start();
+}
+
+/* ---------- Views & nav ---------- */
+function mountNav() {
+  const html = NAV.map(n => `<button type="button" class="tab" data-go="${n.id}"><span class="ic">${n.icon}</span><span>${n.label}</span></button>`).join("");
+  document.getElementById("bottomNav").innerHTML = html;
+  document.querySelector(".desk-nav").innerHTML = html;
+  document.addEventListener("click", e => {
+    const t = e.target.closest("[data-go]");
+    if (!t) return;
+    e.preventDefault();
+    show(t.dataset.go);
+  });
+}
+function show(id) {
+  document.querySelectorAll(".view").forEach(v => v.hidden = v.dataset.view !== id);
+  document.querySelectorAll(".tab").forEach(t => {
+    if (t.dataset.go === id) t.setAttribute("aria-current", "page");
+    else t.removeAttribute("aria-current");
+  });
+  window.scrollTo({ top: 0, behavior: document.querySelector(`.view[data-view="${id}"]`).dataset.shown ? "smooth" : "auto" });
+  document.querySelector(`.view[data-view="${id}"]`).dataset.shown = "1";
+  try { history.replaceState(null, "", "#" + id); } catch (_) {}
+}
+
+/* ---------- Search ---------- */
+function mountSearch() {
+  const q = document.getElementById("q");
+  const res = document.getElementById("results");
+  const grid = document.getElementById("resultsGrid");
+  const others = ["trending", "appGames", "h5Preview"].map(id => document.getElementById(id));
+  q.addEventListener("input", () => {
+    const term = q.value.trim().toLowerCase();
+    res.hidden = !term;
+    others.forEach(o => o.hidden = !!term);
+    if (!term) return;
+    const hits = GAMES.filter(g => g.n.toLowerCase().includes(term) || g.c.some(c => c.toLowerCase().includes(term)));
+    grid.replaceChildren(...hits.slice(0, 24).map(g => gameCard(g, 0, true)));
+    if (!hits.length) grid.innerHTML = `<p class="empty" style="grid-column:1/-1">No games match “${esc(q.value.trim())}”. Try “zombie”, “racing” or “puzzle”.</p>`;
+  });
+}
+
+/* ---------- Library & profile (sample) ---------- */
+function mountLibrary() {
+  const pick = names => names.map(n => GAMES.find(g => g.n === n)).filter(Boolean);
+  const cont = document.getElementById("continue");
+  pick(["Ludo World", "Nitro City Racing", "Screw Puzzle Match"]).forEach((g, i) => {
+    const pct = [72, 38, 55][i];
+    const row = document.createElement("div");
+    row.className = "crow";
+    row.innerHTML = `<img src="${g.img}" alt="" width="54" height="54" loading="lazy"><div class="txt"><h3>${esc(g.n)}</h3><small>Level ${[12, 4, 27][i]} · ${pct}% done</small><div class="bar"><i style="width:${pct}%"></i></div></div><a class="btn-play" href="${g.u}">${PLAY_ICON}Resume</a>`;
+    cont.append(row);
+  });
+  const saved = document.getElementById("saved");
+  pick(["Tower Defense Clash", "Chef Hero", "Mahjong Puzzle Mania", "Tiny Football Cup", "Idle Zoo Park", "Galaxy Shooter", "Bowling Strike", "Fruity Swipes", "Ludo Fever", "Combimon", "Sort Buddies", "Rage Drivers"])
+    .forEach(g => saved.append(gameCard(g, 0, false)));
+
+  const toast = document.getElementById("toast");
+  document.getElementById("subForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const v = document.getElementById("msisdn").value.replace(/\D/g, "");
+    toast.textContent = /^03\d{9}$/.test(v) ? "Demo: a free-play code would be sent to " + v : "Enter an 11-digit Jazz number starting with 03";
+    toast.classList.add("on");
+    clearTimeout(toast._t); toast._t = setTimeout(() => toast.classList.remove("on"), 2600);
+  });
+}
+
+/* ---------- Scroll state: header tint + stuck category bar ---------- */
+function mountScrollState() {
+  const top = document.querySelector(".top");
+  let raf = 0;
+  const update = () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      top.classList.toggle("scrolled", scrollY > 8);
+      const stickAt = top.offsetHeight + 1;
+      document.querySelectorAll(".cats.sticky").forEach(c => c.classList.toggle("stuck", c.offsetParent !== null && c.getBoundingClientRect().top <= stickAt));
+    });
+  };
+  addEventListener("scroll", update, { passive: true });
+  update();
+}
+
+/* ---------- Continue playing shortcut (sample) ---------- */
+function mountResume() {
+  const g = GAMES.find(x => x.n === "Ludo World");
+  const a = document.getElementById("resume");
+  a.href = g.u;
+  a.innerHTML = `<img src="${g.img}" alt="" width="44" height="44"><span class="txt"><small>Continue playing</small><b>${esc(g.n)}</b><span class="bar"><i style="width:72%"></i></span></span><span class="btn-play">${PLAY_ICON}Resume</span>`;
+}
+
+/* ---------- Boot ---------- */
+mountScrollState();
+mountResume();
+mountNav();
+mountTrending();
+mountBrowser(document.querySelector('.browser[data-type="app"]'), "app", ["Top Chart", "Arcade", "Sports", "Card", "Strategy", "Puzzle"], 12);
+mountBrowser(document.querySelector('.browser[data-type="h5"]'), "h5", ["Top Chart", "Puzzle", "Arcade"], 32);
+topChart("h5").slice(0, 12).forEach((g, k) => document.getElementById("h5PreviewGrid").append(gameCard(g, 0, false)));
+mountSearch();
+mountLibrary();
+show(["home", "html5", "library", "profile"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "home");
+addEventListener("load", () => idle(() => document.querySelectorAll('.panel img[loading="lazy"]').forEach(im => im.loading = "eager")));
+</script>
