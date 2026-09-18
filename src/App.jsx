@@ -10,6 +10,7 @@ import GameDetail from "./views/GameDetail.jsx";
 import Petals from "./components/Petals.jsx";
 import { byId, gameId } from "./lib/games.js";
 import { loadHistory, startPlay, finishPlay, rate, dur } from "./lib/history.js";
+import { useT } from "./i18n/index.jsx";
 
 const VIEWS = ["home", "html5", "library", "profile"];
 // #home, #html5, #library, #profile, or #game/<id> for a game's detail page
@@ -26,6 +27,7 @@ const load = (key, fallback) => { try { return JSON.parse(localStorage.getItem(k
 const store = (key, val) => { try { val == null ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(val)); } catch (_) {} };
 
 export default function App() {
+  const t = useT();
   // `n` bumps on every navigation so re-tapping the current tab still scrolls to top
   const [nav, setNav] = useState(() => ({ ...parseHash(), n: 0 }));
   const go = useCallback(view => setNav(p => ({ view, n: p.n + 1 })), []);
@@ -166,18 +168,18 @@ export default function App() {
   // back on the game's own page → it shows a welcome-back card; anywhere else → a toast
   useEffect(() => {
     if (!returned || (view === "game" && nav.id === returned.id)) return;
-    notify(`Welcome back! You played ${byId(returned.id).n} for ${dur(returned.secs)}`);
+    notify(t("toast.back", { name: byId(returned.id).n, time: dur(returned.secs, t) }));
     setReturned(null);
-  }, [returned, view, nav.id, notify]);
-  const onRate = useCallback((g, stars) => { setHistory(rate(gameId(g), stars)); notify("Thanks for rating!"); }, [notify]);
+  }, [returned, view, nav.id, notify, t]);
+  const onRate = useCallback((g, stars) => { setHistory(rate(gameId(g), stars)); notify(t("toast.thanks")); }, [notify, t]);
 
   const toggleSave = useCallback(g => {
-    if (!user) return notify("Log in to save games to your library");
+    if (!user) return notify(t("toast.loginToSave"));
     const id = gameId(g);
     const on = saved.includes(id);
     setSaved(on ? saved.filter(x => x !== id) : [id, ...saved]);
-    notify(on ? "Removed from your library" : "Saved to your library");
-  }, [user, saved, notify]);
+    notify(t(on ? "toast.removed" : "toast.saved"));
+  }, [user, saved, notify, t]);
   const game = view === "game" ? byId(nav.id) : null;
 
   return (
@@ -198,7 +200,7 @@ export default function App() {
         )}
       </main>
       <div className="bottom"><nav aria-label="Main"><NavTabs view={view} go={go} loggedIn={!!user} /></nav></div>
-      <button type="button" className={"to-top" + (far ? " on" : "")} aria-label="Back to top" tabIndex={far ? 0 : -1} onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
+      <button type="button" className={"to-top" + (far ? " on" : "")} aria-label={t("common.backToTop")} tabIndex={far ? 0 : -1} onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
       </button>
       {search && <SearchSheet initialType={search.type} onClose={closeSearch} />}

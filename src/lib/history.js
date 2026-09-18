@@ -58,20 +58,20 @@ export function stats(history) {
   return { games: list.length, plays: list.reduce((t, e) => t + e.count, 0), secs, topGenre: top ? top[0] : null };
 }
 
-export function ago(ts) {
+export function ago(ts, t) {
   const m = Math.floor((Date.now() - ts) / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m} min ago`;
+  if (m < 1) return t("time.now");
+  if (m < 60) return t("time.min", { n: m });
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
+  if (h < 24) return t("time.h", { n: h });
   const d = Math.floor(h / 24);
-  return d === 1 ? "yesterday" : `${d} days ago`;
+  return d === 1 ? t("time.yesterday") : t("time.days", { n: d });
 }
 
-export function dur(secs) {
-  if (!secs) return "0m";
+export function dur(secs, t) {
+  if (!secs) return t("dur.min", { n: 0 });
   const m = Math.round(secs / 60);
-  if (m < 1) return "<1 min";
-  if (m < 60) return `${m} min`;
-  return `${Math.floor(m / 60)}h ${m % 60}m`;
+  if (m < 1) return t("dur.lt1");
+  if (m < 60) return t("dur.min", { n: m });
+  return t("dur.hm", { h: Math.floor(m / 60), m: m % 60 });
 }

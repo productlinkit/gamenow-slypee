@@ -2,8 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GAMES, fmt, detailHref } from "../lib/games.js";
 import { PlayIcon } from "./icons.jsx";
 import { Reveal } from "../lib/reveal.jsx";
+import { Title, useI18n } from "../i18n/index.jsx";
 
 export default function Trending({ active }) {
+  const { t, info } = useI18n();
   const items = useMemo(() => GAMES.filter(g => g.b).sort((a, b) => b.p - a.p), []);
   const [idx, setIdx] = useState(0);
   const trackRef = useRef(null);
@@ -68,13 +70,13 @@ export default function Trending({ active }) {
   return (
     <section id="trending" aria-roledescription="carousel" aria-label="Trending games">
       <Reveal className="head">
-        <h2 className="title">Trending <span className="hot">Games</span></h2>
-        <span className="live"><i></i>Hot now</span>
+        <h2 className="title"><Title k="title.trending" /></h2>
+        <span className="live"><i></i>{t("common.hotNow")}</span>
       </Reveal>
       <Reveal i={1}>
-      <div className="track" ref={trackRef}>
+      <div className="track" ref={trackRef} dir="ltr">
         {items.map((g, i) => (
-          <article key={g.u} className={"tcard" + (i === idx ? " on" : "")} aria-roledescription="slide" aria-label={`${i + 1} of ${items.length}`}>
+          <article key={g.u} className={"tcard" + (i === idx ? " on" : "")} aria-roledescription="slide" aria-label={`${i + 1} / ${items.length}`} dir={info.dir || "ltr"}>
             <a className="banner" href={detailHref(g)} tabIndex={-1}>
               <img src={g.b} alt="" width="900" height="263" {...(i ? { loading: "lazy" } : { fetchPriority: "high" })} />
               <span className="rank">#{i + 1}</span>
@@ -82,17 +84,17 @@ export default function Trending({ active }) {
             <div className="tinfo">
               <img className="ico" src={g.img} alt="" width="46" height="46" />
               <div className="txt">
-                <h3>{g.n}</h3>
-                <p><span className="star">★ {g.r.toFixed(1)}</span><span>{g.c[0]}</span><span>{fmt(g.p)} plays</span></p>
+                <h3 dir="auto">{g.n}</h3>
+                <p><span className="star">★ {g.r.toFixed(1)}</span><span>{t(`cat.${g.c[0]}`)}</span><span>{t("common.plays", { n: fmt(g.p) })}</span></p>
               </div>
-              <a className="btn-play" href={detailHref(g)}><PlayIcon />Play Now</a>
+              <a className="btn-play" href={detailHref(g)}><PlayIcon />{t("common.playNow")}</a>
             </div>
           </article>
         ))}
       </div>
-      <div className="dots" role="group" aria-label="Choose slide">
+      <div className="dots" role="group" dir="ltr">
         {items.map((g, k) => (
-          <button key={g.u} type="button" aria-label={`Show ${g.n}`} aria-current={k === idx} onClick={() => pickRef.current(k)} />
+          <button key={g.u} type="button" aria-label={g.n} aria-current={k === idx} onClick={() => pickRef.current(k)} />
         ))}
       </div>
       </Reveal>

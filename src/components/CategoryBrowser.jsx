@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { listFor } from "../lib/games.js";
 import { CAT_ICONS } from "./icons.jsx";
 import GameCard from "./GameCard.jsx";
+import { useT } from "../i18n/index.jsx";
 
 /* Category browser: every panel is pre-rendered once, switching only toggles `hidden` → instant, no refetch, no flicker */
 export default function CategoryBrowser({ type, cats, cap, warmAll }) {
+  const t = useT();
   const [active, setActive] = useState(cats[0]);
   const [warm, setWarm] = useState(() => new Set());
   const [expanded, setExpanded] = useState(() => new Set());
@@ -35,7 +37,7 @@ export default function CategoryBrowser({ type, cats, cap, warmAll }) {
     setActive(cat);
     // keep the chosen tab in view horizontally, and bring the grid top under the sticky bar
     const bar = barRef.current;
-    bar.scrollTo({ left: btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2, behavior: "smooth" });
+    btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); // works in LTR and RTL
     const stickTop = document.querySelector(".top").offsetHeight + bar.offsetHeight;
     const r = stackRef.current.getBoundingClientRect();
     if (r.top < stickTop) window.scrollTo({ top: scrollY + r.top - stickTop - 4 });
@@ -53,7 +55,7 @@ export default function CategoryBrowser({ type, cats, cap, warmAll }) {
             onPointerEnter={() => warmUp(cat)} onTouchStart={() => warmUp(cat)}
             onClick={e => select(cat, e.currentTarget)}
           >
-            {CAT_ICONS[cat]}<span>{cat}</span>
+            {CAT_ICONS[cat]}<span>{t(`cat.${cat}`)}</span>
           </button>
         ))}
       </div>
@@ -72,7 +74,7 @@ export default function CategoryBrowser({ type, cats, cap, warmAll }) {
               </div>
               {!all && list.length > cap && (
                 <button type="button" className="more show-all" onClick={() => setExpanded(s => new Set(s).add(cat))}>
-                  Show all {list.length} {cat} games
+                  {t("common.showAll", { n: list.length })}
                 </button>
               )}
             </div>
