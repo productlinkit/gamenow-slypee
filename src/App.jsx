@@ -1,0 +1,208 @@
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import Header from "./components/Header.jsx";
+import NavTabs from "./components/NavTabs.jsx";
+import Home from "./views/Home.jsx";
+import Html5 from "./views/Html5.jsx";
+import Library from "./views/Library.jsx";
+import Profile from "./views/Profile.jsx";
+import SearchSheet from "./components/SearchSheet.jsx";
+import GameDetail from "./views/GameDetail.jsx";
+import Petals from "./components/Petals.jsx";
+import { byId, gameId } from "./lib/games.js";
+import { loadHistory, startPlay, finishPlay, rate, dur } from "./lib/history.js";
+
+const VIEWS = ["home", "html5", "library", "profile"];
+// #home, #html5, #library, #profile, or #game/<id> for a game's detail page
+const parseHash = () => {
+  const h = location.hash.slice(1);
+  if (h.startsWith("game/") && byId(h.slice(5))) return { view: "game", id: h.slice(5) };
+  return { view: VIEWS.includes(h) ? h : "home" };
+};
+
+/* Demo session & saved games: kept in this browser only */
+const USER_KEY = "slypee.user";
+const SAVED_KEY = "slypee.saved";
+const load = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (_) { return fallback; } };
+const store = (key, val) => { try { val == null ? localStorage.removeItem(key) : localStorage.setItem(key, JSON.stringify(val)); } catch (_) {} };
+
+export default function App() {
+  // `n` bumps on every navigation so re-tapping the current tab still scrolls to top
+  const [nav, setNav] = useState(() => ({ ...parseHash(), n: 0 }));
+  const go = useCallback(view => setNav(p => ({ view, n: p.n + 1 })), []);
+  const view = nav.view;
+
+  // coming back from a game restores where you were on the list; otherwise jump to top
+  const shown = useRef(new Set());
+  const scrollMemo = useRef({});
+  const prevView = useRef(view);
+  useLayoutEffect(() => {
+    const from = prevView.current;
+    prevView.current = view;
+    if (view === "game") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+    if (from === "game" && scrollMemo.current[view] != null) window.scrollTo({ top: scrollMemo.current[view], behavior: "auto" });
+    else window.scrollTo({ top: 0, behavior: shown.current.has(view) ? "smooth" : "auto" });
+    shown.current.add(view);
+    try { history.replaceState(null, "", "#" + view); } catch (_) {}
+  }, [nav]);
+
+  const [user, setUser] = useState(() => load(USER_KEY, null));
+  useEffect(() => { store(USER_KEY, user); }, [user]);
+  const logout = useCallback(() => setUser(null), []);
+
+  /* Warm every thumbnail after first paint so category switches never show empty tiles */
+  const [warmAll, setWarmAll] = useState(false);
+  useEffect(() => {
+    const idle = window.requestIdleCallback || (fn => setTimeout(fn, 600));
+    const warm = () => idle(() => setWarmAll(true));
+    if (document.readyState === "complete") { warm(); return; }
+    addEventListener("load", warm, { once: true });
+    return () => removeEventListener("load", warm);
+  }, []);
+
+  /* Scroll: background parallax + back-to-top button */
+  const worldRef = useRef(null);
+  const [far, setFar] = useState(false);
+  useEffect(() => {
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let raf = 0;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        if (!reduce) worldRef.current.style.setProperty("--para", `${-Math.min(scrollY * 0.05, innerHeight * 0.04)}px`);
+        setFar(scrollY > 700);
+      });
+    };
+    addEventListener("scroll", update, { passive: true });
+    update();
+    return () => { removeEventListener("scroll", update); cancelAnimationFrame(raf); };
+  }, []);
+
+  /* Search sheet: opens from any page, closes with the browser/phone back button too */
+  const [search, setSearch] = useState(null);
+  const openSearch = useCallback((type = "all") => {
+    setSearch(s => s || { type });
+    try { if (!history.state?.search) history.pushState({ search: true }, ""); } catch (_) {}
+  }, []);
+  const closeSearch = useCallback(() => {
+    if (history.state?.search) history.back(); else setSearch(null);
+  }, []);
+  useEffect(() => {
+    const onPop = () => setSearch(null);
+    // "/" or Ctrl/Cmd+K opens search on desktop
+    const onKey = e => {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
+      if ((e.key === "/" && !typing) || (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey))) { e.preventDefault(); openSearch(); }
+    };
+    addEventListener("popstate", onPop);
+    addEventListener("keydown", onKey);
+    return () => { removeEventListener("popstate", onPop); removeEventListener("keydown", onKey); };
+  }, [openSearch]);
+
+  /* Game detail: every game link points at #game/<id>; the real Slypee link is only used by its Play button */
+  const searchRef = useRef(search);
+  searchRef.current = search;
+  const openGame = useCallback(id => {
+    try {
+      // opened from the search sheet → reuse its history entry so Back returns to the page, not the sheet
+      if (searchRef.current) history.replaceState({ game: true }, "", "#game/" + id);
+      else history.pushState({ game: true }, "", "#game/" + id);
+    } catch (_) {}
+    setSearch(null);
+    setNav(p => {
+      if (p.view !== "game") scrollMemo.current[p.view] = scrollY;
+      return { view: "game", id, from: p.view === "game" ? p.from : p.view, n: p.n + 1 };
+    });
+  }, []);
+  const leaveGame = useCallback(() => {
+    if (history.state?.game) history.back(); else go(nav.from || "home");
+  }, [go, nav.from]);
+  useEffect(() => {
+    const onClick = e => {
+      const play = e.target.closest("a[data-play]");
+      if (play) { setHistory(startPlay(play.dataset.play)); return; }
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest('a[href^="#game/"]');
+      if (!a) return;
+      e.preventDefault();
+      openGame(a.getAttribute("href").slice(6));
+    };
+    const onPop = () => {
+      const r = parseHash();
+      setNav(p => p.view === r.view && p.id === r.id ? p : { ...r, from: p.from, n: p.n + 1 });
+    };
+    document.addEventListener("click", onClick);
+    addEventListener("popstate", onPop);
+    return () => { document.removeEventListener("click", onClick); removeEventListener("popstate", onPop); };
+  }, [openGame]);
+
+  const [saved, setSaved] = useState(() => load(SAVED_KEY, []));
+  useEffect(() => { store(SAVED_KEY, saved); }, [saved]);
+
+  const [toast, setToast] = useState({ msg: "", on: false });
+  const toastT = useRef(0);
+  const notify = useCallback(msg => {
+    setToast({ msg, on: true });
+    clearTimeout(toastT.current);
+    toastT.current = setTimeout(() => setToast(t => ({ ...t, on: false })), 2600);
+  }, []);
+
+  /* Play tracking: a Play tap starts a session, coming back to our page ends it */
+  const [history, setHistory] = useState(loadHistory);
+  const [returned, setReturned] = useState(null);
+  useEffect(() => {
+    const done = () => {
+      const r = finishPlay();
+      setHistory(r.history);
+      if (r.returned) setReturned(r.returned);
+    };
+    done();
+    const onShow = e => { if (e.persisted) done(); };
+    addEventListener("pageshow", onShow);
+    return () => removeEventListener("pageshow", onShow);
+  }, []);
+  // back on the game's own page → it shows a welcome-back card; anywhere else → a toast
+  useEffect(() => {
+    if (!returned || (view === "game" && nav.id === returned.id)) return;
+    notify(`Welcome back! You played ${byId(returned.id).n} for ${dur(returned.secs)}`);
+    setReturned(null);
+  }, [returned, view, nav.id, notify]);
+  const onRate = useCallback((g, stars) => { setHistory(rate(gameId(g), stars)); notify("Thanks for rating!"); }, [notify]);
+
+  const toggleSave = useCallback(g => {
+    if (!user) return notify("Log in to save games to your library");
+    const id = gameId(g);
+    const on = saved.includes(id);
+    setSaved(on ? saved.filter(x => x !== id) : [id, ...saved]);
+    notify(on ? "Removed from your library" : "Saved to your library");
+  }, [user, saved, notify]);
+  const game = view === "game" ? byId(nav.id) : null;
+
+  return (
+    <>
+      <div className="world" aria-hidden="true" ref={worldRef}></div>
+      <Petals />
+      <Header view={view} go={go} loggedIn={!!user} />
+      <main>
+        <Home active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={history} />
+        <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
+        <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={history} />
+        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={history} />
+        {game && (
+          <GameDetail
+            key={nav.id} g={game} back={leaveGame} saved={saved.includes(nav.id)} toggleSave={toggleSave} notify={notify}
+            played={history[nav.id]} returned={returned?.id === nav.id ? returned.secs : 0} dismissReturn={() => setReturned(null)} onRate={onRate}
+          />
+        )}
+      </main>
+      <div className="bottom"><nav aria-label="Main"><NavTabs view={view} go={go} loggedIn={!!user} /></nav></div>
+      <button type="button" className={"to-top" + (far ? " on" : "")} aria-label="Back to top" tabIndex={far ? 0 : -1} onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+      </button>
+      {search && <SearchSheet initialType={search.type} onClose={closeSearch} />}
+      <div className={"toast" + (toast.on ? " on" : "")} role="status">{toast.msg}</div>
+    </>
+  );
+}

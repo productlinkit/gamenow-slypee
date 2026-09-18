@@ -1,15 +1,18 @@
 # GameNow x Slypee — Play Portal
 
-Mobile-first redesign of the Slypee gaming portal homepage (jazz.slypee.pk).
+Mobile-first redesign of the Slypee gaming portal homepage (jazz.slypee.pk), built with React + Vite.
 
-- `index.html` — built page, open directly or serve the folder
-- `assets/` — backgrounds, logo, trending banners, game thumbnails
-- `_dev/` — sources: `index.template.html`, `style.css`, `games.json`
-
-Run locally:
+- `src/App.jsx` — view switching (hash-based: `#home`, `#html5`, `#library`, `#profile`), toast, image warm-up
+- `src/views/` — Home, HTML5, Library, Profile
+- `src/components/` — header, nav tabs, trending carousel, category browser, game card, icons
+- `src/data/games.json` — game catalogue
+- `src/index.css` — all styles
+- `public/assets/` — backgrounds, logo, trending banners, game thumbnails
+- `public/phone.html` — side-by-side phone/tablet preview (open `/phone.html` on the dev server)
 
 ```
-python3 -m http.server 8080
+npm install
+npm run dev       # dev server
+npm run build     # production build → dist/
+npm run preview   # serve the build
 ```
-
-After editing `_dev/style.css` or `_dev/index.template.html`, rebuild with `python3 _dev/build.py`.
