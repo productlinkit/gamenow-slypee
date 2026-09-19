@@ -430,6 +430,74 @@
     .tcard { flex-basis: 72%; }
   }
 
+  /* ---------- Help & info ---------- */
+  .info-menu h2 { margin: 0 0 8px; font-family: var(--display); font-weight: 400; font-size: 20px; }
+  .info-menu ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .info-menu a {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px;
+    background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px var(--paper-2);
+    font-weight: 800; font-size: 15px; transition: box-shadow .12s, transform .1s, background-color .12s;
+  }
+  .info-menu a:hover { background: #fff; box-shadow: inset 0 0 0 2px var(--sun); }
+  .info-menu a:active { transform: scale(.98); }
+  .im-ico { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--paper-2); font-size: 18px; flex: none; }
+  .im-label { flex: 1; min-width: 0; }
+  .im-chev { width: 18px; height: 18px; color: var(--muted); flex: none; }
+  [dir="rtl"] .flip-svg { transform: scaleX(-1); }
+  .info-menu .logout-row { text-align: center; margin: 14px 0 0; }
+  .agree { margin: 14px 0 0 !important; font-size: 12.5px !important; font-weight: 600; color: var(--muted); text-align: center; max-width: none !important; }
+  .agree a { color: var(--red); font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
+
+  .info .back-link { margin-bottom: -22px; }
+  .info-card { max-width: 760px; width: 100%; margin-inline: auto; padding: 22px 22px 26px; }
+  .info-card h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(26px, 7vw, 34px); line-height: 1.1; }
+  .info-meta { margin: 6px 0 0; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .info-intro { margin: 14px 0 6px; font-size: 15.5px; font-weight: 600; color: #5E4A3E; line-height: 1.55; }
+  .info-sec { gap: 6px; margin-top: 18px; }
+  .info-sec h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 19px; }
+  .info-sec ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
+  .info-sec li { font-size: 14.5px; font-weight: 600; color: #5E4A3E; line-height: 1.55; }
+  .info-sec li::marker { color: var(--red); }
+  .faq { display: grid; gap: 8px; margin-top: 14px; }
+  .faq details { background: rgba(255,255,255,.8); border-radius: 14px; box-shadow: inset 0 0 0 1.5px var(--paper-2); overflow: hidden; }
+  .faq details[open] { box-shadow: inset 0 0 0 2px var(--sun); }
+  .faq summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 16px; font-weight: 800; font-size: 15px;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+"; width: 26px; height: 26px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    background: var(--paper-2); font-size: 18px; font-weight: 800; transition: transform .2s, background-color .2s;
+  }
+  .faq details[open] summary::after { transform: rotate(45deg); background: var(--sun); }
+  .faq details p { margin: 0; padding: 0 16px 16px; font-size: 14.5px; font-weight: 600; color: #5E4A3E; line-height: 1.55; animation: step-in .3s ease; }
+  .info-cta { margin-top: 22px; width: 100%; padding: 13px 16px 11px; border-radius: 14px; font-size: 16px; }
+  .info-cta.danger { background: #fff; color: var(--red); box-shadow: inset 0 0 0 2px var(--red), 0 3px 8px rgba(219,36,23,.15); }
+  .info-cta.danger:hover { background: #FFF1EF; }
+
+  /* ---------- Carousel arrows ---------- */
+  .scroll-row { position: relative; }
+  .nav-arrow {
+    position: absolute; top: 50%; z-index: 3; width: 46px; height: 46px; margin-top: -31px;
+    display: none; place-items: center; border: 0; border-radius: 50%; cursor: pointer;
+    background: #fff; color: var(--ink);
+    box-shadow: 0 8px 20px rgba(28,72,120,.28), inset 0 -3px 0 var(--paper-2);
+    transition: transform .15s, opacity .2s, background-color .15s;
+  }
+  .nav-arrow svg { width: 22px; height: 22px; }
+  .nav-arrow.prev { inset-inline-start: -18px; }
+  .nav-arrow.next { inset-inline-end: -18px; }
+  .nav-arrow:dir(rtl) svg { transform: scaleX(-1); }
+  .nav-arrow:hover { background: var(--sun); transform: scale(1.08); }
+  .nav-arrow:active { transform: scale(.95); }
+  .nav-arrow:disabled { opacity: 0; pointer-events: none; }
+  .track:focus-visible, .rp-track:focus-visible { outline: 3px solid var(--sun); outline-offset: -3px; border-radius: 16px; }
+  /* mouse/trackpad screens get arrows; touch screens keep swiping */
+  @media (hover: hover) and (pointer: fine) {
+    .nav-arrow { display: grid; }
+  }
+
   /* ---------- Guest banner (home, logged out) ---------- */
   .guest {
     display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 10px;

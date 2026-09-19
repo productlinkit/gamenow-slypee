@@ -3,7 +3,7 @@ export default {
   "header.with": "mit", "header.home": "Slypee-Startseite", "header.language": "Sprache",
   "common.playNow": "Jetzt spielen", "common.play": "Spielen", "common.plays": "{n} Mal gespielt", "common.resume": "Weiter", "common.open": "Öffnen",
   "common.login": "Anmelden", "common.seeMore": "Mehr", "common.backToTop": "Nach oben", "common.back": "Zurück",
-  "common.hotNow": "Angesagt", "common.dismiss": "Schließen", "common.showAll": "Alle Spiele anzeigen ({n})",
+  "common.prev": "Zurück", "common.next": "Weiter", "common.hotNow": "Angesagt", "common.dismiss": "Schließen", "common.showAll": "Alle Spiele anzeigen ({n})",
   "cat.Top Chart": "Top-Charts", "cat.Arcade": "Arcade", "cat.Sports": "Sport", "cat.Card": "Karten", "cat.Strategy": "Strategie", "cat.Puzzle": "Rätsel",
   "title.trending": "Angesagte|Spiele", "title.games": "Spiele", "title.html5": "HTML5-|Spiele", "title.recent": "Zuletzt|gespielt",
   "title.library": "Deine|Bibliothek", "title.saved": "Gespeichert", "title.profile": "Mein|Profil", "title.login": "An|melden", "title.more": "Ähnliche|Spiele",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Aus deiner Bibliothek entfernt", "toast.copied": "Link kopiert", "toast.thanks": "Danke für deine Bewertung!", "toast.back": "Willkommen zurück! Du hast {name} {time} gespielt",
   "time.now": "gerade eben", "time.min": "vor {n} Min.", "time.h": "vor {n} Std.", "time.yesterday": "gestern", "time.days": "vor {n} Tagen",
   "dur.lt1": "<1 Min.", "dur.min": "{n} Min.", "dur.hm": "{h} Std. {m} Min.",
+  "info.heading": "Hilfe & Infos", "info.faq": "Häufige Fragen", "info.help": "Hilfe & Support", "info.privacy": "Datenschutzerklärung", "info.terms": "Nutzungsbedingungen", "info.updated": "Zuletzt aktualisiert: {date}", "info.clearData": "Meine Daten auf diesem Gerät löschen", "info.cleared": "Deine Daten wurden von diesem Gerät gelöscht", "login.agree": "Mit dem Fortfahren stimmst du unseren [Nutzungsbedingungen] und der [Datenschutzerklärung] zu.",
   "lang.title": "Sprache wählen", "lang.search": "Sprache suchen…"
 };

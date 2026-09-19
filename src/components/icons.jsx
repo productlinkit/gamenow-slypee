@@ -29,3 +29,9 @@ export const NAV = [
   { id: "library", label: "Library", icon: <svg viewBox="0 0 24 24" {...N}><rect x="4" y="5" width="5" height="15" rx="1.2" /><rect x="10.5" y="5" width="5" height="15" rx="1.2" /><path d="m17 6.6 3-.8 2.6 13.5-3 .8z" /></svg> },
   { id: "profile", label: "Profile", icon: <svg viewBox="0 0 24 24" {...N}><circle cx="12" cy="8.5" r="4" /><path d="M4.5 20.5c.9-4 3.8-6 7.5-6s6.6 2 7.5 6" /></svg> }
 ];
+
+export const ChevronIcon = ({ dir = "next" }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d={dir === "next" ? "M9 5l7 7-7 7" : "M15 5l-7 7 7 7"} />
+  </svg>
+);

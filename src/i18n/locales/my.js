@@ -3,7 +3,7 @@ export default {
   "header.with": "နှင့်", "header.home": "Slypee ပင်မစာမျက်နှာ", "header.language": "ဘာသာစကား",
   "common.playNow": "ယခုကစားမည်", "common.play": "ကစားမည်", "common.plays": "{n} ကြိမ် ကစားပြီး", "common.resume": "ဆက်ကစားမည်", "common.open": "ဖွင့်မည်",
   "common.login": "ဝင်ရောက်မည်", "common.seeMore": "ထပ်ကြည့်ရန်", "common.backToTop": "အပေါ်သို့", "common.back": "နောက်သို့",
-  "common.hotNow": "ယခုလူကြိုက်များ", "common.dismiss": "ပိတ်မည်", "common.showAll": "ဂိမ်းအားလုံးကြည့်ရန် ({n})",
+  "common.prev": "ယခင်", "common.next": "နောက်", "common.hotNow": "ယခုလူကြိုက်များ", "common.dismiss": "ပိတ်မည်", "common.showAll": "ဂိမ်းအားလုံးကြည့်ရန် ({n})",
   "cat.Top Chart": "ထိပ်တန်း", "cat.Arcade": "အာကိတ်", "cat.Sports": "အားကစား", "cat.Card": "ဖဲ", "cat.Strategy": "ဗျူဟာ", "cat.Puzzle": "ပဟေဠိ",
   "title.trending": "လူကြိုက်များ|ဂိမ်းများ", "title.games": "ဂိမ်းများ", "title.html5": "HTML5|ဂိမ်းများ", "title.recent": "မကြာသေးမီ|ကစားခဲ့သည်",
   "title.library": "သင့်|စာကြည့်တိုက်", "title.saved": "သိမ်းထားသည်", "title.profile": "ကျွန်ုပ်၏|ပရိုဖိုင်", "title.login": "ဝင်|ရောက်ရန်", "title.more": "ဆင်တူ|ဂိမ်းများ",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "စာကြည့်တိုက်မှ ဖယ်ရှားပြီးပါပြီ", "toast.copied": "လင့်ခ် ကူးယူပြီးပါပြီ", "toast.thanks": "အဆင့်သတ်မှတ်ပေးသည့်အတွက် ကျေးဇူးတင်ပါသည်!", "toast.back": "ပြန်လည်ကြိုဆိုပါသည်! {name} ကို {time} ကစားခဲ့သည်",
   "time.now": "ယခုလေးတင်", "time.min": "{n} မိနစ်က", "time.h": "{n} နာရီက", "time.yesterday": "မနေ့က", "time.days": "{n} ရက်က",
   "dur.lt1": "၁ မိနစ်အောက်", "dur.min": "{n} မိနစ်", "dur.hm": "{h} နာရီ {m} မိနစ်",
+  "info.heading": "အကူအညီနှင့် အချက်အလက်", "info.faq": "မေးလေ့ရှိသောမေးခွန်းများ", "info.help": "အကူအညီနှင့် ပံ့ပိုးမှု", "info.privacy": "ကိုယ်ရေးအချက်အလက်မူဝါဒ", "info.terms": "အသုံးပြုမှုစည်းမျဉ်း", "info.updated": "နောက်ဆုံးပြင်ဆင်သည့်ရက် {date}", "info.clearData": "ဤစက်မှ ကျွန်ုပ်၏ဒေတာကို ဖျက်မည်", "info.cleared": "သင့်ဒေတာကို ဤစက်မှ ဖျက်ပြီးပါပြီ", "login.agree": "ဆက်လက်ခြင်းဖြင့် [အသုံးပြုမှုစည်းမျဉ်း] နှင့် [ကိုယ်ရေးအချက်အလက်မူဝါဒ] ကို သဘောတူပါသည်။",
   "lang.title": "ဘာသာစကား ရွေးပါ", "lang.search": "ဘာသာစကား ရှာပါ…"
 };

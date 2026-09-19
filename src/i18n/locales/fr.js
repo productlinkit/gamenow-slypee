@@ -3,7 +3,7 @@ export default {
   "header.with": "avec", "header.home": "Accueil Slypee", "header.language": "Langue",
   "common.playNow": "Jouer", "common.play": "Jouer", "common.plays": "{n} parties", "common.resume": "Reprendre", "common.open": "Ouvrir",
   "common.login": "Se connecter", "common.seeMore": "Voir plus", "common.backToTop": "Retour en haut", "common.back": "Retour",
-  "common.hotNow": "Tendance", "common.dismiss": "Fermer", "common.showAll": "Voir tous les jeux ({n})",
+  "common.prev": "Précédent", "common.next": "Suivant", "common.hotNow": "Tendance", "common.dismiss": "Fermer", "common.showAll": "Voir tous les jeux ({n})",
   "cat.Top Chart": "Top", "cat.Arcade": "Arcade", "cat.Sports": "Sport", "cat.Card": "Cartes", "cat.Strategy": "Stratégie", "cat.Puzzle": "Réflexion",
   "title.trending": "Jeux|tendance", "title.games": "Jeux", "title.html5": "Jeux|HTML5", "title.recent": "Joués|récemment",
   "title.library": "Votre|bibliothèque", "title.saved": "Enregistrés", "title.profile": "Mon|profil", "title.login": "Con|nexion", "title.more": "Jeux|similaires",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Retiré de votre bibliothèque", "toast.copied": "Lien copié", "toast.thanks": "Merci pour votre note !", "toast.back": "Bon retour ! Vous avez joué à {name} pendant {time}",
   "time.now": "à l’instant", "time.min": "il y a {n} min", "time.h": "il y a {n} h", "time.yesterday": "hier", "time.days": "il y a {n} jours",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h} h {m} min",
+  "info.heading": "Aide et infos", "info.faq": "FAQ", "info.help": "Aide et assistance", "info.privacy": "Politique de confidentialité", "info.terms": "Conditions d’utilisation", "info.updated": "Dernière mise à jour : {date}", "info.clearData": "Effacer mes données de cet appareil", "info.cleared": "Vos données ont été effacées de cet appareil", "login.agree": "En continuant, vous acceptez nos [Conditions d’utilisation] et notre [Politique de confidentialité].",
   "lang.title": "Choisir la langue", "lang.search": "Rechercher une langue…"
 };

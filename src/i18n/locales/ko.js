@@ -3,7 +3,7 @@ export default {
   "header.with": "with", "header.home": "Slypee 홈", "header.language": "언어",
   "common.playNow": "지금 플레이", "common.play": "플레이", "common.plays": "{n}회 플레이", "common.resume": "이어하기", "common.open": "열기",
   "common.login": "로그인", "common.seeMore": "더 보기", "common.backToTop": "맨 위로", "common.back": "뒤로",
-  "common.hotNow": "지금 인기", "common.dismiss": "닫기", "common.showAll": "모든 게임 보기 ({n})",
+  "common.prev": "이전", "common.next": "다음", "common.hotNow": "지금 인기", "common.dismiss": "닫기", "common.showAll": "모든 게임 보기 ({n})",
   "cat.Top Chart": "인기 차트", "cat.Arcade": "아케이드", "cat.Sports": "스포츠", "cat.Card": "카드", "cat.Strategy": "전략", "cat.Puzzle": "퍼즐",
   "title.trending": "인기|게임", "title.games": "게임", "title.html5": "HTML5|게임", "title.recent": "최근|플레이",
   "title.library": "내|보관함", "title.saved": "저장됨", "title.profile": "내|프로필", "title.login": "로|그인", "title.more": "비슷한|게임",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "보관함에서 삭제했어요", "toast.copied": "링크를 복사했어요", "toast.thanks": "평가해 주셔서 감사해요!", "toast.back": "다시 오신 걸 환영해요! {name}을(를) {time} 플레이했어요",
   "time.now": "방금", "time.min": "{n}분 전", "time.h": "{n}시간 전", "time.yesterday": "어제", "time.days": "{n}일 전",
   "dur.lt1": "1분 미만", "dur.min": "{n}분", "dur.hm": "{h}시간 {m}분",
+  "info.heading": "도움말 및 정보", "info.faq": "자주 묻는 질문", "info.help": "도움말 및 지원", "info.privacy": "개인정보 처리방침", "info.terms": "이용약관", "info.updated": "최종 업데이트 {date}", "info.clearData": "이 기기에서 내 데이터 삭제", "info.cleared": "이 기기에서 데이터를 삭제했어요", "login.agree": "계속하면 [이용약관] 및 [개인정보 처리방침]에 동의하게 됩니다.",
   "lang.title": "언어 선택", "lang.search": "언어 검색…"
 };

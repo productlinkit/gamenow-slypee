@@ -3,7 +3,7 @@ export default {
   "header.with": "کے ساتھ", "header.home": "Slypee ہوم", "header.language": "زبان",
   "common.playNow": "ابھی کھیلیں", "common.play": "کھیلیں", "common.plays": "{n} بار کھیلا گیا", "common.resume": "جاری رکھیں", "common.open": "کھولیں",
   "common.login": "لاگ ان", "common.seeMore": "مزید دیکھیں", "common.backToTop": "اوپر جائیں", "common.back": "واپس",
-  "common.hotNow": "ابھی مقبول", "common.dismiss": "بند کریں", "common.showAll": "تمام گیمز دیکھیں ({n})",
+  "common.prev": "پچھلا", "common.next": "اگلا", "common.hotNow": "ابھی مقبول", "common.dismiss": "بند کریں", "common.showAll": "تمام گیمز دیکھیں ({n})",
   "cat.Top Chart": "ٹاپ چارٹ", "cat.Arcade": "آرکیڈ", "cat.Sports": "کھیل", "cat.Card": "تاش", "cat.Strategy": "حکمت عملی", "cat.Puzzle": "پزل",
   "title.trending": "مقبول|گیمز", "title.games": "گیمز", "title.html5": "HTML5|گیمز", "title.recent": "حال ہی میں|کھیلے",
   "title.library": "آپ کی|لائبریری", "title.saved": "محفوظ", "title.profile": "میرا|پروفائل", "title.login": "لاگ|ان", "title.more": "ملتی جلتی|گیمز",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "لائبریری سے ہٹا دی گئی", "toast.copied": "لنک کاپی ہو گیا", "toast.thanks": "ریٹنگ کا شکریہ!", "toast.back": "خوش آمدید! آپ نے {name} کو {time} کھیلا",
   "time.now": "ابھی", "time.min": "{n} منٹ پہلے", "time.h": "{n} گھنٹے پہلے", "time.yesterday": "کل", "time.days": "{n} دن پہلے",
   "dur.lt1": "1 منٹ سے کم", "dur.min": "{n} منٹ", "dur.hm": "{h} گھنٹے {m} منٹ",
+  "info.heading": "مدد اور معلومات", "info.faq": "عمومی سوالات", "info.help": "مدد اور سپورٹ", "info.privacy": "رازداری کی پالیسی", "info.terms": "استعمال کی شرائط", "info.updated": "آخری تازہ کاری {date}", "info.clearData": "اس ڈیوائس سے میرا ڈیٹا صاف کریں", "info.cleared": "آپ کا ڈیٹا اس ڈیوائس سے ہٹا دیا گیا", "login.agree": "جاری رکھ کر آپ ہماری [استعمال کی شرائط] اور [رازداری کی پالیسی] سے اتفاق کرتے ہیں۔",
   "lang.title": "زبان منتخب کریں", "lang.search": "زبان تلاش کریں…"
 };

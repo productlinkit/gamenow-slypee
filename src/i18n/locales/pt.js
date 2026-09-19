@@ -3,7 +3,7 @@ export default {
   "header.with": "com", "header.home": "Início do Slypee", "header.language": "Idioma",
   "common.playNow": "Jogar agora", "common.play": "Jogar", "common.plays": "{n} jogadas", "common.resume": "Continuar", "common.open": "Abrir",
   "common.login": "Entrar", "common.seeMore": "Ver mais", "common.backToTop": "Voltar ao topo", "common.back": "Voltar",
-  "common.hotNow": "Em alta", "common.dismiss": "Fechar", "common.showAll": "Ver todos os jogos ({n})",
+  "common.prev": "Anterior", "common.next": "Próximo", "common.hotNow": "Em alta", "common.dismiss": "Fechar", "common.showAll": "Ver todos os jogos ({n})",
   "cat.Top Chart": "Top", "cat.Arcade": "Arcade", "cat.Sports": "Esportes", "cat.Card": "Cartas", "cat.Strategy": "Estratégia", "cat.Puzzle": "Quebra-cabeça",
   "title.trending": "Jogos|em alta", "title.games": "Jogos", "title.html5": "Jogos|HTML5", "title.recent": "Jogados|recentemente",
   "title.library": "Sua|biblioteca", "title.saved": "Salvos", "title.profile": "Meu|perfil", "title.login": "En|trar", "title.more": "Jogos|parecidos",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Removido da sua biblioteca", "toast.copied": "Link copiado", "toast.thanks": "Obrigado pela avaliação!", "toast.back": "Bem-vindo de volta! Você jogou {name} por {time}",
   "time.now": "agora mesmo", "time.min": "há {n} min", "time.h": "há {n} h", "time.yesterday": "ontem", "time.days": "há {n} dias",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h} h {m} min",
+  "info.heading": "Ajuda e informações", "info.faq": "Perguntas frequentes", "info.help": "Ajuda e suporte", "info.privacy": "Política de privacidade", "info.terms": "Termos de uso", "info.updated": "Última atualização: {date}", "info.clearData": "Apagar meus dados deste aparelho", "info.cleared": "Seus dados foram apagados deste aparelho", "login.agree": "Ao continuar, você concorda com nossos [Termos de Uso] e a [Política de Privacidade].",
   "lang.title": "Escolha o idioma", "lang.search": "Buscar idioma…"
 };

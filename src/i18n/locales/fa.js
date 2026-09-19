@@ -3,7 +3,7 @@ export default {
   "header.with": "با", "header.home": "صفحه اصلی Slypee", "header.language": "زبان",
   "common.playNow": "همین حالا بازی کن", "common.play": "بازی", "common.plays": "{n} بار بازی", "common.resume": "ادامه", "common.open": "باز کن",
   "common.login": "ورود", "common.seeMore": "بیشتر", "common.backToTop": "بازگشت به بالا", "common.back": "بازگشت",
-  "common.hotNow": "داغ", "common.dismiss": "بستن", "common.showAll": "نمایش همه بازی‌ها ({n})",
+  "common.prev": "قبلی", "common.next": "بعدی", "common.hotNow": "داغ", "common.dismiss": "بستن", "common.showAll": "نمایش همه بازی‌ها ({n})",
   "cat.Top Chart": "برترین‌ها", "cat.Arcade": "آرکید", "cat.Sports": "ورزشی", "cat.Card": "کارتی", "cat.Strategy": "استراتژی", "cat.Puzzle": "پازل",
   "title.trending": "بازی‌های|پرطرفدار", "title.games": "بازی‌ها", "title.html5": "بازی‌های|HTML5", "title.recent": "اخیراً|بازی شده",
   "title.library": "کتابخانه|شما", "title.saved": "ذخیره‌شده", "title.profile": "پروفایل|من", "title.login": "ورود|به حساب", "title.more": "بازی‌های|مشابه",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "از کتابخانه حذف شد", "toast.copied": "لینک کپی شد", "toast.thanks": "ممنون از امتیازتان!", "toast.back": "خوش برگشتی! {name} را {time} بازی کردی",
   "time.now": "همین حالا", "time.min": "{n} دقیقه پیش", "time.h": "{n} ساعت پیش", "time.yesterday": "دیروز", "time.days": "{n} روز پیش",
   "dur.lt1": "کمتر از ۱ دقیقه", "dur.min": "{n} دقیقه", "dur.hm": "{h} ساعت {m} دقیقه",
+  "info.heading": "راهنما و اطلاعات", "info.faq": "پرسش‌های متداول", "info.help": "راهنما و پشتیبانی", "info.privacy": "سیاست حفظ حریم خصوصی", "info.terms": "شرایط استفاده", "info.updated": "آخرین به‌روزرسانی {date}", "info.clearData": "پاک کردن داده‌های من از این دستگاه", "info.cleared": "داده‌های شما از این دستگاه حذف شد", "login.agree": "با ادامه، [شرایط استفاده] و [سیاست حفظ حریم خصوصی] را می‌پذیرید.",
   "lang.title": "انتخاب زبان", "lang.search": "جستجوی زبان…"
 };

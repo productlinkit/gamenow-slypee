@@ -56,7 +56,7 @@ function CodeBoxes({ value, onChange, error }) {
   );
 }
 
-function LoginCard({ login, notify }) {
+function LoginCard({ login, notify, go }) {
   const { t, lang } = useI18n();
   // country names in the viewer's language where the browser supports it
   const regionName = useMemo(() => {
@@ -139,6 +139,7 @@ function LoginCard({ login, notify }) {
             </div>
           </form>
           {error && <p className="field-err" id="login-err" role="alert">{error}</p>}
+          <Agree go={go} />
         </div>
       ) : (
         <div className="login-step" key="code">
@@ -168,7 +169,7 @@ function LoginCard({ login, notify }) {
   );
 }
 
-function PlayerCard({ user, login, logout, notify, history }) {
+function PlayerCard({ user, login, logout, notify, history, go }) {
   const t = useT();
   const st = stats(history);
   const freeLeft = user.freeUntil ? Math.ceil((user.freeUntil - Date.now()) / 36e5) : 0;
@@ -195,18 +196,51 @@ function PlayerCard({ user, login, logout, notify, history }) {
             <button className="btn-play" type="button" onClick={() => { login({ ...user, freeUntil: Date.now() + 864e5 }); notify(t("toast.free")); }}>{t("profile.getFree")}</button>
           </>
         )}
+      </Reveal>
+      <Reveal as="section" className="card-panel info-menu" i={3}>
+        <h2>{t("info.heading")}</h2>
+        <ul>
+          {INFO_MENU.map(([id, icon]) => (
+            <li key={id}>
+              <a href={`#${id}`} onClick={e => { e.preventDefault(); go(id); }}>
+                <span className="im-ico" aria-hidden="true">{icon}</span>
+                <span className="im-label">{t(`info.${id}`)}</span>
+                <svg className="im-chev flip-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
         <p className="hint logout-row"><button type="button" className="link-btn logout" onClick={() => { logout(); notify(t("toast.loggedOut")); }}>{t("profile.logout")}</button></p>
       </Reveal>
     </div>
   );
 }
 
-export default function Profile({ active, user, login, logout, notify, history }) {
+const INFO_MENU = [["faq", "❓"], ["help", "🛟"], ["privacy", "🔒"], ["terms", "📄"]];
+
+/* "…agree to our [Terms of Use] and [Privacy Policy]." → two links, in whatever order the language puts them */
+function Agree({ go }) {
+  const t = useT();
+  const targets = ["terms", "privacy"];
+  let n = 0;
+  return (
+    <p className="agree">
+      {t("login.agree").split(/(\[[^\]]+\])/).map((part, k) => {
+        const m = /^\[(.+)\]$/.exec(part);
+        if (!m) return part;
+        const id = targets[n++];
+        return <a key={k} href={`#${id}`} onClick={e => { e.preventDefault(); go(id); }}>{m[1]}</a>;
+      })}
+    </p>
+  );
+}
+
+export default function Profile({ active, user, login, logout, notify, history, go }) {
   return (
     <div className="view" hidden={!active}>
       <section className={user ? undefined : "center-col"}>
       <Reveal className="head"><h2 className="title"><Title k={user ? "title.profile" : "title.login"} /></h2></Reveal>
-      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} /> : <LoginCard login={login} notify={notify} />}
+      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} /> : <LoginCard login={login} notify={notify} go={go} />}
       </section>
     </div>
   );

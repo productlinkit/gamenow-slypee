@@ -4,7 +4,7 @@ export default {
   "header.with": "with", "header.home": "Slypee home", "header.language": "Language",
   "common.playNow": "Play Now", "common.play": "Play", "common.plays": "{n} plays", "common.resume": "Resume", "common.open": "Open",
   "common.login": "Log in", "common.seeMore": "See more", "common.backToTop": "Back to top", "common.back": "Back",
-  "common.hotNow": "Hot now", "common.dismiss": "Dismiss", "common.showAll": "Show all {n} games",
+  "common.prev": "Previous", "common.next": "Next", "common.hotNow": "Hot now", "common.dismiss": "Dismiss", "common.showAll": "Show all {n} games",
   "cat.Top Chart": "Top Chart", "cat.Arcade": "Arcade", "cat.Sports": "Sports", "cat.Card": "Card", "cat.Strategy": "Strategy", "cat.Puzzle": "Puzzle",
   "title.trending": "Trending|Games", "title.games": "Games", "title.html5": "HTML5|Games", "title.recent": "Recently|Played",
   "title.library": "Your|Library", "title.saved": "Saved", "title.profile": "My|Profile", "title.login": "Log|in", "title.more": "More like|this",
@@ -51,5 +51,6 @@ export default {
   "toast.removed": "Removed from your library", "toast.copied": "Link copied", "toast.thanks": "Thanks for rating!", "toast.back": "Welcome back! You played {name} for {time}",
   "time.now": "just now", "time.min": "{n} min ago", "time.h": "{n}h ago", "time.yesterday": "yesterday", "time.days": "{n} days ago",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h}h {m}m",
+  "info.heading": "Help & info", "info.faq": "FAQ", "info.help": "Help & support", "info.privacy": "Privacy policy", "info.terms": "Terms of use", "info.updated": "Last updated {date}", "info.clearData": "Clear my data on this device", "info.cleared": "Your data was removed from this device", "login.agree": "By continuing you agree to our [Terms of Use] and [Privacy Policy].",
   "lang.title": "Choose language", "lang.search": "Search languages…"
 };

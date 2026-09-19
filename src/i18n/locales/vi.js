@@ -3,7 +3,7 @@ export default {
   "header.with": "cùng", "header.home": "Trang chủ Slypee", "header.language": "Ngôn ngữ",
   "common.playNow": "Chơi ngay", "common.play": "Chơi", "common.plays": "{n} lượt chơi", "common.resume": "Tiếp tục", "common.open": "Mở",
   "common.login": "Đăng nhập", "common.seeMore": "Xem thêm", "common.backToTop": "Lên đầu trang", "common.back": "Quay lại",
-  "common.hotNow": "Đang hot", "common.dismiss": "Đóng", "common.showAll": "Xem tất cả game ({n})",
+  "common.prev": "Trước", "common.next": "Tiếp", "common.hotNow": "Đang hot", "common.dismiss": "Đóng", "common.showAll": "Xem tất cả game ({n})",
   "cat.Top Chart": "Bảng xếp hạng", "cat.Arcade": "Arcade", "cat.Sports": "Thể thao", "cat.Card": "Bài", "cat.Strategy": "Chiến thuật", "cat.Puzzle": "Giải đố",
   "title.trending": "Game|Thịnh hành", "title.games": "Game", "title.html5": "Game|HTML5", "title.recent": "Chơi|gần đây",
   "title.library": "Thư viện|của bạn", "title.saved": "Đã lưu", "title.profile": "Hồ sơ|của tôi", "title.login": "Đăng|nhập", "title.more": "Game|tương tự",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Đã xóa khỏi thư viện", "toast.copied": "Đã sao chép liên kết", "toast.thanks": "Cảm ơn bạn đã đánh giá!", "toast.back": "Chào mừng trở lại! Bạn đã chơi {name} trong {time}",
   "time.now": "vừa xong", "time.min": "{n} phút trước", "time.h": "{n} giờ trước", "time.yesterday": "hôm qua", "time.days": "{n} ngày trước",
   "dur.lt1": "<1 phút", "dur.min": "{n} phút", "dur.hm": "{h} giờ {m} phút",
+  "info.heading": "Trợ giúp & thông tin", "info.faq": "Câu hỏi thường gặp", "info.help": "Trợ giúp & hỗ trợ", "info.privacy": "Chính sách quyền riêng tư", "info.terms": "Điều khoản sử dụng", "info.updated": "Cập nhật lần cuối {date}", "info.clearData": "Xóa dữ liệu của tôi trên thiết bị này", "info.cleared": "Đã xóa dữ liệu của bạn khỏi thiết bị này", "login.agree": "Khi tiếp tục, bạn đồng ý với [Điều khoản sử dụng] và [Chính sách quyền riêng tư] của chúng tôi.",
   "lang.title": "Chọn ngôn ngữ", "lang.search": "Tìm ngôn ngữ…"
 };

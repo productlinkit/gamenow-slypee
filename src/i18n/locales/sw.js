@@ -3,7 +3,7 @@ export default {
   "header.with": "pamoja na", "header.home": "Ukurasa wa Slypee", "header.language": "Lugha",
   "common.playNow": "Cheza Sasa", "common.play": "Cheza", "common.plays": "Imechezwa {n}", "common.resume": "Endelea", "common.open": "Fungua",
   "common.login": "Ingia", "common.seeMore": "Ona zaidi", "common.backToTop": "Rudi juu", "common.back": "Rudi",
-  "common.hotNow": "Maarufu sasa", "common.dismiss": "Funga", "common.showAll": "Onyesha michezo yote ({n})",
+  "common.prev": "Iliyotangulia", "common.next": "Inayofuata", "common.hotNow": "Maarufu sasa", "common.dismiss": "Funga", "common.showAll": "Onyesha michezo yote ({n})",
   "cat.Top Chart": "Bora zaidi", "cat.Arcade": "Arcade", "cat.Sports": "Michezo", "cat.Card": "Karata", "cat.Strategy": "Mikakati", "cat.Puzzle": "Mafumbo",
   "title.trending": "Michezo|Maarufu", "title.games": "Michezo", "title.html5": "Michezo ya|HTML5", "title.recent": "Uliyocheza|Karibuni",
   "title.library": "Maktaba|Yako", "title.saved": "Iliyohifadhiwa", "title.profile": "Wasifu|Wangu", "title.login": "In|gia", "title.more": "Michezo|Inayofanana",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Imeondolewa kwenye maktaba", "toast.copied": "Kiungo kimenakiliwa", "toast.thanks": "Asante kwa ukadiriaji!", "toast.back": "Karibu tena! Ulicheza {name} kwa {time}",
   "time.now": "sasa hivi", "time.min": "dakika {n} zilizopita", "time.h": "saa {n} zilizopita", "time.yesterday": "jana", "time.days": "siku {n} zilizopita",
   "dur.lt1": "<dakika 1", "dur.min": "dakika {n}", "dur.hm": "saa {h} dakika {m}",
+  "info.heading": "Msaada na taarifa", "info.faq": "Maswali yanayoulizwa mara kwa mara", "info.help": "Msaada na usaidizi", "info.privacy": "Sera ya faragha", "info.terms": "Masharti ya matumizi", "info.updated": "Imesasishwa mwisho {date}", "info.clearData": "Futa data yangu kwenye kifaa hiki", "info.cleared": "Data yako imefutwa kwenye kifaa hiki", "login.agree": "Kwa kuendelea, unakubali [Masharti ya Matumizi] na [Sera ya Faragha] yetu.",
   "lang.title": "Chagua lugha", "lang.search": "Tafuta lugha…"
 };

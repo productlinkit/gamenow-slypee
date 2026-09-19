@@ -3,7 +3,7 @@ export default {
   "header.with": "with", "header.home": "Slypee ホーム", "header.language": "言語",
   "common.playNow": "今すぐプレイ", "common.play": "プレイ", "common.plays": "{n}回プレイ", "common.resume": "続きから", "common.open": "開く",
   "common.login": "ログイン", "common.seeMore": "もっと見る", "common.backToTop": "トップへ戻る", "common.back": "戻る",
-  "common.hotNow": "人気急上昇", "common.dismiss": "閉じる", "common.showAll": "すべてのゲームを表示（{n}）",
+  "common.prev": "前へ", "common.next": "次へ", "common.hotNow": "人気急上昇", "common.dismiss": "閉じる", "common.showAll": "すべてのゲームを表示（{n}）",
   "cat.Top Chart": "ランキング", "cat.Arcade": "アーケード", "cat.Sports": "スポーツ", "cat.Card": "カード", "cat.Strategy": "ストラテジー", "cat.Puzzle": "パズル",
   "title.trending": "人気の|ゲーム", "title.games": "ゲーム", "title.html5": "HTML5|ゲーム", "title.recent": "最近|プレイした",
   "title.library": "あなたの|ライブラリ", "title.saved": "保存済み", "title.profile": "マイ|プロフィール", "title.login": "ログ|イン", "title.more": "似ている|ゲーム",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "ライブラリから削除しました", "toast.copied": "リンクをコピーしました", "toast.thanks": "評価ありがとうございます！", "toast.back": "おかえりなさい！{name}を{time}プレイしました",
   "time.now": "たった今", "time.min": "{n}分前", "time.h": "{n}時間前", "time.yesterday": "昨日", "time.days": "{n}日前",
   "dur.lt1": "1分未満", "dur.min": "{n}分", "dur.hm": "{h}時間{m}分",
+  "info.heading": "ヘルプと情報", "info.faq": "よくある質問", "info.help": "ヘルプとサポート", "info.privacy": "プライバシーポリシー", "info.terms": "利用規約", "info.updated": "最終更新：{date}", "info.clearData": "この端末のデータを削除", "info.cleared": "この端末からデータを削除しました", "login.agree": "続行すると、[利用規約]と[プライバシーポリシー]に同意したことになります。",
   "lang.title": "言語を選択", "lang.search": "言語を検索…"
 };

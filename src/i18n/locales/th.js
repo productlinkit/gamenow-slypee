@@ -3,7 +3,7 @@ export default {
   "header.with": "ร่วมกับ", "header.home": "หน้าแรก Slypee", "header.language": "ภาษา",
   "common.playNow": "เล่นเลย", "common.play": "เล่น", "common.plays": "เล่นแล้ว {n} ครั้ง", "common.resume": "เล่นต่อ", "common.open": "เปิด",
   "common.login": "เข้าสู่ระบบ", "common.seeMore": "ดูเพิ่มเติม", "common.backToTop": "กลับขึ้นด้านบน", "common.back": "กลับ",
-  "common.hotNow": "มาแรง", "common.dismiss": "ปิด", "common.showAll": "ดูเกมทั้งหมด ({n})",
+  "common.prev": "ก่อนหน้า", "common.next": "ถัดไป", "common.hotNow": "มาแรง", "common.dismiss": "ปิด", "common.showAll": "ดูเกมทั้งหมด ({n})",
   "cat.Top Chart": "อันดับยอดนิยม", "cat.Arcade": "อาร์เคด", "cat.Sports": "กีฬา", "cat.Card": "การ์ด", "cat.Strategy": "วางแผน", "cat.Puzzle": "ปริศนา",
   "title.trending": "เกม|มาแรง", "title.games": "เกม", "title.html5": "เกม|HTML5", "title.recent": "เล่น|ล่าสุด",
   "title.library": "คลังเกม|ของคุณ", "title.saved": "ที่บันทึกไว้", "title.profile": "โปรไฟล์|ของฉัน", "title.login": "เข้าสู่|ระบบ", "title.more": "เกม|ที่คล้ายกัน",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "นำออกจากคลังเกมแล้ว", "toast.copied": "คัดลอกลิงก์แล้ว", "toast.thanks": "ขอบคุณสำหรับคะแนน!", "toast.back": "ยินดีต้อนรับกลับ! คุณเล่น {name} ไป {time}",
   "time.now": "เมื่อสักครู่", "time.min": "{n} นาทีที่แล้ว", "time.h": "{n} ชม. ที่แล้ว", "time.yesterday": "เมื่อวาน", "time.days": "{n} วันที่แล้ว",
   "dur.lt1": "<1 นาที", "dur.min": "{n} นาที", "dur.hm": "{h} ชม. {m} นาที",
+  "info.heading": "ความช่วยเหลือและข้อมูล", "info.faq": "คำถามที่พบบ่อย", "info.help": "ความช่วยเหลือและการสนับสนุน", "info.privacy": "นโยบายความเป็นส่วนตัว", "info.terms": "ข้อกำหนดการใช้งาน", "info.updated": "อัปเดตล่าสุด {date}", "info.clearData": "ล้างข้อมูลของฉันบนอุปกรณ์นี้", "info.cleared": "ลบข้อมูลของคุณออกจากอุปกรณ์นี้แล้ว", "login.agree": "การดำเนินการต่อถือว่าคุณยอมรับ [ข้อกำหนดการใช้งาน] และ [นโยบายความเป็นส่วนตัว] ของเรา",
   "lang.title": "เลือกภาษา", "lang.search": "ค้นหาภาษา…"
 };

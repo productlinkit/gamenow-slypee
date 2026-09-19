@@ -3,7 +3,7 @@ export default {
   "header.with": "के साथ", "header.home": "Slypee होम", "header.language": "भाषा",
   "common.playNow": "अभी खेलें", "common.play": "खेलें", "common.plays": "{n} बार खेला गया", "common.resume": "जारी रखें", "common.open": "खोलें",
   "common.login": "लॉग इन", "common.seeMore": "और देखें", "common.backToTop": "ऊपर जाएँ", "common.back": "वापस",
-  "common.hotNow": "अभी ट्रेंडिंग", "common.dismiss": "बंद करें", "common.showAll": "सभी गेम देखें ({n})",
+  "common.prev": "पिछला", "common.next": "अगला", "common.hotNow": "अभी ट्रेंडिंग", "common.dismiss": "बंद करें", "common.showAll": "सभी गेम देखें ({n})",
   "cat.Top Chart": "टॉप चार्ट", "cat.Arcade": "आर्केड", "cat.Sports": "खेल", "cat.Card": "कार्ड", "cat.Strategy": "रणनीति", "cat.Puzzle": "पहेली",
   "title.trending": "ट्रेंडिंग|गेम", "title.games": "गेम", "title.html5": "HTML5|गेम", "title.recent": "हाल ही में|खेले",
   "title.library": "आपकी|लाइब्रेरी", "title.saved": "सहेजे गए", "title.profile": "मेरी|प्रोफ़ाइल", "title.login": "लॉग|इन", "title.more": "ऐसे ही|और गेम",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "लाइब्रेरी से हटाया गया", "toast.copied": "लिंक कॉपी हो गया", "toast.thanks": "रेटिंग के लिए धन्यवाद!", "toast.back": "फिर से स्वागत है! आपने {name} को {time} खेला",
   "time.now": "अभी", "time.min": "{n} मिनट पहले", "time.h": "{n} घंटे पहले", "time.yesterday": "कल", "time.days": "{n} दिन पहले",
   "dur.lt1": "<1 मिनट", "dur.min": "{n} मिनट", "dur.hm": "{h} घं {m} मि",
+  "info.heading": "सहायता और जानकारी", "info.faq": "अक्सर पूछे जाने वाले सवाल", "info.help": "सहायता और सपोर्ट", "info.privacy": "गोपनीयता नीति", "info.terms": "उपयोग की शर्तें", "info.updated": "अंतिम अपडेट {date}", "info.clearData": "इस डिवाइस से मेरा डेटा हटाएँ", "info.cleared": "आपका डेटा इस डिवाइस से हटा दिया गया", "login.agree": "जारी रखकर आप हमारी [उपयोग की शर्तें] और [गोपनीयता नीति] से सहमत होते हैं।",
   "lang.title": "भाषा चुनें", "lang.search": "भाषा खोजें…"
 };

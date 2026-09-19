@@ -7,6 +7,7 @@ import { AvatarIcon, PlayIcon } from "../components/icons.jsx";
 import GameCard from "../components/GameCard.jsx";
 import Trending from "../components/Trending.jsx";
 import CategoryBrowser from "../components/CategoryBrowser.jsx";
+import ScrollRow from "../components/ScrollRow.jsx";
 import { Title, useT } from "../i18n/index.jsx";
 
 const APP_CATS = ["Top Chart", "Arcade", "Sports", "Card", "Strategy", "Puzzle"];
@@ -34,7 +35,7 @@ function RecentRow({ list }) {
   return (
     <section>
       <Reveal className="head"><h2 className="title"><Title k="title.recent" /></h2></Reveal>
-      <div className="rp-track">
+      <ScrollRow className="rp-track">
         {list.map((e, i) => (
           <Reveal as="a" key={e.g.u} className="rp-card" href={detailHref(e.g)} i={i}>
             <img src={e.g.img} alt="" width="84" height="84" loading="lazy" />
@@ -42,7 +43,7 @@ function RecentRow({ list }) {
             <small>{ago(e.last, t)}</small>
           </Reveal>
         ))}
-      </div>
+      </ScrollRow>
     </section>
   );
 }

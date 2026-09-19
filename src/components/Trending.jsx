@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GAMES, fmt, detailHref } from "../lib/games.js";
-import { PlayIcon } from "./icons.jsx";
+import { ChevronIcon, PlayIcon } from "./icons.jsx";
 import { Reveal } from "../lib/reveal.jsx";
 import { Title, useI18n } from "../i18n/index.jsx";
 
@@ -17,13 +17,14 @@ export default function Trending({ active }) {
     const track = trackRef.current;
     const cards = [...track.children];
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let i = 0, timer = null, resumeT = null, raf = 0;
+    let i = 0, timer = null, resumeT = null, raf = 0, autoUntil = 0;
 
     function go(n) {
       i = (n + cards.length) % cards.length;
       const c = cards[i];
       const centered = getComputedStyle(c).scrollSnapAlign.includes("center");
       const left = centered ? c.offsetLeft - (track.clientWidth - c.clientWidth) / 2 : c.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft);
+      autoUntil = performance.now() + 900; // ignore our own smooth scroll so the dots don't flicker
       track.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
       setIdx(i);
     }
@@ -38,6 +39,7 @@ export default function Trending({ active }) {
     pickRef.current = n => { go(n); hold(); };
 
     function onScroll() {
+      if (performance.now() < autoUntil) return;
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const mid = track.scrollLeft + track.clientWidth / 2;
@@ -52,18 +54,23 @@ export default function Trending({ active }) {
       });
     }
 
+    // pause only on real interaction (not mouse hover), so desktop advances at the same pace as phones
     const holdEvents = ["pointerdown", "touchstart", "wheel", "focusin"];
+    // ←/→ keys when the carousel has focus
+    const onKey = e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault();
+      pickRef.current(i + (e.key === "ArrowRight" ? 1 : -1));
+    };
+    track.addEventListener("keydown", onKey);
     track.addEventListener("scroll", onScroll, { passive: true });
     holdEvents.forEach(ev => track.addEventListener(ev, hold, { passive: true }));
-    track.addEventListener("mouseenter", stop);
-    track.addEventListener("mouseleave", hold);
     start();
     return () => {
       stop(); clearTimeout(resumeT); cancelAnimationFrame(raf);
       track.removeEventListener("scroll", onScroll);
       holdEvents.forEach(ev => track.removeEventListener(ev, hold));
-      track.removeEventListener("mouseenter", stop);
-      track.removeEventListener("mouseleave", hold);
+      track.removeEventListener("keydown", onKey);
     };
   }, [items]);
 
@@ -74,7 +81,9 @@ export default function Trending({ active }) {
         <span className="live"><i></i>{t("common.hotNow")}</span>
       </Reveal>
       <Reveal i={1}>
-      <div className="track" ref={trackRef} dir="ltr">
+      <div className="scroll-row" dir="ltr">
+      <button type="button" className="nav-arrow prev" aria-label={t("common.prev")} onClick={() => pickRef.current(idx - 1)}><ChevronIcon dir="prev" /></button>
+      <div className="track" ref={trackRef} dir="ltr" tabIndex={0}>
         {items.map((g, i) => (
           <article key={g.u} className={"tcard" + (i === idx ? " on" : "")} aria-roledescription="slide" aria-label={`${i + 1} / ${items.length}`} dir={info.dir || "ltr"}>
             <a className="banner" href={detailHref(g)} tabIndex={-1}>
@@ -91,6 +100,8 @@ export default function Trending({ active }) {
             </div>
           </article>
         ))}
+      </div>
+      <button type="button" className="nav-arrow next" aria-label={t("common.next")} onClick={() => pickRef.current(idx + 1)}><ChevronIcon dir="next" /></button>
       </div>
       <div className="dots" role="group" dir="ltr">
         {items.map((g, k) => (

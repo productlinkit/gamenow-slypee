@@ -3,7 +3,7 @@ export default {
   "header.with": "bersama", "header.home": "Beranda Slypee", "header.language": "Bahasa",
   "common.playNow": "Main Sekarang", "common.play": "Main", "common.plays": "{n} dimainkan", "common.resume": "Lanjutkan", "common.open": "Buka",
   "common.login": "Masuk", "common.seeMore": "Lihat semua", "common.backToTop": "Kembali ke atas", "common.back": "Kembali",
-  "common.hotNow": "Lagi hits", "common.dismiss": "Tutup", "common.showAll": "Tampilkan semua game ({n})",
+  "common.prev": "Sebelumnya", "common.next": "Berikutnya", "common.hotNow": "Lagi hits", "common.dismiss": "Tutup", "common.showAll": "Tampilkan semua game ({n})",
   "cat.Top Chart": "Teratas", "cat.Arcade": "Arcade", "cat.Sports": "Olahraga", "cat.Card": "Kartu", "cat.Strategy": "Strategi", "cat.Puzzle": "Puzzle",
   "title.trending": "Game|Terpopuler", "title.games": "Game", "title.html5": "Game|HTML5", "title.recent": "Terakhir|Dimainkan",
   "title.library": "Koleksi|Kamu", "title.saved": "Disimpan", "title.profile": "Profil|Saya", "title.login": "Ma|suk", "title.more": "Game|Serupa",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Dihapus dari koleksi", "toast.copied": "Link disalin", "toast.thanks": "Terima kasih atas rating-nya!", "toast.back": "Selamat datang kembali! Kamu main {name} selama {time}",
   "time.now": "baru saja", "time.min": "{n} menit lalu", "time.h": "{n} jam lalu", "time.yesterday": "kemarin", "time.days": "{n} hari lalu",
   "dur.lt1": "<1 menit", "dur.min": "{n} menit", "dur.hm": "{h} j {m} m",
+  "info.heading": "Bantuan & info", "info.faq": "FAQ", "info.help": "Bantuan & dukungan", "info.privacy": "Kebijakan privasi", "info.terms": "Syarat penggunaan", "info.updated": "Terakhir diperbarui {date}", "info.clearData": "Hapus data saya di perangkat ini", "info.cleared": "Data kamu sudah dihapus dari perangkat ini", "login.agree": "Dengan melanjutkan, kamu menyetujui [Syarat Penggunaan] dan [Kebijakan Privasi] kami.",
   "lang.title": "Pilih bahasa", "lang.search": "Cari bahasa…"
 };

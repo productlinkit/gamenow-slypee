@@ -3,7 +3,7 @@ export default {
   "header.with": "bersama", "header.home": "Laman utama Slypee", "header.language": "Bahasa",
   "common.playNow": "Main Sekarang", "common.play": "Main", "common.plays": "{n} kali dimainkan", "common.resume": "Sambung", "common.open": "Buka",
   "common.login": "Log masuk", "common.seeMore": "Lihat lagi", "common.backToTop": "Kembali ke atas", "common.back": "Kembali",
-  "common.hotNow": "Hangat kini", "common.dismiss": "Tutup", "common.showAll": "Tunjuk semua permainan ({n})",
+  "common.prev": "Sebelumnya", "common.next": "Seterusnya", "common.hotNow": "Hangat kini", "common.dismiss": "Tutup", "common.showAll": "Tunjuk semua permainan ({n})",
   "cat.Top Chart": "Carta Teratas", "cat.Arcade": "Arked", "cat.Sports": "Sukan", "cat.Card": "Kad", "cat.Strategy": "Strategi", "cat.Puzzle": "Teka-teki",
   "title.trending": "Permainan|Popular", "title.games": "Permainan", "title.html5": "Permainan|HTML5", "title.recent": "Baru|Dimainkan",
   "title.library": "Pustaka|Anda", "title.saved": "Disimpan", "title.profile": "Profil|Saya", "title.login": "Log|masuk", "title.more": "Permainan|Serupa",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Dibuang daripada pustaka", "toast.copied": "Pautan disalin", "toast.thanks": "Terima kasih atas penilaian!", "toast.back": "Selamat kembali! Anda main {name} selama {time}",
   "time.now": "baru sahaja", "time.min": "{n} minit lalu", "time.h": "{n} jam lalu", "time.yesterday": "semalam", "time.days": "{n} hari lalu",
   "dur.lt1": "<1 minit", "dur.min": "{n} minit", "dur.hm": "{h} j {m} m",
+  "info.heading": "Bantuan & maklumat", "info.faq": "Soalan lazim", "info.help": "Bantuan & sokongan", "info.privacy": "Dasar privasi", "info.terms": "Terma penggunaan", "info.updated": "Kemas kini terakhir {date}", "info.clearData": "Padam data saya pada peranti ini", "info.cleared": "Data anda telah dipadam daripada peranti ini", "login.agree": "Dengan meneruskan, anda bersetuju dengan [Terma Penggunaan] dan [Dasar Privasi] kami.",
   "lang.title": "Pilih bahasa", "lang.search": "Cari bahasa…"
 };

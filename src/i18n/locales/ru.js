@@ -3,7 +3,7 @@ export default {
   "header.with": "и", "header.home": "Главная Slypee", "header.language": "Язык",
   "common.playNow": "Играть", "common.play": "Играть", "common.plays": "Игр: {n}", "common.resume": "Продолжить", "common.open": "Открыть",
   "common.login": "Войти", "common.seeMore": "Ещё", "common.backToTop": "Наверх", "common.back": "Назад",
-  "common.hotNow": "Сейчас в топе", "common.dismiss": "Закрыть", "common.showAll": "Показать все игры ({n})",
+  "common.prev": "Назад", "common.next": "Вперёд", "common.hotNow": "Сейчас в топе", "common.dismiss": "Закрыть", "common.showAll": "Показать все игры ({n})",
   "cat.Top Chart": "Топ", "cat.Arcade": "Аркады", "cat.Sports": "Спорт", "cat.Card": "Карточные", "cat.Strategy": "Стратегии", "cat.Puzzle": "Головоломки",
   "title.trending": "Популярные|игры", "title.games": "Игры", "title.html5": "HTML5-|игры", "title.recent": "Недавно|сыгранные",
   "title.library": "Ваша|библиотека", "title.saved": "Сохранённые", "title.profile": "Мой|профиль", "title.login": "Вход|в аккаунт", "title.more": "Похожие|игры",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Удалено из библиотеки", "toast.copied": "Ссылка скопирована", "toast.thanks": "Спасибо за оценку!", "toast.back": "С возвращением! Вы играли в {name}: {time}",
   "time.now": "только что", "time.min": "{n} мин назад", "time.h": "{n} ч назад", "time.yesterday": "вчера", "time.days": "{n} дн. назад",
   "dur.lt1": "<1 мин", "dur.min": "{n} мин", "dur.hm": "{h} ч {m} мин",
+  "info.heading": "Помощь и информация", "info.faq": "Частые вопросы", "info.help": "Помощь и поддержка", "info.privacy": "Политика конфиденциальности", "info.terms": "Условия использования", "info.updated": "Обновлено: {date}", "info.clearData": "Удалить мои данные с этого устройства", "info.cleared": "Ваши данные удалены с этого устройства", "login.agree": "Продолжая, вы соглашаетесь с [Условиями использования] и [Политикой конфиденциальности].",
   "lang.title": "Выберите язык", "lang.search": "Поиск языка…"
 };

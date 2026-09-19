@@ -8,12 +8,14 @@ import Profile from "./views/Profile.jsx";
 import SearchSheet from "./components/SearchSheet.jsx";
 import GameDetail from "./views/GameDetail.jsx";
 import Petals from "./components/Petals.jsx";
+import InfoPage from "./views/InfoPage.jsx";
+import { INFO_PAGES } from "./content/info.js";
 import { byId, gameId } from "./lib/games.js";
 import { loadHistory, startPlay, finishPlay, rate, dur } from "./lib/history.js";
 import { useT } from "./i18n/index.jsx";
 
-const VIEWS = ["home", "html5", "library", "profile"];
-// #home, #html5, #library, #profile, or #game/<id> for a game's detail page
+const VIEWS = ["home", "html5", "library", "profile", ...INFO_PAGES];
+// #home, #html5, #library, #profile, #faq/#help/#privacy/#terms, or #game/<id> for a game's detail page
 const parseHash = () => {
   const h = location.hash.slice(1);
   if (h.startsWith("game/") && byId(h.slice(5))) return { view: "game", id: h.slice(5) };
@@ -32,6 +34,7 @@ export default function App() {
   const [nav, setNav] = useState(() => ({ ...parseHash(), n: 0 }));
   const go = useCallback(view => setNav(p => ({ view, n: p.n + 1 })), []);
   const view = nav.view;
+  const navView = INFO_PAGES.includes(view) ? "profile" : view; // info pages live under Profile
 
   // coming back from a game restores where you were on the list; otherwise jump to top
   const shown = useRef(new Set());
@@ -151,8 +154,9 @@ export default function App() {
     toastT.current = setTimeout(() => setToast(t => ({ ...t, on: false })), 2600);
   }, []);
 
-  /* Play tracking: a Play tap starts a session, coming back to our page ends it */
-  const [history, setHistory] = useState(loadHistory);
+  /* Play tracking: a Play tap starts a session, coming back to our page ends it.
+     (named playHistory so it never shadows window.history, which the routing above relies on) */
+  const [playHistory, setHistory] = useState(loadHistory);
   const [returned, setReturned] = useState(null);
   useEffect(() => {
     const done = () => {
@@ -186,20 +190,26 @@ export default function App() {
     <>
       <div className="world" aria-hidden="true" ref={worldRef}></div>
       <Petals />
-      <Header view={view} go={go} loggedIn={!!user} />
+      <Header view={navView} go={go} loggedIn={!!user} />
       <main>
-        <Home active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={history} />
+        <Home active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory} />
         <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
-        <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={history} />
-        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={history} />
+        <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
+        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} />
+        {INFO_PAGES.includes(view) && (
+          <InfoPage
+            key={view} id={view} go={go} notify={notify} back={() => go("profile")}
+            onClearData={() => { setUser(null); setSaved([]); setHistory({}); }}
+          />
+        )}
         {game && (
           <GameDetail
             key={nav.id} g={game} back={leaveGame} saved={saved.includes(nav.id)} toggleSave={toggleSave} notify={notify}
-            played={history[nav.id]} returned={returned?.id === nav.id ? returned.secs : 0} dismissReturn={() => setReturned(null)} onRate={onRate}
+            played={playHistory[nav.id]} returned={returned?.id === nav.id ? returned.secs : 0} dismissReturn={() => setReturned(null)} onRate={onRate}
           />
         )}
       </main>
-      <div className="bottom"><nav aria-label="Main"><NavTabs view={view} go={go} loggedIn={!!user} /></nav></div>
+      <div className="bottom"><nav aria-label="Main"><NavTabs view={navView} go={go} loggedIn={!!user} /></nav></div>
       <button type="button" className={"to-top" + (far ? " on" : "")} aria-label={t("common.backToTop")} tabIndex={far ? 0 : -1} onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
       </button>

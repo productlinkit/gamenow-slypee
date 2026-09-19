@@ -3,7 +3,7 @@ export default {
   "header.with": "携手", "header.home": "Slypee 首页", "header.language": "语言",
   "common.playNow": "立即开玩", "common.play": "开玩", "common.plays": "{n} 次游玩", "common.resume": "继续", "common.open": "打开",
   "common.login": "登录", "common.seeMore": "查看更多", "common.backToTop": "返回顶部", "common.back": "返回",
-  "common.hotNow": "正在热玩", "common.dismiss": "关闭", "common.showAll": "显示全部游戏（{n}）",
+  "common.prev": "上一个", "common.next": "下一个", "common.hotNow": "正在热玩", "common.dismiss": "关闭", "common.showAll": "显示全部游戏（{n}）",
   "cat.Top Chart": "排行榜", "cat.Arcade": "街机", "cat.Sports": "体育", "cat.Card": "棋牌", "cat.Strategy": "策略", "cat.Puzzle": "益智",
   "title.trending": "热门|游戏", "title.games": "游戏", "title.html5": "HTML5|游戏", "title.recent": "最近|玩过",
   "title.library": "我的|游戏库", "title.saved": "已收藏", "title.profile": "个人|资料", "title.login": "登|录", "title.more": "相似|游戏",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "已从游戏库移除", "toast.copied": "链接已复制", "toast.thanks": "感谢你的评分！", "toast.back": "欢迎回来！你玩了 {name} {time}",
   "time.now": "刚刚", "time.min": "{n} 分钟前", "time.h": "{n} 小时前", "time.yesterday": "昨天", "time.days": "{n} 天前",
   "dur.lt1": "不到 1 分钟", "dur.min": "{n} 分钟", "dur.hm": "{h} 小时 {m} 分钟",
+  "info.heading": "帮助与信息", "info.faq": "常见问题", "info.help": "帮助与支持", "info.privacy": "隐私政策", "info.terms": "使用条款", "info.updated": "最后更新：{date}", "info.clearData": "清除我在此设备上的数据", "info.cleared": "已从此设备清除你的数据", "login.agree": "继续即表示你同意我们的[使用条款]和[隐私政策]。",
   "lang.title": "选择语言", "lang.search": "搜索语言…"
 };

@@ -3,7 +3,7 @@ export default {
   "header.with": "ile", "header.home": "Slypee ana sayfa", "header.language": "Dil",
   "common.playNow": "Hemen Oyna", "common.play": "Oyna", "common.plays": "{n} oynanma", "common.resume": "Devam et", "common.open": "Aç",
   "common.login": "Giriş yap", "common.seeMore": "Daha fazla", "common.backToTop": "Başa dön", "common.back": "Geri",
-  "common.hotNow": "Şu an popüler", "common.dismiss": "Kapat", "common.showAll": "Tüm oyunları göster ({n})",
+  "common.prev": "Önceki", "common.next": "Sonraki", "common.hotNow": "Şu an popüler", "common.dismiss": "Kapat", "common.showAll": "Tüm oyunları göster ({n})",
   "cat.Top Chart": "Zirvedekiler", "cat.Arcade": "Arcade", "cat.Sports": "Spor", "cat.Card": "Kart", "cat.Strategy": "Strateji", "cat.Puzzle": "Bulmaca",
   "title.trending": "Popüler|Oyunlar", "title.games": "Oyunlar", "title.html5": "HTML5|Oyunları", "title.recent": "Son|Oynananlar",
   "title.library": "Senin|Kitaplığın", "title.saved": "Kaydedilenler", "title.profile": "Benim|Profilim", "title.login": "Giriş|Yap", "title.more": "Benzer|Oyunlar",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Kitaplığından kaldırıldı", "toast.copied": "Bağlantı kopyalandı", "toast.thanks": "Puanın için teşekkürler!", "toast.back": "Tekrar hoş geldin! {name} oyununu {time} oynadın",
   "time.now": "az önce", "time.min": "{n} dk önce", "time.h": "{n} sa önce", "time.yesterday": "dün", "time.days": "{n} gün önce",
   "dur.lt1": "<1 dk", "dur.min": "{n} dk", "dur.hm": "{h} sa {m} dk",
+  "info.heading": "Yardım ve bilgi", "info.faq": "SSS", "info.help": "Yardım ve destek", "info.privacy": "Gizlilik politikası", "info.terms": "Kullanım koşulları", "info.updated": "Son güncelleme: {date}", "info.clearData": "Bu cihazdaki verilerimi sil", "info.cleared": "Verilerin bu cihazdan silindi", "login.agree": "Devam ederek [Kullanım Koşulları] ve [Gizlilik Politikası]’nı kabul etmiş olursun.",
   "lang.title": "Dil seç", "lang.search": "Dil ara…"
 };

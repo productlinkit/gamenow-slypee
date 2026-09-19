@@ -3,7 +3,7 @@ export default {
   "header.with": "kasama ang", "header.home": "Slypee home", "header.language": "Wika",
   "common.playNow": "Laro Na", "common.play": "Laro", "common.plays": "{n} laro", "common.resume": "Ituloy", "common.open": "Buksan",
   "common.login": "Mag-log in", "common.seeMore": "Tingnan pa", "common.backToTop": "Bumalik sa itaas", "common.back": "Bumalik",
-  "common.hotNow": "Patok ngayon", "common.dismiss": "Isara", "common.showAll": "Ipakita lahat ng laro ({n})",
+  "common.prev": "Nakaraan", "common.next": "Susunod", "common.hotNow": "Patok ngayon", "common.dismiss": "Isara", "common.showAll": "Ipakita lahat ng laro ({n})",
   "cat.Top Chart": "Top Chart", "cat.Arcade": "Arcade", "cat.Sports": "Sports", "cat.Card": "Baraha", "cat.Strategy": "Estratehiya", "cat.Puzzle": "Puzzle",
   "title.trending": "Patok na|Laro", "title.games": "Mga Laro", "title.html5": "HTML5|Games", "title.recent": "Kamakailang|Nilaro",
   "title.library": "Iyong|Library", "title.saved": "Naka-save", "title.profile": "Aking|Profile", "title.login": "Mag-|log in", "title.more": "Katulad|nito",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "Inalis sa library mo", "toast.copied": "Nakopya ang link", "toast.thanks": "Salamat sa rating!", "toast.back": "Welcome back! Nilaro mo ang {name} nang {time}",
   "time.now": "ngayon lang", "time.min": "{n} min ang nakalipas", "time.h": "{n} oras ang nakalipas", "time.yesterday": "kahapon", "time.days": "{n} araw ang nakalipas",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h}o {m}m",
+  "info.heading": "Tulong at impormasyon", "info.faq": "FAQ", "info.help": "Tulong at suporta", "info.privacy": "Patakaran sa privacy", "info.terms": "Mga tuntunin ng paggamit", "info.updated": "Huling na-update {date}", "info.clearData": "Burahin ang data ko sa device na ito", "info.cleared": "Naalis na ang data mo sa device na ito", "login.agree": "Sa pagpapatuloy, sumasang-ayon ka sa aming [Mga Tuntunin ng Paggamit] at [Patakaran sa Privacy].",
   "lang.title": "Pumili ng wika", "lang.search": "Maghanap ng wika…"
 };

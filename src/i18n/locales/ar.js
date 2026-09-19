@@ -3,7 +3,7 @@ export default {
   "header.with": "مع", "header.home": "الصفحة الرئيسية لـ Slypee", "header.language": "اللغة",
   "common.playNow": "العب الآن", "common.play": "العب", "common.plays": "{n} مرة لعب", "common.resume": "تابع", "common.open": "افتح",
   "common.login": "تسجيل الدخول", "common.seeMore": "عرض المزيد", "common.backToTop": "العودة للأعلى", "common.back": "رجوع",
-  "common.hotNow": "رائج الآن", "common.dismiss": "إغلاق", "common.showAll": "عرض كل الألعاب ({n})",
+  "common.prev": "السابق", "common.next": "التالي", "common.hotNow": "رائج الآن", "common.dismiss": "إغلاق", "common.showAll": "عرض كل الألعاب ({n})",
   "cat.Top Chart": "الأعلى", "cat.Arcade": "أركيد", "cat.Sports": "رياضة", "cat.Card": "ورق", "cat.Strategy": "استراتيجية", "cat.Puzzle": "ألغاز",
   "title.trending": "ألعاب|رائجة", "title.games": "الألعاب", "title.html5": "ألعاب|HTML5", "title.recent": "لعبت|مؤخرًا",
   "title.library": "مكتبتك|الخاصة", "title.saved": "المحفوظة", "title.profile": "ملفي|الشخصي", "title.login": "تسجيل|الدخول", "title.more": "ألعاب|مشابهة",
@@ -50,5 +50,6 @@ export default {
   "toast.removed": "تمت الإزالة من مكتبتك", "toast.copied": "تم نسخ الرابط", "toast.thanks": "شكرًا على تقييمك!", "toast.back": "مرحبًا بعودتك! لعبت {name} لمدة {time}",
   "time.now": "الآن", "time.min": "منذ {n} دقيقة", "time.h": "منذ {n} ساعة", "time.yesterday": "أمس", "time.days": "منذ {n} أيام",
   "dur.lt1": "أقل من دقيقة", "dur.min": "{n} دقيقة", "dur.hm": "{h} س {m} د",
+  "info.heading": "المساعدة والمعلومات", "info.faq": "الأسئلة الشائعة", "info.help": "المساعدة والدعم", "info.privacy": "سياسة الخصوصية", "info.terms": "شروط الاستخدام", "info.updated": "آخر تحديث {date}", "info.clearData": "امسح بياناتي من هذا الجهاز", "info.cleared": "تم حذف بياناتك من هذا الجهاز", "login.agree": "بالمتابعة فإنك توافق على [شروط الاستخدام] و[سياسة الخصوصية].",
   "lang.title": "اختر اللغة", "lang.search": "ابحث عن لغة…"
 };
