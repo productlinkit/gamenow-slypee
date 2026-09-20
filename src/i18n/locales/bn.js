@@ -51,5 +51,6 @@ export default {
   "time.now": "এইমাত্র", "time.min": "{n} মিনিট আগে", "time.h": "{n} ঘণ্টা আগে", "time.yesterday": "গতকাল", "time.days": "{n} দিন আগে",
   "dur.lt1": "<১ মিনিট", "dur.min": "{n} মিনিট", "dur.hm": "{h} ঘ {m} মি",
   "info.heading": "সাহায্য ও তথ্য", "info.faq": "সাধারণ প্রশ্ন", "info.help": "সাহায্য ও সহায়তা", "info.privacy": "গোপনীয়তা নীতি", "info.terms": "ব্যবহারের শর্তাবলি", "info.updated": "সর্বশেষ হালনাগাদ {date}", "info.clearData": "এই ডিভাইস থেকে আমার ডেটা মুছুন", "info.cleared": "আপনার ডেটা এই ডিভাইস থেকে মুছে ফেলা হয়েছে", "login.agree": "চালিয়ে গেলে আপনি আমাদের [ব্যবহারের শর্তাবলি] ও [গোপনীয়তা নীতি]-তে সম্মত হচ্ছেন।",
+  "profile.name": "প্রদর্শিত নাম", "profile.avatar": "অবতার", "profile.edit": "প্রোফাইল সম্পাদনা", "common.save": "সংরক্ষণ", "common.cancel": "বাতিল", "toast.profileSaved": "প্রোফাইল হালনাগাদ হয়েছে",
   "lang.title": "ভাষা বেছে নিন", "lang.search": "ভাষা খুঁজুন…"
 };

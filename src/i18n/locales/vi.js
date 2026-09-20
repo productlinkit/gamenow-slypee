@@ -51,5 +51,6 @@ export default {
   "time.now": "vừa xong", "time.min": "{n} phút trước", "time.h": "{n} giờ trước", "time.yesterday": "hôm qua", "time.days": "{n} ngày trước",
   "dur.lt1": "<1 phút", "dur.min": "{n} phút", "dur.hm": "{h} giờ {m} phút",
   "info.heading": "Trợ giúp & thông tin", "info.faq": "Câu hỏi thường gặp", "info.help": "Trợ giúp & hỗ trợ", "info.privacy": "Chính sách quyền riêng tư", "info.terms": "Điều khoản sử dụng", "info.updated": "Cập nhật lần cuối {date}", "info.clearData": "Xóa dữ liệu của tôi trên thiết bị này", "info.cleared": "Đã xóa dữ liệu của bạn khỏi thiết bị này", "login.agree": "Khi tiếp tục, bạn đồng ý với [Điều khoản sử dụng] và [Chính sách quyền riêng tư] của chúng tôi.",
+  "profile.name": "Tên hiển thị", "profile.avatar": "Ảnh đại diện", "profile.edit": "Sửa hồ sơ", "common.save": "Lưu", "common.cancel": "Hủy", "toast.profileSaved": "Đã cập nhật hồ sơ",
   "lang.title": "Chọn ngôn ngữ", "lang.search": "Tìm ngôn ngữ…"
 };

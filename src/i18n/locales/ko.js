@@ -51,5 +51,6 @@ export default {
   "time.now": "방금", "time.min": "{n}분 전", "time.h": "{n}시간 전", "time.yesterday": "어제", "time.days": "{n}일 전",
   "dur.lt1": "1분 미만", "dur.min": "{n}분", "dur.hm": "{h}시간 {m}분",
   "info.heading": "도움말 및 정보", "info.faq": "자주 묻는 질문", "info.help": "도움말 및 지원", "info.privacy": "개인정보 처리방침", "info.terms": "이용약관", "info.updated": "최종 업데이트 {date}", "info.clearData": "이 기기에서 내 데이터 삭제", "info.cleared": "이 기기에서 데이터를 삭제했어요", "login.agree": "계속하면 [이용약관] 및 [개인정보 처리방침]에 동의하게 됩니다.",
+  "profile.name": "표시 이름", "profile.avatar": "아바타", "profile.edit": "프로필 수정", "common.save": "저장", "common.cancel": "취소", "toast.profileSaved": "프로필이 업데이트되었어요",
   "lang.title": "언어 선택", "lang.search": "언어 검색…"
 };

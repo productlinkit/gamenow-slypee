@@ -51,5 +51,6 @@ export default {
   "time.now": "agora mesmo", "time.min": "há {n} min", "time.h": "há {n} h", "time.yesterday": "ontem", "time.days": "há {n} dias",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h} h {m} min",
   "info.heading": "Ajuda e informações", "info.faq": "Perguntas frequentes", "info.help": "Ajuda e suporte", "info.privacy": "Política de privacidade", "info.terms": "Termos de uso", "info.updated": "Última atualização: {date}", "info.clearData": "Apagar meus dados deste aparelho", "info.cleared": "Seus dados foram apagados deste aparelho", "login.agree": "Ao continuar, você concorda com nossos [Termos de Uso] e a [Política de Privacidade].",
+  "profile.name": "Nome de exibição", "profile.avatar": "Avatar", "profile.edit": "Editar perfil", "common.save": "Salvar", "common.cancel": "Cancelar", "toast.profileSaved": "Perfil atualizado",
   "lang.title": "Escolha o idioma", "lang.search": "Buscar idioma…"
 };

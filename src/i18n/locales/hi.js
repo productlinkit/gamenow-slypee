@@ -51,5 +51,6 @@ export default {
   "time.now": "अभी", "time.min": "{n} मिनट पहले", "time.h": "{n} घंटे पहले", "time.yesterday": "कल", "time.days": "{n} दिन पहले",
   "dur.lt1": "<1 मिनट", "dur.min": "{n} मिनट", "dur.hm": "{h} घं {m} मि",
   "info.heading": "सहायता और जानकारी", "info.faq": "अक्सर पूछे जाने वाले सवाल", "info.help": "सहायता और सपोर्ट", "info.privacy": "गोपनीयता नीति", "info.terms": "उपयोग की शर्तें", "info.updated": "अंतिम अपडेट {date}", "info.clearData": "इस डिवाइस से मेरा डेटा हटाएँ", "info.cleared": "आपका डेटा इस डिवाइस से हटा दिया गया", "login.agree": "जारी रखकर आप हमारी [उपयोग की शर्तें] और [गोपनीयता नीति] से सहमत होते हैं।",
+  "profile.name": "प्रदर्शित नाम", "profile.avatar": "अवतार", "profile.edit": "प्रोफ़ाइल संपादित करें", "common.save": "सहेजें", "common.cancel": "रद्द करें", "toast.profileSaved": "प्रोफ़ाइल अपडेट हो गई",
   "lang.title": "भाषा चुनें", "lang.search": "भाषा खोजें…"
 };

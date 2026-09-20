@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fmt, short, similar, playProps, detailHref } from "../lib/games.js";
 import { ago, dur } from "../lib/history.js";
 import { Reveal } from "../lib/reveal.jsx";
-import { PlayIcon } from "../components/icons.jsx";
+import { BoltIcon, ClockIcon, PadIcon, PartyIcon, PlayIcon, TimerIcon } from "../components/icons.jsx";
 import GameCard from "../components/GameCard.jsx";
 import { Title, useT } from "../i18n/index.jsx";
 
@@ -34,7 +34,7 @@ function WelcomeBack({ g, secs, next, rating = 0, onRate, onClose }) {
       <span className="confetti" aria-hidden="true">{CONFETTI.map((s, i) => <i key={i} style={s} />)}</span>
       <button type="button" className="welcome-x" aria-label={t("common.dismiss")} onClick={onClose}>✕</button>
       <div className="welcome-top">
-        <span className="welcome-ico">🎉</span>
+        <span className="welcome-ico"><PartyIcon /></span>
         <div>
           <b>{t("welcome.title")}</b>
           <small>{t("welcome.text", { name: g.n, time: dur(secs, t) })}</small>
@@ -94,7 +94,7 @@ export default function GameDetail({ g, back, saved, toggleSave, notify, played,
               <img className={"dhero" + (imgReady ? " ready" : "")} src={g.img} alt="" width="256" height="256" onLoad={() => setImgReady(true)} />
             </>
           )}
-          {h5 && <span className="dtag">⚡ {t("detail.instant")}</span>}
+          {h5 && <span className="dtag"><BoltIcon />{t("detail.instant")}</span>}
         </div>
 
         <div className="dinfo">
@@ -123,9 +123,9 @@ export default function GameDetail({ g, back, saved, toggleSave, notify, played,
           </div>
           {played?.count > 0 && (
             <p className="dplayed">
-              <span>🎮 {t("detail.youPlayed", { n: played.count })}</span>
-              {played.secs > 0 && <span>⏱ {dur(played.secs, t)}</span>}
-              <span>🕑 {ago(played.last, t)}</span>
+              <span><PadIcon />{t("detail.youPlayed", { n: played.count })}</span>
+              {played.secs > 0 && <span><TimerIcon />{dur(played.secs, t)}</span>}
+              <span><ClockIcon />{ago(played.last, t)}</span>
               {played.rating > 0 && <span>{"★".repeat(played.rating)}</span>}
             </p>
           )}

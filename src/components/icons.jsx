@@ -35,3 +35,61 @@ export const ChevronIcon = ({ dir = "next" }) => (
     <path d={dir === "next" ? "M9 5l7 7-7 7" : "M15 5l-7 7 7 7"} />
   </svg>
 );
+
+/* Same house style as the category icons: chunky ink outline, flat fills */
+export const PartyIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M6 30l7-16.5 9.5 9.5z" fill="#DB2417" /><path d="M13.5 13.5l9 9" stroke="none" /><path className="dim" d="M9.5 22.5l4.5 4.5" /><circle cx="26" cy="9" r="2" fill="#FACC3E" strokeWidth="1.8" /><circle cx="30" cy="18" r="1.8" fill="#2FA846" strokeWidth="1.8" /><path d="M22 4.5v3M28.5 14h3" strokeWidth="2" /><path d="M17 8l1.8 1" strokeWidth="2" /></svg>
+);
+export const FaqIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M6 9.5A3.5 3.5 0 0 1 9.5 6h17A3.5 3.5 0 0 1 30 9.5v11a3.5 3.5 0 0 1-3.5 3.5H17l-7 6v-6H9.5A3.5 3.5 0 0 1 6 20.5z" fill="#FACC3E" /><path d="M14.5 13a3.5 3.5 0 1 1 3.5 3.5v1.5" strokeWidth="2.6" /><circle cx="18" cy="21.5" r="1.1" fill="#221A16" stroke="none" /></svg>
+);
+export const SupportIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><circle cx="18" cy="18" r="12.5" fill="#DB2417" /><circle cx="18" cy="18" r="5" fill="#FFF7E8" /><path className="dim" d="M9.5 9.5l5 5M26.5 9.5l-5 5M26.5 26.5l-5-5M9.5 26.5l5-5" stroke="#FFF7E8" strokeWidth="2.6" /></svg>
+);
+export const LockIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M12 15v-3.5a6 6 0 0 1 12 0V15" /><rect x="7.5" y="15" width="21" height="14.5" rx="3.5" fill="#2FA846" /><circle cx="18" cy="21" r="2.2" fill="#FFF7E8" strokeWidth="1.8" /><path d="M18 23v3" strokeWidth="2.2" stroke="#FFF7E8" /></svg>
+);
+export const DocIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M9 6.5h12l6 6v17a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2v-21a2 2 0 0 1 2-2z" fill="#FFF7E8" /><path d="M20.5 6.5v6.5H27" /><path className="dim" d="M14 19h8M14 24h5" strokeWidth="2.2" /></svg>
+);
+export const KeyIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><circle cx="12" cy="18" r="6.5" fill="#FACC3E" /><path d="M18.5 18H31M27 18v5M22.5 18v4" /></svg>
+);
+
+/* Small inline markers (inherit the surrounding colour) */
+const M = { fill: "none", stroke: "currentColor", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" };
+export const PadIcon = () => (
+  <svg viewBox="0 0 24 24" {...M}><path d="M7 8h10a4.5 4.5 0 0 1 4.3 5.8l-1 3.4a2.6 2.6 0 0 1-4.5.9L14 16h-4l-1.8 2.1a2.6 2.6 0 0 1-4.5-.9l-1-3.4A4.5 4.5 0 0 1 7 8z" /><path d="M8 11.5v2.5M6.8 12.8h2.4" /></svg>
+);
+export const TimerIcon = () => (
+  <svg viewBox="0 0 24 24" {...M}><circle cx="12" cy="13.5" r="7.5" /><path d="M12 10v3.5l2.2 1.6M9.5 3h5M12 3v3" /></svg>
+);
+export const ClockIcon = () => (
+  <svg viewBox="0 0 24 24" {...M}><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3 2" /></svg>
+);
+export const FlameIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="#A3180D" strokeWidth="2" strokeLinejoin="round"><path d="M12 3s5.5 4.2 5.5 9.5a5.5 5.5 0 0 1-11 0C6.5 9 9 7 9 7s.5 2.5 2 3c1-1.5 1-5 1-7z" fill="#DB2417" /><path d="M12 19a2.6 2.6 0 0 1-1.4-4.8c.4 1 1.4 1.5 1.4 1.5s.6-1 .4-2c1.3.8 2.2 2 2.2 3.1A2.4 2.4 0 0 1 12 19z" fill="#FACC3E" stroke="none" /></svg>
+);
+export const BoltIcon = () => (
+  <svg viewBox="0 0 24 24" fill="#DB2417" stroke="#221A16" strokeWidth="2" strokeLinejoin="round"><path d="M13.5 2 4.5 13.5h6.5l-1.5 8.5 9-11.5h-6.5z" /></svg>
+);
+
+/* Pickable avatars — same chunky outline style, each on its own colour */
+const A = { fill: "none", stroke: "#221A16", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" };
+const eyes = (x1, x2, y = 20) => <><circle cx={x1} cy={y} r="1.5" fill="#221A16" stroke="none" /><circle cx={x2} cy={y} r="1.5" fill="#221A16" stroke="none" /></>;
+
+export const AVATARS = [
+  { id: "player", bg: "#FACC3E", svg: <svg viewBox="0 0 44 44" {...A}><path d="M9 38c1.5-7 6.5-10.5 13-10.5S33.5 31 35 38" fill="#DB2417" /><circle cx="22" cy="17" r="9" fill="#FFF7E8" />{eyes(18.5, 25.5, 16)}<path d="M18.5 20.5c2 1.8 5 1.8 7 0" /></svg> },
+  { id: "cat", bg: "#F6A5A0", svg: <svg viewBox="0 0 44 44" {...A}><path d="M11 16l1-8 7 4M33 16l-1-8-7 4" fill="#FFF7E8" /><circle cx="22" cy="24" r="12" fill="#FFF7E8" />{eyes(17.5, 26.5, 22)}<path d="M22 26.5l-2 1.5M22 26.5l2 1.5M13 22h4M27 22h4" /><path d="M22 25.5v1" strokeWidth="2.6" /></svg> },
+  { id: "robot", bg: "#7CC4F2", svg: <svg viewBox="0 0 44 44" {...A}><path d="M22 6v5" /><circle cx="22" cy="5" r="2" fill="#DB2417" /><rect x="8" y="11" width="28" height="24" rx="7" fill="#FFF7E8" />{eyes(16.5, 27.5, 21)}<path d="M16 28h12" /><path className="dim" d="M5 20v6M39 20v6" /></svg> },
+  { id: "alien", bg: "#2FA846", svg: <svg viewBox="0 0 44 44" {...A}><path d="M22 7c8 0 13 6 13 13s-6 17-13 17S9 26 9 20 14 7 22 7z" fill="#FFF7E8" /><path d="M14.5 18.5c2.5-.5 5 1 5.5 3.5-2.5.8-5-.8-5.5-3.5zM29.5 18.5c-2.5-.5-5 1-5.5 3.5 2.5.8 5-.8 5.5-3.5z" fill="#221A16" stroke="none" /><path d="M19 29h6" /></svg> },
+  { id: "ninja", bg: "#221A16", svg: <svg viewBox="0 0 44 44" {...A}><circle cx="22" cy="22" r="13" fill="#DB2417" /><path d="M9.5 19.5c4-3 9-4.5 12.5-4.5s8.5 1.5 12.5 4.5v5c-4 3-9 4.5-12.5 4.5S13.5 27.5 9.5 24.5z" fill="#FFF7E8" />{eyes(17.5, 26.5, 22)}<path d="M34.5 19.5l5-3v10l-5-3" fill="#DB2417" /></svg> },
+  { id: "dino", bg: "#B7E36A", svg: <svg viewBox="0 0 44 44" {...A}><path d="M10 20c0-7 5.5-12 12-12s12 5 12 12v6c0 5-4 8-9 8h-9c-4 0-6-2.5-6-6z" fill="#2FA846" /><path d="M14 8l3 4M22 5l2.5 5M30 8l-2.5 4" fill="#2FA846" />{eyes(17.5, 26.5, 20)}<path d="M17 28h10" /><path d="M19.5 28v3M24.5 28v3" strokeWidth="1.8" /></svg> },
+  { id: "bear", bg: "#E8B77A", svg: <svg viewBox="0 0 44 44" {...A}><circle cx="12" cy="12.5" r="5" fill="#B4793C" /><circle cx="32" cy="12.5" r="5" fill="#B4793C" /><circle cx="22" cy="23" r="13" fill="#E0A45F" /><ellipse cx="22" cy="27" rx="7" ry="5.5" fill="#FFF7E8" />{eyes(17.5, 26.5, 20)}<path d="M22 25.5c-1.2 0-2 .8-2 1.5s.8 1.5 2 1.5 2-.8 2-1.5-.8-1.5-2-1.5z" fill="#221A16" /></svg> },
+  { id: "astro", bg: "#C9B8FF", svg: <svg viewBox="0 0 44 44" {...A}><rect x="7" y="9" width="30" height="27" rx="13" fill="#FFF7E8" /><path d="M13 22a9 9 0 0 1 18 0v3a9 9 0 0 1-18 0z" fill="#221A16" /><path d="M17 23.5c.5-2 2.2-3.2 4-3.4" stroke="#7CC4F2" strokeWidth="2.6" /><path className="dim" d="M4 19v7M40 19v7" /></svg> }
+];
+export const AVATAR_BY_ID = Object.fromEntries(AVATARS.map(a => [a.id, a]));
+
+export const PencilIcon = () => (
+  <svg viewBox="0 0 24 24" {...M}><path d="M4 20h4L20 8l-4-4L4 16z" /><path d="M14.5 5.5l4 4" /></svg>
+);

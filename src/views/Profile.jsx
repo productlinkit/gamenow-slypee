@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
-import { AvatarIcon } from "../components/icons.jsx";
+import { AVATARS, AVATAR_BY_ID, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, SupportIcon } from "../components/icons.jsx";
 import { stats, dur } from "../lib/history.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
@@ -146,7 +146,7 @@ function LoginCard({ login, notify, go }) {
           <h2>{t("login.codeTitle")}</h2>
           <p>{t("login.codeSent", { number: "\u2066" + mask(number) + "\u2069" })}</p>
           <div className="demo-code">
-            <span>🔑 {t("login.demo", { code: DEMO_CODE })}</span>
+            <span className="with-ico"><KeyIcon />{t("login.demo", { code: DEMO_CODE })}</span>
             <button type="button" className="chip" onClick={() => onCode(DEMO_CODE)}>{t("login.fill")}</button>
           </div>
           <form onSubmit={e => { e.preventDefault(); verify(code); }}>
@@ -169,17 +169,65 @@ function LoginCard({ login, notify, go }) {
   );
 }
 
+/* Display name + avatar, kept with the rest of the demo account in this browser */
+function EditProfile({ user, save, cancel }) {
+  const t = useT();
+  const [name, setName] = useState(user.name || "");
+  const [avatar, setAvatar] = useState(user.avatar || AVATARS[0].id);
+  const inputRef = useRef(null);
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  return (
+    <form className="edit-profile" onSubmit={e => { e.preventDefault(); save({ name: name.trim().slice(0, 20), avatar }); }}>
+      <label htmlFor="display-name">{t("profile.name")}</label>
+      <input id="display-name" ref={inputRef} type="text" maxLength={20} autoComplete="nickname"
+        placeholder={t("profile.player")} value={name} onChange={e => setName(e.target.value)} />
+
+      <p className="edit-label">{t("profile.avatar")}</p>
+      <div className="avatar-grid" role="radiogroup" aria-label={t("profile.avatar")}>
+        {AVATARS.map(a => (
+          <button key={a.id} type="button" role="radio" aria-checked={a.id === avatar} aria-label={a.id}
+            className={"avatar-opt" + (a.id === avatar ? " on" : "")} style={{ background: a.bg }} onClick={() => setAvatar(a.id)}>
+            {a.svg}
+          </button>
+        ))}
+      </div>
+
+      <div className="edit-actions">
+        <button type="button" className="chip" onClick={cancel}>{t("common.cancel")}</button>
+        <button type="submit" className="btn-play">{t("common.save")}</button>
+      </div>
+    </form>
+  );
+}
+
 function PlayerCard({ user, login, logout, notify, history, go }) {
   const t = useT();
   const st = stats(history);
   const freeLeft = user.freeUntil ? Math.ceil((user.freeUntil - Date.now()) / 36e5) : 0;
+  const [editing, setEditing] = useState(false);
+  const avatar = AVATAR_BY_ID[user.avatar] || AVATARS[0];
+
+  const save = fields => {
+    login({ ...user, ...fields });
+    setEditing(false);
+    notify(t("toast.profileSaved"));
+  };
+
   return (
     <div className="two tight">
       <Reveal as="section" className="card-panel" i={1}>
         <div className="who">
-          <div className="avatar"><AvatarIcon /></div>
-          <div className="grow"><h2>{t("profile.player")}</h2><p><bdi>{mask(user.msisdn)}</bdi> · {t("profile.plays", { n: st.plays })}</p></div>
+          <div className="avatar" style={{ background: avatar.bg }}>{avatar.svg}</div>
+          <div className="grow">
+            <h2>{user.name || t("profile.player")}</h2>
+            <p><bdi>{mask(user.msisdn)}</bdi> · {t("profile.plays", { n: st.plays })}</p>
+          </div>
+          {!editing && (
+            <button type="button" className="icon-round" aria-label={t("profile.edit")} onClick={() => setEditing(true)}><PencilIcon /></button>
+          )}
         </div>
+        {editing && <EditProfile user={user} save={save} cancel={() => setEditing(false)} />}
         <div className="stats">
           <div><b>{st.games}</b><span>{t("profile.games")}</span></div>
           <div><b>{dur(st.secs, t)}</b><span>{t("profile.time")}</span></div>
@@ -216,7 +264,7 @@ function PlayerCard({ user, login, logout, notify, history, go }) {
   );
 }
 
-const INFO_MENU = [["faq", "❓"], ["help", "🛟"], ["privacy", "🔒"], ["terms", "📄"]];
+const INFO_MENU = [["faq", <FaqIcon />], ["help", <SupportIcon />], ["privacy", <LockIcon />], ["terms", <DocIcon />]];
 
 /* "…agree to our [Terms of Use] and [Privacy Policy]." → two links, in whatever order the language puts them */
 function Agree({ go }) {

@@ -52,5 +52,6 @@ export default {
   "time.now": "just now", "time.min": "{n} min ago", "time.h": "{n}h ago", "time.yesterday": "yesterday", "time.days": "{n} days ago",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h}h {m}m",
   "info.heading": "Help & info", "info.faq": "FAQ", "info.help": "Help & support", "info.privacy": "Privacy policy", "info.terms": "Terms of use", "info.updated": "Last updated {date}", "info.clearData": "Clear my data on this device", "info.cleared": "Your data was removed from this device", "login.agree": "By continuing you agree to our [Terms of Use] and [Privacy Policy].",
+  "profile.name": "Display name", "profile.avatar": "Avatar", "profile.edit": "Edit profile", "common.save": "Save", "common.cancel": "Cancel", "toast.profileSaved": "Profile updated",
   "lang.title": "Choose language", "lang.search": "Search languages…"
 };

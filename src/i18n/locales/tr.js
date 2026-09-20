@@ -51,5 +51,6 @@ export default {
   "time.now": "az önce", "time.min": "{n} dk önce", "time.h": "{n} sa önce", "time.yesterday": "dün", "time.days": "{n} gün önce",
   "dur.lt1": "<1 dk", "dur.min": "{n} dk", "dur.hm": "{h} sa {m} dk",
   "info.heading": "Yardım ve bilgi", "info.faq": "SSS", "info.help": "Yardım ve destek", "info.privacy": "Gizlilik politikası", "info.terms": "Kullanım koşulları", "info.updated": "Son güncelleme: {date}", "info.clearData": "Bu cihazdaki verilerimi sil", "info.cleared": "Verilerin bu cihazdan silindi", "login.agree": "Devam ederek [Kullanım Koşulları] ve [Gizlilik Politikası]’nı kabul etmiş olursun.",
+  "profile.name": "Görünen ad", "profile.avatar": "Avatar", "profile.edit": "Profili düzenle", "common.save": "Kaydet", "common.cancel": "İptal", "toast.profileSaved": "Profil güncellendi",
   "lang.title": "Dil seç", "lang.search": "Dil ara…"
 };

@@ -51,5 +51,6 @@ export default {
   "time.now": "たった今", "time.min": "{n}分前", "time.h": "{n}時間前", "time.yesterday": "昨日", "time.days": "{n}日前",
   "dur.lt1": "1分未満", "dur.min": "{n}分", "dur.hm": "{h}時間{m}分",
   "info.heading": "ヘルプと情報", "info.faq": "よくある質問", "info.help": "ヘルプとサポート", "info.privacy": "プライバシーポリシー", "info.terms": "利用規約", "info.updated": "最終更新：{date}", "info.clearData": "この端末のデータを削除", "info.cleared": "この端末からデータを削除しました", "login.agree": "続行すると、[利用規約]と[プライバシーポリシー]に同意したことになります。",
+  "profile.name": "表示名", "profile.avatar": "アバター", "profile.edit": "プロフィールを編集", "common.save": "保存", "common.cancel": "キャンセル", "toast.profileSaved": "プロフィールを更新しました",
   "lang.title": "言語を選択", "lang.search": "言語を検索…"
 };

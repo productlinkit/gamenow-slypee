@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GAMES, fmt, short, detailHref } from "../lib/games.js";
 import { searchGames, highlight } from "../lib/search.js";
-import { CAT_ICONS, PlayIcon, SearchIcon } from "./icons.jsx";
+import { CAT_ICONS, FlameIcon, PlayIcon, SearchIcon } from "./icons.jsx";
 import { useT } from "../i18n/index.jsx";
 
 const POPULAR = ["Zombie", "Racing", "Puzzle", "Ludo", "Shooter", "Football", "Cooking", "Idle"];
@@ -112,7 +112,7 @@ export default function SearchSheet({ initialType = "all", onClose }) {
               )}
               <section className="sheet-sec">
                 <h3>{t("search.popular")}</h3>
-                <div className="chips">{POPULAR.map(p => <button key={p} type="button" className="chip" onClick={() => run(p)}>🔥 {p}</button>)}</div>
+                <div className="chips">{POPULAR.map(p => <button key={p} type="button" className="chip" onClick={() => run(p)}><FlameIcon />{p}</button>)}</div>
               </section>
               <section className="sheet-sec">
                 <h3>{t("search.browse")}</h3>

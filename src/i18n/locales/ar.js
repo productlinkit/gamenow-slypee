@@ -51,5 +51,6 @@ export default {
   "time.now": "الآن", "time.min": "منذ {n} دقيقة", "time.h": "منذ {n} ساعة", "time.yesterday": "أمس", "time.days": "منذ {n} أيام",
   "dur.lt1": "أقل من دقيقة", "dur.min": "{n} دقيقة", "dur.hm": "{h} س {m} د",
   "info.heading": "المساعدة والمعلومات", "info.faq": "الأسئلة الشائعة", "info.help": "المساعدة والدعم", "info.privacy": "سياسة الخصوصية", "info.terms": "شروط الاستخدام", "info.updated": "آخر تحديث {date}", "info.clearData": "امسح بياناتي من هذا الجهاز", "info.cleared": "تم حذف بياناتك من هذا الجهاز", "login.agree": "بالمتابعة فإنك توافق على [شروط الاستخدام] و[سياسة الخصوصية].",
+  "profile.name": "الاسم المعروض", "profile.avatar": "الصورة الرمزية", "profile.edit": "تعديل الملف الشخصي", "common.save": "حفظ", "common.cancel": "إلغاء", "toast.profileSaved": "تم تحديث ملفك الشخصي",
   "lang.title": "اختر اللغة", "lang.search": "ابحث عن لغة…"
 };

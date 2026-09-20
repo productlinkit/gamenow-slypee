@@ -51,5 +51,6 @@ export default {
   "time.now": "刚刚", "time.min": "{n} 分钟前", "time.h": "{n} 小时前", "time.yesterday": "昨天", "time.days": "{n} 天前",
   "dur.lt1": "不到 1 分钟", "dur.min": "{n} 分钟", "dur.hm": "{h} 小时 {m} 分钟",
   "info.heading": "帮助与信息", "info.faq": "常见问题", "info.help": "帮助与支持", "info.privacy": "隐私政策", "info.terms": "使用条款", "info.updated": "最后更新：{date}", "info.clearData": "清除我在此设备上的数据", "info.cleared": "已从此设备清除你的数据", "login.agree": "继续即表示你同意我们的[使用条款]和[隐私政策]。",
+  "profile.name": "显示名称", "profile.avatar": "头像", "profile.edit": "编辑资料", "common.save": "保存", "common.cancel": "取消", "toast.profileSaved": "资料已更新",
   "lang.title": "选择语言", "lang.search": "搜索语言…"
 };

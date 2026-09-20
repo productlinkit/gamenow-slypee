@@ -51,5 +51,6 @@ export default {
   "time.now": "ابھی", "time.min": "{n} منٹ پہلے", "time.h": "{n} گھنٹے پہلے", "time.yesterday": "کل", "time.days": "{n} دن پہلے",
   "dur.lt1": "1 منٹ سے کم", "dur.min": "{n} منٹ", "dur.hm": "{h} گھنٹے {m} منٹ",
   "info.heading": "مدد اور معلومات", "info.faq": "عمومی سوالات", "info.help": "مدد اور سپورٹ", "info.privacy": "رازداری کی پالیسی", "info.terms": "استعمال کی شرائط", "info.updated": "آخری تازہ کاری {date}", "info.clearData": "اس ڈیوائس سے میرا ڈیٹا صاف کریں", "info.cleared": "آپ کا ڈیٹا اس ڈیوائس سے ہٹا دیا گیا", "login.agree": "جاری رکھ کر آپ ہماری [استعمال کی شرائط] اور [رازداری کی پالیسی] سے اتفاق کرتے ہیں۔",
+  "profile.name": "ظاہری نام", "profile.avatar": "اوتار", "profile.edit": "پروفائل میں ترمیم", "common.save": "محفوظ کریں", "common.cancel": "منسوخ", "toast.profileSaved": "پروفائل اپ ڈیٹ ہو گئی",
   "lang.title": "زبان منتخب کریں", "lang.search": "زبان تلاش کریں…"
 };

@@ -51,5 +51,6 @@ export default {
   "time.now": "ngayon lang", "time.min": "{n} min ang nakalipas", "time.h": "{n} oras ang nakalipas", "time.yesterday": "kahapon", "time.days": "{n} araw ang nakalipas",
   "dur.lt1": "<1 min", "dur.min": "{n} min", "dur.hm": "{h}o {m}m",
   "info.heading": "Tulong at impormasyon", "info.faq": "FAQ", "info.help": "Tulong at suporta", "info.privacy": "Patakaran sa privacy", "info.terms": "Mga tuntunin ng paggamit", "info.updated": "Huling na-update {date}", "info.clearData": "Burahin ang data ko sa device na ito", "info.cleared": "Naalis na ang data mo sa device na ito", "login.agree": "Sa pagpapatuloy, sumasang-ayon ka sa aming [Mga Tuntunin ng Paggamit] at [Patakaran sa Privacy].",
+  "profile.name": "Pangalan", "profile.avatar": "Avatar", "profile.edit": "I-edit ang profile", "common.save": "I-save", "common.cancel": "Kanselahin", "toast.profileSaved": "Na-update ang profile",
   "lang.title": "Pumili ng wika", "lang.search": "Maghanap ng wika…"
 };

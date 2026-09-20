@@ -51,5 +51,6 @@ export default {
   "time.now": "baru sahaja", "time.min": "{n} minit lalu", "time.h": "{n} jam lalu", "time.yesterday": "semalam", "time.days": "{n} hari lalu",
   "dur.lt1": "<1 minit", "dur.min": "{n} minit", "dur.hm": "{h} j {m} m",
   "info.heading": "Bantuan & maklumat", "info.faq": "Soalan lazim", "info.help": "Bantuan & sokongan", "info.privacy": "Dasar privasi", "info.terms": "Terma penggunaan", "info.updated": "Kemas kini terakhir {date}", "info.clearData": "Padam data saya pada peranti ini", "info.cleared": "Data anda telah dipadam daripada peranti ini", "login.agree": "Dengan meneruskan, anda bersetuju dengan [Terma Penggunaan] dan [Dasar Privasi] kami.",
+  "profile.name": "Nama paparan", "profile.avatar": "Avatar", "profile.edit": "Edit profil", "common.save": "Simpan", "common.cancel": "Batal", "toast.profileSaved": "Profil dikemas kini",
   "lang.title": "Pilih bahasa", "lang.search": "Cari bahasa…"
 };

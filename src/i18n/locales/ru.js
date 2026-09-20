@@ -51,5 +51,6 @@ export default {
   "time.now": "только что", "time.min": "{n} мин назад", "time.h": "{n} ч назад", "time.yesterday": "вчера", "time.days": "{n} дн. назад",
   "dur.lt1": "<1 мин", "dur.min": "{n} мин", "dur.hm": "{h} ч {m} мин",
   "info.heading": "Помощь и информация", "info.faq": "Частые вопросы", "info.help": "Помощь и поддержка", "info.privacy": "Политика конфиденциальности", "info.terms": "Условия использования", "info.updated": "Обновлено: {date}", "info.clearData": "Удалить мои данные с этого устройства", "info.cleared": "Ваши данные удалены с этого устройства", "login.agree": "Продолжая, вы соглашаетесь с [Условиями использования] и [Политикой конфиденциальности].",
+  "profile.name": "Отображаемое имя", "profile.avatar": "Аватар", "profile.edit": "Редактировать профиль", "common.save": "Сохранить", "common.cancel": "Отмена", "toast.profileSaved": "Профиль обновлён",
   "lang.title": "Выберите язык", "lang.search": "Поиск языка…"
 };

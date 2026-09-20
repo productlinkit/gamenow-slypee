@@ -51,5 +51,6 @@ export default {
   "time.now": "همین حالا", "time.min": "{n} دقیقه پیش", "time.h": "{n} ساعت پیش", "time.yesterday": "دیروز", "time.days": "{n} روز پیش",
   "dur.lt1": "کمتر از ۱ دقیقه", "dur.min": "{n} دقیقه", "dur.hm": "{h} ساعت {m} دقیقه",
   "info.heading": "راهنما و اطلاعات", "info.faq": "پرسش‌های متداول", "info.help": "راهنما و پشتیبانی", "info.privacy": "سیاست حفظ حریم خصوصی", "info.terms": "شرایط استفاده", "info.updated": "آخرین به‌روزرسانی {date}", "info.clearData": "پاک کردن داده‌های من از این دستگاه", "info.cleared": "داده‌های شما از این دستگاه حذف شد", "login.agree": "با ادامه، [شرایط استفاده] و [سیاست حفظ حریم خصوصی] را می‌پذیرید.",
+  "profile.name": "نام نمایشی", "profile.avatar": "آواتار", "profile.edit": "ویرایش پروفایل", "common.save": "ذخیره", "common.cancel": "انصراف", "toast.profileSaved": "پروفایل به‌روزرسانی شد",
   "lang.title": "انتخاب زبان", "lang.search": "جستجوی زبان…"
 };

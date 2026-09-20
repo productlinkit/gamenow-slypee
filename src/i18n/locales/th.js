@@ -51,5 +51,6 @@ export default {
   "time.now": "เมื่อสักครู่", "time.min": "{n} นาทีที่แล้ว", "time.h": "{n} ชม. ที่แล้ว", "time.yesterday": "เมื่อวาน", "time.days": "{n} วันที่แล้ว",
   "dur.lt1": "<1 นาที", "dur.min": "{n} นาที", "dur.hm": "{h} ชม. {m} นาที",
   "info.heading": "ความช่วยเหลือและข้อมูล", "info.faq": "คำถามที่พบบ่อย", "info.help": "ความช่วยเหลือและการสนับสนุน", "info.privacy": "นโยบายความเป็นส่วนตัว", "info.terms": "ข้อกำหนดการใช้งาน", "info.updated": "อัปเดตล่าสุด {date}", "info.clearData": "ล้างข้อมูลของฉันบนอุปกรณ์นี้", "info.cleared": "ลบข้อมูลของคุณออกจากอุปกรณ์นี้แล้ว", "login.agree": "การดำเนินการต่อถือว่าคุณยอมรับ [ข้อกำหนดการใช้งาน] และ [นโยบายความเป็นส่วนตัว] ของเรา",
+  "profile.name": "ชื่อที่แสดง", "profile.avatar": "อวตาร", "profile.edit": "แก้ไขโปรไฟล์", "common.save": "บันทึก", "common.cancel": "ยกเลิก", "toast.profileSaved": "อัปเดตโปรไฟล์แล้ว",
   "lang.title": "เลือกภาษา", "lang.search": "ค้นหาภาษา…"
 };
