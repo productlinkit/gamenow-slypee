@@ -1,12 +1,34 @@
 import { Reveal } from "../lib/reveal.jsx";
-import { CrownIcon } from "./icons.jsx";
-import { TRIAL_DAYS, fromPrice, money } from "../lib/subscription.js";
+import { BellIcon, CrownIcon } from "./icons.jsx";
+import { TRIAL_DAYS, daysToRenewal, fromPrice, knownPlan, money, onDate, renewalSoon } from "../lib/subscription.js";
 import { useI18n } from "../i18n/index.jsx";
 
-/* The offer where most visitors actually are: the home page. Same door as everywhere else —
-   it opens the subscribe pop-up, which hands over to Jazz. Hidden once they're subscribed. */
-export default function SubscribeBanner({ onSubscribe, go }) {
+/* One band, two jobs. No subscription → the offer, opening the same pop-up as everywhere
+   else. Subscribed and renewing in the next few days → the reminder the settings toggle
+   switches on, so nobody is surprised by a charge. Otherwise nothing. */
+export default function SubscribeBanner({ sub, subscribed, onSubscribe, go }) {
   const { t, lang } = useI18n();
+
+  if (subscribed) {
+    if (!renewalSoon(sub)) return null;
+    const days = daysToRenewal(sub);
+    const plan = knownPlan(sub);
+    return (
+      <Reveal className="sub-band renewing" i={1}>
+        <span className="sb-ico" aria-hidden="true"><BellIcon /></span>
+        <span className="txt">
+          <b>{days <= 0 ? t("renew.today") : t("renew.soon", { n: days })}</b>
+          <small>{plan
+            ? t("renew.text", { price: money(plan.price, lang), date: onDate(sub.renews, lang) })
+            : t("renew.textPlain", { date: onDate(sub.renews, lang) })}</small>
+        </span>
+        <span className="sb-actions">
+          <button type="button" className="chip" onClick={() => go("plans")}>{t("profile.managePlan")}</button>
+        </span>
+      </Reveal>
+    );
+  }
+
   return (
     <Reveal className="sub-band" i={1}>
       <span className="sb-ico" aria-hidden="true"><CrownIcon /></span>

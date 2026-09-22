@@ -106,7 +106,7 @@ export function loadSub() {
 export const active = sub => !!sub && sub.status !== "ended" && (!sub.renews || sub.renews > Date.now());
 export const statusKey = sub => (active(sub) ? (sub.trial ? "trial" : sub.status) : sub ? "ended" : "none");
 export const hoursLeft = sub => Math.ceil(Math.max(0, sub.renews - Date.now()) / 36e5);
-export const clearSub = () => { write(SUB_KEY, null); write(PENDING_KEY, null); write(CAMP_KEY, null); };
+export const clearSub = () => { write(SUB_KEY, null); write(PENDING_KEY, null); write(CAMP_KEY, null); write(PREFS_KEY, null); };
 
 /* ---------- Handover to Jazz ---------- */
 const CAMP_KEY = "slypee.camp";   // how this visitor reached the portal, kept for attribution
@@ -203,6 +203,31 @@ export function applyReturn(result) {
   const sub = { status: "active", plan: plan ? plan.id : null, trial: result.trial, since: now, renews, txn: result.txn };
   write(SUB_KEY, sub);
   return sub;
+}
+
+
+/* ---------- Portal-side settings ----------
+   Billing itself belongs to Jazz, so the only switch that is really ours is whether the
+   portal reminds the player before a renewal. Kept per browser, like the rest of the demo. */
+const PREFS_KEY = "slypee.subprefs";
+export const REMIND_DAYS = 3;
+
+export const loadPrefs = () => ({ remind: true, ...(read(PREFS_KEY, null) || {}) });
+export function setPref(key, value) {
+  const next = { ...loadPrefs(), [key]: value };
+  write(PREFS_KEY, next);
+  return next;
+}
+
+/* days until the next renewal, or null when there's nothing to count down to */
+export function daysToRenewal(sub) {
+  if (!active(sub) || !sub.renews) return null;
+  return Math.ceil((sub.renews - Date.now()) / DAY);
+}
+/* true when the portal should show the renewal reminder */
+export function renewalSoon(sub, prefs = loadPrefs()) {
+  const days = daysToRenewal(sub);
+  return prefs.remind && days !== null && days <= REMIND_DAYS;
 }
 
 /* The plan Jazz named, when it named one — the mirror works without it too */

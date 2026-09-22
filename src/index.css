@@ -894,6 +894,39 @@
     .sub-band .chip { font-size: 14px; padding: 11px 18px 10px; }
   }
 
+  /* rows that aren't links: a toggle, or an action like stopping the subscription */
+  .info-menu .im-row {
+    width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 0; border-radius: 14px;
+    background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px var(--paper-2); cursor: pointer;
+    font-weight: 800; font-size: 15px; text-align: start; letter-spacing: 0; text-transform: none; margin: 0;
+    transition: box-shadow .12s, transform .1s, background-color .12s;
+  }
+  .info-menu .im-row:hover { background: #fff; box-shadow: inset 0 0 0 2px var(--sun); }
+  .info-menu .im-row:active { transform: scale(.98); }
+  .im-label small { display: block; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .im-value { flex: none; font-size: 12.5px; font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .danger-row { color: var(--red); }
+  .danger-row:hover { box-shadow: inset 0 0 0 2px var(--red) !important; background: #FFF6F5 !important; }
+  .danger-row .im-chev { color: var(--red); }
+
+  /* switch, drawn from a real checkbox so it stays keyboard-reachable */
+  .info-menu .switch { position: absolute; opacity: 0; width: 46px; height: 28px; margin: 0; cursor: pointer; }
+  .switch-track {
+    flex: none; width: 46px; height: 28px; border-radius: 999px; background: var(--paper-2);
+    box-shadow: inset 0 0 0 1.5px rgba(34,26,22,.1); display: flex; align-items: center; padding: 3px;
+    transition: background-color .2s;
+  }
+  .switch-track i { width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(34,26,22,.3); transition: transform .2s cubic-bezier(.34,1.3,.64,1); }
+  .switch:checked ~ .switch-track { background: var(--leaf); }
+  .switch:checked ~ .switch-track i { transform: translateX(18px); }
+  [dir="rtl"] .switch:checked ~ .switch-track i { transform: translateX(-18px); }
+  .switch:focus-visible ~ .switch-track { outline: 3px solid var(--sun); outline-offset: 2px; }
+  .info-menu li:has(.switch) { position: relative; }
+
+  /* renewal reminder wears the same band, in a calmer colour */
+  .sub-band.renewing { background: linear-gradient(120deg, rgba(255,255,255,.94), rgba(124,196,242,.4)); }
+  .sub-band.renewing .sb-ico { background: #7CC4F2; box-shadow: inset 0 -3px 0 #4E9FD1; }
+
   /* ---------- Subscribe pop-up ---------- */
   .modal {
     position: fixed; z-index: 51; inset-inline: 0; bottom: 0; margin-inline: auto;

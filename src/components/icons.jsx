@@ -106,3 +106,10 @@ export const WalletIcon = () => (
 export const SimIcon = () => (
   <svg viewBox="0 0 36 36" {...S}><path d="M9 6.5h11L27 13v16.5a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2v-21a2 2 0 0 1 2-2z" fill="#DB2417" /><rect x="13" y="16" width="10" height="10" rx="2" fill="#FFF7E8" /><path className="dim" d="M18 16v10M13 21h10" strokeWidth="1.8" /></svg>
 );
+
+export const BellIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M9 25v-8a9 9 0 0 1 18 0v8l2.5 3h-23z" fill="#FACC3E" /><path d="M18 8V5" /><path d="M14.5 28a3.5 3.5 0 0 0 7 0" fill="#DB2417" /></svg>
+);
+export const StopIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><circle cx="18" cy="18" r="12.5" fill="#DB2417" /><path d="M12.5 18h11" stroke="#FFF7E8" strokeWidth="3" /></svg>
+);

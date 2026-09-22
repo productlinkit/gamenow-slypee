@@ -60,7 +60,7 @@ function GuestBanner({ go }) {
   );
 }
 
-export default function Home({ active, go, warmAll, user, openSearch, history, subscribed, onSubscribe }) {
+export default function Home({ active, go, warmAll, user, openSearch, history, sub, subscribed, onSubscribe }) {
   const t = useT();
   const played = recent(history);
   return (
@@ -71,7 +71,7 @@ export default function Home({ active, go, warmAll, user, openSearch, history, s
         {!user && <GuestBanner go={go} />}
       </div>
 
-      {!subscribed && <SubscribeBanner onSubscribe={onSubscribe} go={go} />}
+      <SubscribeBanner sub={sub} subscribed={subscribed} onSubscribe={onSubscribe} go={go} />
 
       {played.length > 1 && <RecentRow list={played.slice(0, 10)} />}
 

@@ -61,7 +61,7 @@ const Row = ({ k, children }) => {
   return <div className="sum-row"><dt>{t(k)}</dt><dd>{children}</dd></div>;
 };
 
-export default function Plans({ sub, result, onSubscribe, onStatus, clearResult, go, back }) {
+export default function Plans({ sub, result, intent, onSubscribe, onStatus, clearResult, clearIntent, go, back }) {
   const { t, lang } = useI18n();
   const has = active(sub);
 
@@ -120,7 +120,7 @@ export default function Plans({ sub, result, onSubscribe, onStatus, clearResult,
           </Reveal>
         )}
 
-        {has && !result && <Mirror sub={sub} go={go} />}
+        {has && !result && <Mirror sub={sub} go={go} intent={intent} clearIntent={clearIntent} />}
 
         {/* the offer, and the one button that starts it */}
         {!has && !result && (
@@ -143,9 +143,10 @@ export default function Plans({ sub, result, onSubscribe, onStatus, clearResult,
 }
 
 /* Everything here is Jazz's to change — the portal shows what it knows and hands back over */
-function Mirror({ sub, go }) {
+function Mirror({ sub, go, intent, clearIntent }) {
   const { t, lang } = useI18n();
-  const [asking, setAsking] = useState(false);
+  // arriving from Settings → "Stop my subscription" opens straight on the confirm step
+  const [asking, setAsking] = useState(intent === "cancel");
   const plan = knownPlan(sub);
   const status = statusKey(sub);
 
@@ -189,7 +190,7 @@ function Mirror({ sub, go }) {
               <li>{t("cancel.sms", { word: SERVICE.unsub, to: SERVICE.shortcode })}</li>
             </ul>
             <div className="edit-actions">
-              <button type="button" className="chip" onClick={() => setAsking(false)}>{t("cancel.back")}</button>
+              <button type="button" className="chip" onClick={() => { setAsking(false); clearIntent?.(); }}>{t("cancel.back")}</button>
               <button type="button" className="btn-play danger" onClick={() => toJazz("unsub")}>{t("cancel.confirm")}</button>
             </div>
           </div>

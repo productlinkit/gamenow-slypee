@@ -55,7 +55,7 @@ export default function App() {
     if (from === "game" && scrollMemo.current[view] != null) window.scrollTo({ top: scrollMemo.current[view], behavior: "auto" });
     else window.scrollTo({ top: 0, behavior: shown.current.has(view) ? "smooth" : "auto" });
     shown.current.add(view);
-    if (view !== "plans") setResult(null);   // the "back from Jazz" card belongs to that visit only
+    if (view !== "plans") { setResult(null); setPlanIntent(null); }   // both belong to that visit only
     try { history.replaceState(null, "", "#" + view); } catch (_) {}
   }, [nav]);
 
@@ -68,6 +68,7 @@ export default function App() {
   const [sub, setSub] = useState(loadSub);
   const [subSheet, setSubSheet] = useState(null);   // the "how do you want to subscribe" pop-up
   const [result, setResult] = useState(null);       // what came back from the Jazz landing page
+  const [planIntent, setPlanIntent] = useState(null);  // "cancel" → open the stop step on #plans
   const openSubscribe = useCallback(() => {
     setSubSheet({});
     try { if (!history.state?.subscribe) history.pushState({ subscribe: true }, ""); } catch (_) {}
@@ -251,14 +252,18 @@ export default function App() {
       <main>
         <Home
           active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory}
-          subscribed={active(sub)} onSubscribe={openSubscribe}
+          sub={sub} subscribed={active(sub)} onSubscribe={openSubscribe}
         />
         <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
         <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
-        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} sub={sub} />
+        <Profile
+          active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify}
+          history={playHistory} go={go} sub={sub} onStop={() => { setPlanIntent("cancel"); go("plans"); }}
+        />
         {view === "plans" && (
           <Plans
-            sub={sub} result={result} onSubscribe={openSubscribe} onStatus={refreshStatus} clearResult={() => setResult(null)}
+            sub={sub} result={result} intent={planIntent} onSubscribe={openSubscribe} onStatus={refreshStatus}
+            clearResult={() => setResult(null)} clearIntent={() => setPlanIntent(null)}
             go={go} back={() => { setResult(null); go("profile"); }}
           />
         )}
