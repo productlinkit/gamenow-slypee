@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { fmt, short, similar, playProps, detailHref } from "../lib/games.js";
 import { ago, dur } from "../lib/history.js";
 import { Reveal } from "../lib/reveal.jsx";
-import { BoltIcon, ClockIcon, PadIcon, PartyIcon, PlayIcon, TimerIcon } from "../components/icons.jsx";
+import { BoltIcon, ClockIcon, CrownIcon, LockIcon, PadIcon, PartyIcon, PlayIcon, TimerIcon } from "../components/icons.jsx";
 import GameCard from "../components/GameCard.jsx";
-import { Title, useT } from "../i18n/index.jsx";
+import { fromPrice, money } from "../lib/subscription.js";
+import { Title, useI18n, useT } from "../i18n/index.jsx";
 
 const HeartIcon = ({ on }) => (
   <svg viewBox="0 0 24 24" fill={on ? "#DB2417" : "none"} stroke={on ? "#DB2417" : "currentColor"} strokeWidth="2.3" strokeLinejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.1A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" /></svg>
@@ -60,8 +61,8 @@ function WelcomeBack({ g, secs, next, rating = 0, onRate, onClose }) {
   );
 }
 
-export default function GameDetail({ g, back, saved, toggleSave, notify, played, returned, dismissReturn, onRate }) {
-  const t = useT();
+export default function GameDetail({ g, back, saved, toggleSave, notify, played, returned, dismissReturn, onRate, onPlan }) {
+  const { t, lang } = useI18n();
   const [imgReady, setImgReady] = useState(false);
   useEffect(() => { setImgReady(false); }, [g]);
   const h5 = g.t === "h5";
@@ -130,6 +131,16 @@ export default function GameDetail({ g, back, saved, toggleSave, notify, played,
             </p>
           )}
           <p className="dnote">{t(h5 ? "detail.noteH5" : "detail.noteApp")}</p>
+          {/* app games are downloaded on Slypee, which needs a running plan — say so before the tap */}
+          {!h5 && (onPlan ? (
+            <div className="plan-gate">
+              <span className="pg-ico" aria-hidden="true"><LockIcon /></span>
+              <span className="pg-txt">{t("detail.planNeeded", { price: money(fromPrice(), lang) })}</span>
+              <button type="button" className="btn-play" onClick={onPlan}>{t("detail.getPlan")}</button>
+            </div>
+          ) : (
+            <p className="plan-ok"><CrownIcon />{t("detail.planIncluded")}</p>
+          ))}
         </div>
       </Reveal>
 

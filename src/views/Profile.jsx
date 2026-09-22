@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
-import { AVATARS, AVATAR_BY_ID, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, SupportIcon } from "../components/icons.jsx";
+import CodeBoxes from "../components/CodeBoxes.jsx";
+import { mask } from "../lib/phone.js";
+import { AVATARS, AVATAR_BY_ID, CrownIcon, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, SupportIcon } from "../components/icons.jsx";
 import { stats, dur } from "../lib/history.js";
+import { TRIAL_DAYS, fromPrice, hoursLeft, money, onDate, planOf, statusKey } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
 const DEMO_CODE = "1234";
-// "+92 300 ••• 4567" for new numbers, still works for older plain ones
-const mask = n => {
-  const m = /^(\+\d+) (\d+)$/.exec(n);
-  return m ? `${m[1]} ${m[2].slice(0, 3)} ••• ${m[2].slice(-4)}` : `${n.slice(0, 4)} ••• ${n.slice(-4)}`;
-};
 
 const COUNTRIES = [
   ["PK", "🇵🇰", "Pakistan", "+92", "300 1234567"],
@@ -34,27 +32,6 @@ const COUNTRIES = [
 const RESEND_AFTER = 30;
 // any digits (spaces/dashes allowed while typing); a leading trunk 0 is dropped when sending
 const cleanNumber = v => v.replace(/[^\d\s-]/g, "").slice(0, 18);
-
-/* One real input (so paste and SMS autofill work) drawn as four digit boxes */
-function CodeBoxes({ value, onChange, error }) {
-  const t = useT();
-  const ref = useRef(null);
-  useEffect(() => { ref.current?.focus(); }, []);
-  return (
-    <div className={"otp" + (error ? " err" : "")} dir="ltr" onClick={() => ref.current?.focus()}>
-      <input
-        ref={ref} id="otp" className="otp-input" type="text" inputMode="numeric" autoComplete="one-time-code"
-        maxLength={4} aria-label={t("login.codeAria")} value={value}
-        onChange={e => onChange(e.target.value.replace(/\D/g, "").slice(0, 4))}
-      />
-      {[0, 1, 2, 3].map(i => (
-        <span key={i} className={"otp-box" + (value[i] ? " filled" : "") + (i === Math.min(value.length, 3) ? " active" : "")} aria-hidden="true">
-          {value[i] || ""}
-        </span>
-      ))}
-    </div>
-  );
-}
 
 function LoginCard({ login, notify, go }) {
   const { t, lang } = useI18n();
@@ -201,10 +178,35 @@ function EditProfile({ user, save, cancel }) {
   );
 }
 
-function PlayerCard({ user, login, logout, notify, history, go }) {
+/* Where the plan shows up in the app: current state in one line, then through to #plans */
+function PlanCard({ sub, go }) {
+  const { t, lang } = useI18n();
+  const status = statusKey(sub);
+  const plan = planOf(sub?.plan);
+  const from = money(fromPrice(), lang);
+  const line = {
+    trial: () => t("profile.planTrial", { n: hoursLeft(sub) }),
+    active: () => t("profile.planActive", { plan: t(`plan.${plan.id}`), date: onDate(sub.renews, lang) }),
+    stopped: () => t("profile.planStopped", { plan: t(`plan.${plan.id}`), date: onDate(sub.renews, lang) }),
+    ended: () => t("profile.planEnded", { price: from }),
+    none: () => t("profile.planNone", { n: TRIAL_DAYS, price: from })
+  }[status]();
+  const running = status === "trial" || status === "active" || status === "stopped";
+
+  return (
+    <Reveal as="section" className="card-panel sub" i={2}>
+      <h2>{t("profile.planTitle")}</h2>
+      {running
+        ? <p className={"active-pass" + (status === "stopped" ? " ending" : "")}><span className="pass-ico"><CrownIcon /></span>{line}</p>
+        : <p>{line}</p>}
+      <button className="btn-play" type="button" onClick={() => go("plans")}>{t(running ? "profile.managePlan" : "profile.getPlan")}</button>
+    </Reveal>
+  );
+}
+
+function PlayerCard({ user, login, logout, notify, history, go, sub }) {
   const t = useT();
   const st = stats(history);
-  const freeLeft = user.freeUntil ? Math.ceil((user.freeUntil - Date.now()) / 36e5) : 0;
   const [editing, setEditing] = useState(false);
   const avatar = AVATAR_BY_ID[user.avatar] || AVATARS[0];
 
@@ -234,17 +236,7 @@ function PlayerCard({ user, login, logout, notify, history, go }) {
           <div><b>{st.topGenre ? t(`cat.${st.topGenre}`) : "—"}</b><span>{t("profile.genre")}</span></div>
         </div>
       </Reveal>
-      <Reveal as="section" className="card-panel sub" i={2}>
-        <h2>{t("profile.freeTitle")}</h2>
-        {freeLeft > 0 ? (
-          <p className="active-pass">✓ {t("profile.freeActive", { h: freeLeft })}</p>
-        ) : (
-          <>
-            <p>{t("profile.freeText")}</p>
-            <button className="btn-play" type="button" onClick={() => { login({ ...user, freeUntil: Date.now() + 864e5 }); notify(t("toast.free")); }}>{t("profile.getFree")}</button>
-          </>
-        )}
-      </Reveal>
+      <PlanCard sub={sub} go={go} />
       <Reveal as="section" className="card-panel info-menu" i={3}>
         <h2>{t("info.heading")}</h2>
         <ul>
@@ -264,7 +256,7 @@ function PlayerCard({ user, login, logout, notify, history, go }) {
   );
 }
 
-const INFO_MENU = [["faq", <FaqIcon />], ["help", <SupportIcon />], ["privacy", <LockIcon />], ["terms", <DocIcon />]];
+const INFO_MENU = [["plans", <CrownIcon />], ["faq", <FaqIcon />], ["help", <SupportIcon />], ["privacy", <LockIcon />], ["terms", <DocIcon />]];
 
 /* "…agree to our [Terms of Use] and [Privacy Policy]." → two links, in whatever order the language puts them */
 function Agree({ go }) {
@@ -283,12 +275,12 @@ function Agree({ go }) {
   );
 }
 
-export default function Profile({ active, user, login, logout, notify, history, go }) {
+export default function Profile({ active, user, login, logout, notify, history, go, sub }) {
   return (
     <div className="view" hidden={!active}>
       <section className={user ? undefined : "center-col"}>
       <Reveal className="head"><h2 className="title"><Title k={user ? "title.profile" : "title.login"} /></h2></Reveal>
-      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} /> : <LoginCard login={login} notify={notify} go={go} />}
+      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} sub={sub} /> : <LoginCard login={login} notify={notify} go={go} />}
       </section>
     </div>
   );

@@ -6,16 +6,21 @@ import Html5 from "./views/Html5.jsx";
 import Library from "./views/Library.jsx";
 import Profile from "./views/Profile.jsx";
 import SearchSheet from "./components/SearchSheet.jsx";
+import SubscribeSheet from "./components/SubscribeSheet.jsx";
 import GameDetail from "./views/GameDetail.jsx";
 import Petals from "./components/Petals.jsx";
 import InfoPage from "./views/InfoPage.jsx";
+import Plans from "./views/Plans.jsx";
 import { INFO_PAGES } from "./content/info.js";
 import { byId, gameId } from "./lib/games.js";
 import { loadHistory, startPlay, finishPlay, rate, dur } from "./lib/history.js";
+import { active, adoptFreeDay, applyReturn, captureCampaign, checkStatus, clearPending, clearSub, loadPending, loadSub, readReturn } from "./lib/subscription.js";
 import { useT } from "./i18n/index.jsx";
 
-const VIEWS = ["home", "html5", "library", "profile", ...INFO_PAGES];
-// #home, #html5, #library, #profile, #faq/#help/#privacy/#terms, or #game/<id> for a game's detail page
+const VIEWS = ["home", "html5", "library", "profile", "plans", ...INFO_PAGES];
+/* Pages that hang off Profile, so the Profile tab stays lit while you're on them */
+const UNDER_PROFILE = ["plans", ...INFO_PAGES];
+// #home, #html5, #library, #profile, #plans, #faq/#help/#privacy/#terms, or #game/<id> for a game's detail page
 const parseHash = () => {
   const h = location.hash.slice(1);
   if (h.startsWith("game/") && byId(h.slice(5))) return { view: "game", id: h.slice(5) };
@@ -34,7 +39,7 @@ export default function App() {
   const [nav, setNav] = useState(() => ({ ...parseHash(), n: 0 }));
   const go = useCallback(view => setNav(p => ({ view, n: p.n + 1 })), []);
   const view = nav.view;
-  const navView = INFO_PAGES.includes(view) ? "profile" : view; // info pages live under Profile
+  const navView = UNDER_PROFILE.includes(view) ? "profile" : view; // plan & info pages live under Profile
 
   // coming back from a game restores where you were on the list; otherwise jump to top
   const shown = useRef(new Set());
@@ -50,12 +55,33 @@ export default function App() {
     if (from === "game" && scrollMemo.current[view] != null) window.scrollTo({ top: scrollMemo.current[view], behavior: "auto" });
     else window.scrollTo({ top: 0, behavior: shown.current.has(view) ? "smooth" : "auto" });
     shown.current.add(view);
+    if (view !== "plans") setResult(null);   // the "back from Jazz" card belongs to that visit only
     try { history.replaceState(null, "", "#" + view); } catch (_) {}
   }, [nav]);
 
   const [user, setUser] = useState(() => load(USER_KEY, null));
   useEffect(() => { store(USER_KEY, user); }, [user]);
   const logout = useCallback(() => setUser(null), []);
+
+  /* The Slypee plan (lib/subscription.js): a mirror of the subscription Jazz runs.
+     Logging out doesn't stop it — the subscription belongs to the number, not the browser tab. */
+  const [sub, setSub] = useState(loadSub);
+  const [subSheet, setSubSheet] = useState(null);   // the "how do you want to subscribe" pop-up
+  const [result, setResult] = useState(null);       // what came back from the Jazz landing page
+  const openSubscribe = useCallback(() => {
+    setSubSheet({});
+    try { if (!history.state?.subscribe) history.pushState({ subscribe: true }, ""); } catch (_) {}
+  }, []);
+  const closeSubscribe = useCallback(() => {
+    if (history.state?.subscribe) history.back(); else setSubSheet(null);
+  }, []);
+  useEffect(() => {
+    // older demo accounts kept their free day on the user as `freeUntil`
+    if (!user?.freeUntil) return;
+    const carried = adoptFreeDay(user.freeUntil);
+    setUser(u => { const { freeUntil, ...rest } = u; return rest; });
+    if (carried) setSub(carried);
+  }, [user?.freeUntil]);
 
   /* Warm every thumbnail after first paint so category switches never show empty tiles */
   const [warmAll, setWarmAll] = useState(false);
@@ -95,7 +121,7 @@ export default function App() {
     if (history.state?.search) history.back(); else setSearch(null);
   }, []);
   useEffect(() => {
-    const onPop = () => setSearch(null);
+    const onPop = () => { setSearch(null); setSubSheet(null); };
     // "/" or Ctrl/Cmd+K opens search on desktop
     const onKey = e => {
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
@@ -154,6 +180,37 @@ export default function App() {
     toastT.current = setTimeout(() => setToast(t => ({ ...t, on: false })), 2600);
   }, []);
 
+  /* Arrival and return, both read off the URL we were opened with.
+     Arrival: a campaign's ref/var/camp are kept so they still reach Jazz later (an organic
+     visit just uses the defaults). Return: Jazz's own page decides what it appends, and it
+     may append nothing at all — in that case we know only that we sent them out, so we ask
+     rather than assume. The real build settles it with Jazz's status API (checkStatus). */
+  useEffect(() => {
+    const search = location.search;
+    captureCampaign(search);
+    const toPlans = () => setNav(p => ({ view: "plans", n: p.n + 1 }));
+    const tidy = () => { try { history.replaceState(null, "", location.pathname + "#plans"); } catch (_) {} };
+    const back = readReturn(search);
+    const pending = loadPending();
+    if (back) {
+      const applied = applyReturn(back);
+      if (applied && back.action === "unsub") { setSub(applied); notify(t("toast.stopped")); }
+      else if (applied) { setSub(applied); setResult("success"); notify(t("toast.subscribed")); }
+      else setResult(back.state === "cancelled" ? "cancelled" : "failed");
+      tidy();
+      toPlans();
+      return;
+    }
+    if (pending) { clearPending(); setResult("unknown"); toPlans(); }
+  }, []);
+
+  /* "Check again" on the return card: in production this is Jazz's status API answering */
+  const refreshStatus = useCallback(async () => {
+    const fresh = await checkStatus();
+    if (fresh) { setSub(fresh); setResult("success"); notify(t("toast.subscribed")); }
+    else notify(t("toast.stillWaiting"));
+  }, [t, notify]);
+
   /* Play tracking: a Play tap starts a session, coming back to our page ends it.
      (named playHistory so it never shadows window.history, which the routing above relies on) */
   const [playHistory, setHistory] = useState(loadHistory);
@@ -192,20 +249,30 @@ export default function App() {
       <Petals />
       <Header view={navView} go={go} loggedIn={!!user} />
       <main>
-        <Home active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory} />
+        <Home
+          active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory}
+          subscribed={active(sub)} onSubscribe={openSubscribe}
+        />
         <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
         <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
-        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} />
+        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} sub={sub} />
+        {view === "plans" && (
+          <Plans
+            sub={sub} result={result} onSubscribe={openSubscribe} onStatus={refreshStatus} clearResult={() => setResult(null)}
+            go={go} back={() => { setResult(null); go("profile"); }}
+          />
+        )}
         {INFO_PAGES.includes(view) && (
           <InfoPage
             key={view} id={view} go={go} notify={notify} back={() => go("profile")}
-            onClearData={() => { setUser(null); setSaved([]); setHistory({}); }}
+            onClearData={() => { setUser(null); setSaved([]); setHistory({}); clearSub(); setSub(null); }}
           />
         )}
         {game && (
           <GameDetail
             key={nav.id} g={game} back={leaveGame} saved={saved.includes(nav.id)} toggleSave={toggleSave} notify={notify}
             played={playHistory[nav.id]} returned={returned?.id === nav.id ? returned.secs : 0} dismissReturn={() => setReturned(null)} onRate={onRate}
+            onPlan={active(sub) ? null : () => openSubscribe()}
           />
         )}
       </main>
@@ -214,6 +281,7 @@ export default function App() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
       </button>
       {search && <SearchSheet initialType={search.type} onClose={closeSearch} />}
+      {subSheet && <SubscribeSheet onClose={closeSubscribe} />}
       <div className={"toast" + (toast.on ? " on" : "")} role="status">{toast.msg}</div>
     </>
   );

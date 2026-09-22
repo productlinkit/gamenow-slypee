@@ -2,6 +2,7 @@ import { topChart, detailHref, launchProps } from "../lib/games.js";
 import { recent, ago, dur } from "../lib/history.js";
 import SearchBar from "../components/SearchBar.jsx";
 import InstantBanner from "../components/InstantBanner.jsx";
+import SubscribeBanner from "../components/SubscribeBanner.jsx";
 import { Reveal } from "../lib/reveal.jsx";
 import { AvatarIcon, PlayIcon } from "../components/icons.jsx";
 import GameCard from "../components/GameCard.jsx";
@@ -59,7 +60,7 @@ function GuestBanner({ go }) {
   );
 }
 
-export default function Home({ active, go, warmAll, user, openSearch, history }) {
+export default function Home({ active, go, warmAll, user, openSearch, history, subscribed, onSubscribe }) {
   const t = useT();
   const played = recent(history);
   return (
@@ -69,6 +70,8 @@ export default function Home({ active, go, warmAll, user, openSearch, history })
         {played[0] && <Resume e={played[0]} />}
         {!user && <GuestBanner go={go} />}
       </div>
+
+      {!subscribed && <SubscribeBanner onSubscribe={onSubscribe} go={go} />}
 
       {played.length > 1 && <RecentRow list={played.slice(0, 10)} />}
 

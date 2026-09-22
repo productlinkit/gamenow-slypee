@@ -777,6 +777,174 @@
   .logout { font-size: 13px; }
   .sub .logout-row { text-align: center; margin-top: 16px; max-width: none; }
 
+  /* ---------- Plans & subscription ---------- */
+  .plans .back-link { margin-bottom: -22px; }
+  .plan-list { display: grid; gap: 10px; }
+  .plan {
+    position: relative; display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 16px; cursor: pointer;
+    background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px var(--paper-2);
+    transition: box-shadow .15s, transform .1s, background-color .15s;
+  }
+  .plan:hover { background: #fff; }
+  .plan:active { transform: scale(.99); }
+  .plan.on { background: #fff; box-shadow: inset 0 0 0 2.5px var(--red), 0 6px 16px rgba(219,36,23,.18); }
+  .plan:focus-within { box-shadow: inset 0 0 0 2.5px var(--sun), 0 0 0 3px rgba(250,204,62,.4); }
+  .plan input { position: absolute; opacity: 0; pointer-events: none; }
+  .plan-tick { width: 22px; height: 22px; border-radius: 50%; flex: none; background: #fff; box-shadow: inset 0 0 0 2.5px var(--paper-2); transition: box-shadow .15s, background-color .15s; }
+  .plan.on .plan-tick { background: var(--red); box-shadow: inset 0 0 0 3.5px #fff, 0 0 0 2.5px var(--red); }
+  .plan-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .plan-main b { font-family: var(--display); font-weight: 400; font-size: 18px; line-height: 1.15; }
+  .plan-main small, .plan-cost small { font-size: 12px; font-weight: 700; color: var(--muted); }
+  .plan-save { font-style: normal; margin-inline-start: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(47,168,70,.16); color: #1D7A30; font-size: 11px; font-weight: 800; }
+  .plan-trial { color: var(--sun-deep) !important; }
+  .plan-cost { flex: none; display: flex; flex-direction: column; text-align: end; }
+  .plan-cost b { font-family: var(--display); font-weight: 400; font-size: 19px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .plan-badge {
+    position: absolute; top: -9px; inset-inline-end: 12px; padding: 2px 9px 1px; border-radius: 999px;
+    background: var(--sun); color: var(--ink); font-size: 11px; font-weight: 800; box-shadow: 0 2px 6px rgba(34,26,22,.2);
+  }
+  /* price list (the choosing happens on Jazz's page) */
+  .plan-list.prices { list-style: none; padding: 0; margin: 0; }
+  .prices .plan { cursor: default; }
+  .prices .plan:hover { background: rgba(255,255,255,.75); }
+  .prices .plan:active { transform: none; }
+  .prices .plan.on { box-shadow: inset 0 0 0 2.5px var(--sun); background: #fff; }
+  .plans .login-btn { width: 100%; margin-top: 14px; }
+  .plan-hint { text-align: center; }
+
+  /* what you're agreeing to, before anything is charged */
+  .sum { margin: 0 0 14px; }
+  .sum-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--paper-2); }
+  .sum-row:last-child { border-bottom: 0; }
+  .sum dt { font-size: 12.5px; font-weight: 800; color: var(--muted); }
+  .sum dd { margin: 0; font-size: 14px; font-weight: 700; text-align: end; }
+  .sum dd b { font-family: var(--display); font-weight: 400; font-size: 17px; }
+  .done { text-align: center; }
+  .done-ico { width: 64px; height: 64px; margin: 0 auto 8px; border-radius: 20px; background: var(--sun); display: grid; place-items: center; }
+  .done-ico svg { width: 44px; height: 44px; }
+  .done p { margin-inline: auto; }
+  .done .perks { text-align: start; margin-top: 4px; }
+  .done .edit-actions { margin-top: 4px; }
+
+  /* the plan you're on */
+  .status-pill {
+    flex: none; align-self: flex-start; padding: 4px 11px 3px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 800; background: rgba(47,168,70,.16); color: #1D7A30; white-space: nowrap;
+  }
+  .status-pill.trial { background: rgba(250,204,62,.32); color: #7A5A05; }
+  .status-pill.stopped, .status-pill.ended { background: rgba(219,36,23,.12); color: var(--red-deep); }
+  .plan-state .who { margin-bottom: 14px; }
+  .plan-state .avatar svg { width: 40px; height: 40px; }
+  .pass-ico { width: 24px; height: 24px; flex: none; display: grid; place-items: center; }
+  .pass-ico svg { width: 24px; height: 24px; }
+  .sub .active-pass.ending { background: rgba(219,36,23,.1); color: var(--red-deep); }
+  .plan-queued, .plan-warn {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin: 0 0 12px !important; padding: 10px 12px; border-radius: 12px;
+    font-size: 13.5px !important; font-weight: 700 !important; max-width: none !important;
+  }
+  .plan-queued { background: rgba(124,196,242,.25); color: #1B5C87; }
+  .plan-warn { background: rgba(219,36,23,.1); color: var(--red-deep); }
+  .cancel-box {
+    padding: 14px; border-radius: 16px; background: rgba(219,36,23,.07);
+    box-shadow: inset 0 0 0 1.5px rgba(219,36,23,.25); animation: step-in .3s cubic-bezier(.2,.7,.2,1);
+  }
+  .cancel-box b { font-family: var(--display); font-weight: 400; font-size: 18px; }
+  .cancel-box p { margin: 2px 0 10px !important; }
+  .perks.small { margin-bottom: 0; }
+  .perks.small li { font-size: 13px; }
+  .perks.small li::before { width: 18px; height: 18px; font-size: 10px; }
+  .btn-play.danger { background: #fff; color: var(--red); box-shadow: inset 0 0 0 2px var(--red), 0 3px 8px rgba(219,36,23,.15); }
+  .btn-play.danger:hover { background: #FFF1EF; }
+  .cancel-link { font-size: 13px; margin-inline-start: auto; align-self: center; }
+  /* ---------- Subscribe band (home) ---------- */
+  .sub-band {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: linear-gradient(120deg, rgba(255,255,255,.94), rgba(255,226,170,.92));
+    backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+    border: 1.5px solid var(--glass-line); border-radius: 20px; box-shadow: var(--lift);
+  }
+  .sb-ico { width: 48px; height: 48px; flex: none; border-radius: 15px; background: var(--sun); display: grid; place-items: center; box-shadow: inset 0 -3px 0 var(--sun-deep); }
+  .sb-ico svg { width: 34px; height: 34px; }
+  .sub-band .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .sub-band b { font-family: var(--display); font-weight: 400; font-size: 17px; line-height: 1.15; }
+  .sub-band small { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  /* see plans on the start side, subscribe on the end side */
+  .sb-actions { flex: none; display: flex; align-items: center; gap: 8px; }
+  .sub-band .btn-play { font-size: 14px; padding: 10px 16px 8px; border-radius: 999px; }
+  /* secondary action: outline only, same red family as Subscribe */
+  .sub-band .chip {
+    padding: 9px 14px 8px; font-size: 13px; border-radius: 999px; white-space: nowrap;
+    background: transparent; color: var(--red); font-weight: 800;
+    box-shadow: inset 0 0 0 2px var(--red);
+  }
+  .sub-band .chip:hover { background: rgba(219,36,23,.08); box-shadow: inset 0 0 0 2.5px var(--red); }
+  @media (max-width: 559px) {
+    .sub-band { flex-wrap: wrap; }
+    .sub-band .txt { flex: 1 1 60%; }
+    .sb-actions { flex: 1 1 100%; }
+    .sub-band .chip, .sub-band .btn-play { flex: 1; justify-content: center; }
+  }
+  @media (min-width: 960px) {
+    .sub-band { padding: 14px 16px; }
+    .sub-band b { font-size: 20px; }
+    .sub-band small { font-size: 13.5px; }
+    .sub-band .btn-play { font-size: 16px; padding: 12px 22px 10px; }
+    .sub-band .chip { font-size: 14px; padding: 11px 18px 10px; }
+  }
+
+  /* ---------- Subscribe pop-up ---------- */
+  .modal {
+    position: fixed; z-index: 51; inset-inline: 0; bottom: 0; margin-inline: auto;
+    width: min(440px, 100%); max-height: 92vh; overflow: auto;
+    padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    background: var(--paper); border-radius: 26px 26px 0 0; box-shadow: var(--lift-lg);
+    text-align: center; animation: sheet-in .3s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @media (min-width: 600px) {
+    .modal { bottom: auto; top: 50%; transform: translateY(-50%); border-radius: 26px; animation: pop-in .3s cubic-bezier(.34,1.3,.64,1) both; }
+    @keyframes pop-in { from { opacity: 0; transform: translateY(calc(-50% + 18px)) scale(.96); } }
+  }
+  .modal-x {
+    position: absolute; top: 12px; inset-inline-end: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%;
+    background: var(--paper-2); color: var(--ink); font-size: 14px; cursor: pointer; line-height: 1;
+  }
+  .modal-x:hover { background: var(--sun); }
+  .modal-ico { width: 62px; height: 62px; margin: 0 auto 10px; border-radius: 20px; background: var(--sun); display: grid; place-items: center; }
+  .modal-ico svg { width: 42px; height: 42px; }
+  .modal h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 23px; line-height: 1.15; }
+  .modal-sub { margin: 4px 0 16px; font-size: 14px; font-weight: 600; color: var(--muted); }
+  .methods { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .method {
+    width: 100%; display: flex; align-items: center; gap: 12px; text-align: start; cursor: pointer;
+    padding: 12px 14px; border: 0; border-radius: 16px; background: #fff;
+    box-shadow: inset 0 0 0 2px var(--paper-2); transition: box-shadow .15s, transform .1s;
+  }
+  .method:hover { box-shadow: inset 0 0 0 2.5px var(--red), 0 6px 16px rgba(219,36,23,.15); }
+  .method:active { transform: scale(.99); }
+  .method-logo { width: 42px; height: 42px; flex: none; border-radius: 13px; background: var(--paper-2); display: grid; place-items: center; }
+  .method-logo svg { width: 30px; height: 30px; }
+  .method-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .method-txt b { font-family: var(--display); font-weight: 400; font-size: 18px; line-height: 1.15; }
+  .method-txt small { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .method-chev { width: 18px; height: 18px; flex: none; color: var(--muted); }
+  .modal-fine { margin: 14px 0 0; font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: start; }
+  .modal-cancel { margin-top: 14px; font-size: 14px; }
+  .subscribe-btn svg { width: 22px; height: 22px; }
+
+  /* app games on the detail page: covered by the plan, or not yet */
+  .plan-gate {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+    padding: 10px 12px; border-radius: 14px; background: rgba(250,204,62,.2); box-shadow: inset 0 0 0 1.5px var(--sun);
+  }
+  .pg-ico { width: 32px; height: 32px; flex: none; display: grid; place-items: center; }
+  .pg-ico svg { width: 30px; height: 30px; }
+  .pg-txt { flex: 1; min-width: 150px; font-size: 13.5px; font-weight: 800; }
+  .plan-gate .btn-play { font-size: 13px; padding: 9px 13px 7px; border-radius: 999px; }
+  .plan-ok { display: flex; align-items: center; gap: 7px; margin: 12px 0 0; font-size: 13.5px; font-weight: 800; color: #1D7A30; }
+  .plan-ok svg { width: 22px; height: 22px; flex: none; }
+
   /* ---------- Back to top ---------- */
   .to-top {
     position: fixed; inset-inline-end: 16px; z-index: 25;

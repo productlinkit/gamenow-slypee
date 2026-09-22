@@ -93,3 +93,16 @@ export const AVATAR_BY_ID = Object.fromEntries(AVATARS.map(a => [a.id, a]));
 export const PencilIcon = () => (
   <svg viewBox="0 0 24 24" {...M}><path d="M4 20h4L20 8l-4-4L4 16z" /><path d="M14.5 5.5l4 4" /></svg>
 );
+
+/* Plan & billing */
+export const CrownIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M5 12l5.5 4L18 7l7.5 9L31 12l-2.5 16h-21z" fill="#FACC3E" /><path className="dim" d="M12.5 22.5h11" strokeWidth="2.2" /><circle cx="18" cy="19" r="1.6" fill="#DB2417" strokeWidth="1.6" /></svg>
+);
+export const WalletIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M6 11.5A3.5 3.5 0 0 1 9.5 8h17a3.5 3.5 0 0 1 3.5 3.5V27a2 2 0 0 1-2 2h-20a2 2 0 0 1-2-2z" fill="#2FA846" /><path d="M6 13h19a2 2 0 0 1 2 2v2h-6a2.5 2.5 0 0 0 0 5h6v2a2 2 0 0 1-2 2H6z" fill="#FFF7E8" /><circle cx="22.5" cy="19.5" r="1.4" fill="#221A16" stroke="none" /></svg>
+);
+
+/* SIM card — stands in for "subscribe on your mobile account" */
+export const SimIcon = () => (
+  <svg viewBox="0 0 36 36" {...S}><path d="M9 6.5h11L27 13v16.5a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2v-21a2 2 0 0 1 2-2z" fill="#DB2417" /><rect x="13" y="16" width="10" height="10" rx="2" fill="#FFF7E8" /><path className="dim" d="M18 16v10M13 21h10" strokeWidth="1.8" /></svg>
+);
