@@ -4,7 +4,6 @@ import { ago, dur } from "../lib/history.js";
 import { Reveal } from "../lib/reveal.jsx";
 import { BoltIcon, ClockIcon, CrownIcon, LockIcon, PadIcon, PartyIcon, PlayIcon, TimerIcon } from "../components/icons.jsx";
 import GameCard from "../components/GameCard.jsx";
-import { fromPrice, money } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
 const HeartIcon = ({ on }) => (
@@ -62,7 +61,7 @@ function WelcomeBack({ g, secs, next, rating = 0, onRate, onClose }) {
 }
 
 export default function GameDetail({ g, back, saved, toggleSave, notify, played, returned, dismissReturn, onRate, onPlan }) {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const [imgReady, setImgReady] = useState(false);
   useEffect(() => { setImgReady(false); }, [g]);
   const h5 = g.t === "h5";
@@ -135,7 +134,7 @@ export default function GameDetail({ g, back, saved, toggleSave, notify, played,
           {!h5 && (onPlan ? (
             <div className="plan-gate">
               <span className="pg-ico" aria-hidden="true"><LockIcon /></span>
-              <span className="pg-txt">{t("detail.planNeeded", { price: money(fromPrice(), lang) })}</span>
+              <span className="pg-txt">{t("detail.planNeeded")}</span>
               <button type="button" className="btn-play" onClick={onPlan}>{t("detail.getPlan")}</button>
             </div>
           ) : (

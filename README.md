@@ -14,12 +14,12 @@ Mobile-first redesign of the Slypee gaming portal homepage (jazz.slypee.pk), bui
 
 Subscribing is Jazz's, not the portal's: **Subscribe** → pop-up with the available method
 (*Subscribe through Jazz*) → `services.jazz.com.pk/signin/Slypee?ref=15&var=1&camp=Slypee_Default`
-→ back to `#plans`. A visitor who arrived through a campaign has their own `ref`/`var`/`camp`
-in the portal URL; those are captured on arrival and forwarded instead of the defaults.
-Jazz's page chooses the package, so the portal only lists prices. Before go-live, fill the
-status from Jazz's subscription API (`checkStatus` in `src/lib/subscription.js`) rather than
-from return parameters. Set `USE_DEMO_LP = true` there to use the offline stand-in
-(`public/jazz-subscribe.html`) when demoing without Jazz.
+→ back to `#plans`. The portal states **no packages and no prices** — Jazz's page shows those and
+takes the confirmation; this side only mirrors whether a subscription is running. A visitor who
+arrived through a campaign has their own `ref`/`var`/`camp` in the portal URL; those are captured
+on arrival and forwarded instead of the defaults. Before go-live, fill the status from Jazz's
+subscription API (`checkStatus` in `src/lib/subscription.js`) rather than from return parameters.
+Set `USE_DEMO_LP = true` there to use the offline stand-in (`public/jazz-subscribe.html`).
 
 ```
 npm install

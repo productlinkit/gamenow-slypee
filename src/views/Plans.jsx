@@ -1,40 +1,8 @@
 import { useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
 import { ClockIcon, CrownIcon, LockIcon, SimIcon } from "../components/icons.jsx";
-import {
-  COUNTS, PLANS, SERVICE, TRIAL_DAYS, active, hoursLeft, jazzUrl, knownPlan, markPending,
-  money, onDate, onDateTime, perMonth, savingPct, statusKey
-} from "../lib/subscription.js";
+import { COUNTS, SERVICE, TRIAL_DAYS, active, hoursLeft, jazzUrl, markPending, onDate, onDateTime, statusKey } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
-
-/* What the service costs. Jazz's page is where a package is actually chosen and confirmed,
-   so this is a price list, not a picker — nothing here is passed along. */
-function PlanTable() {
-  const { t, lang } = useI18n();
-  return (
-    <ul className="plan-list prices">
-      {PLANS.map(p => {
-        const save = savingPct(p);
-        return (
-          <li key={p.id} className={"plan" + (p.best ? " on" : "")}>
-            {p.best && <span className="plan-badge">{t("plan.best")}</span>}
-            <span className="plan-main">
-              <b>{t(`plan.${p.id}`)}</b>
-              <small>
-                {t(`plan.every.${p.id}`)}
-                {save > 0 && <i className="plan-save">{t("plan.save", { n: save })}</i>}
-              </small>
-            </span>
-            <span className="plan-cost">
-              <b>{money(p.price, lang)}</b>
-              <small>{t("plan.perMonth", { price: money(perMonth(p), lang, 2) })}</small>
-            </span>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
 
 /* Why the plan is worth it — every line is something this service really does */
 function Benefits() {
@@ -79,7 +47,7 @@ export default function Plans({ sub, result, intent, onSubscribe, onStatus, clea
             <span className="done-ico"><CrownIcon /></span>
             <h2>{t("done.title")}</h2>
             <p>{sub?.renews
-              ? t(sub.trial ? "done.trial" : "done.text", { plan: t(`plan.${knownPlan(sub)?.id || PLANS[0].id}`), date: onDate(sub.renews, lang), n: TRIAL_DAYS })
+              ? t(sub.trial ? "done.trial" : "done.text", { date: onDate(sub.renews, lang), n: TRIAL_DAYS })
               : t("done.plain", { name: SERVICE.name })}</p>
             <ul className="perks">
               <li>{t("done.p1", { n: COUNTS.all })}</li>
@@ -125,10 +93,10 @@ export default function Plans({ sub, result, intent, onSubscribe, onStatus, clea
         {/* the offer, and the one button that starts it */}
         {!has && !result && (
           <div className="two tight">
-            <Reveal as="section" className="card-panel sub" i={1}>
+            <Reveal as="section" className="card-panel sub offer" i={1}>
+              <span className="offer-ico"><CrownIcon /></span>
               <h2>{t("plans.pick")}</h2>
-              <p>{t("plans.sub")}</p>
-              <PlanTable />
+              <p>{t("plans.sub", { name: SERVICE.name })}</p>
               <button className="btn-play login-btn subscribe-btn" type="button" onClick={() => onSubscribe()}>
                 <CrownIcon />{t("plans.subscribe")}
               </button>
@@ -147,7 +115,6 @@ function Mirror({ sub, go, intent, clearIntent }) {
   const { t, lang } = useI18n();
   // arriving from Settings → "Stop my subscription" opens straight on the confirm step
   const [asking, setAsking] = useState(intent === "cancel");
-  const plan = knownPlan(sub);
   const status = statusKey(sub);
 
   const toJazz = action => { markPending(action); location.assign(jazzUrl(action)); };
@@ -158,8 +125,8 @@ function Mirror({ sub, go, intent, clearIntent }) {
         <div className="who">
           <div className="avatar" style={{ background: status === "stopped" ? "var(--paper-2)" : "var(--sun)" }}><CrownIcon /></div>
           <div className="grow">
-            <h2>{plan ? t(`plan.${plan.id}`) : SERVICE.name}</h2>
-            <p>{plan ? `${money(plan.price, lang)} · ${t(`plan.every.${plan.id}`)}` : t("manage.atJazz")}</p>
+            <h2>{SERVICE.name}</h2>
+            <p>{t("manage.atJazz")}</p>
           </div>
           <span className={"status-pill " + status}>{t(`manage.status.${status}`)}</span>
         </div>
@@ -170,7 +137,7 @@ function Mirror({ sub, go, intent, clearIntent }) {
           )}
           {sub.renews > 0 && (
             <Row k={status === "stopped" ? "manage.playUntil" : status === "trial" ? "manage.firstCharge" : "manage.nextCharge"}>
-              {status === "stopped" || !plan ? onDate(sub.renews, lang) : `${money(plan.price, lang)} · ${onDate(sub.renews, lang)}`}
+              {onDate(sub.renews, lang)}
             </Row>
           )}
           <Row k="manage.managedBy"><span className="with-ico"><SimIcon />{t("manage.jazz")}</span></Row>

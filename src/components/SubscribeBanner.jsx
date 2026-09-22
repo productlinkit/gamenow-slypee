@@ -1,6 +1,6 @@
 import { Reveal } from "../lib/reveal.jsx";
 import { BellIcon, CrownIcon } from "./icons.jsx";
-import { TRIAL_DAYS, daysToRenewal, fromPrice, knownPlan, money, onDate, renewalSoon } from "../lib/subscription.js";
+import { TRIAL_DAYS, daysToRenewal, onDate, renewalSoon } from "../lib/subscription.js";
 import { useI18n } from "../i18n/index.jsx";
 
 /* One band, two jobs. No subscription → the offer, opening the same pop-up as everywhere
@@ -12,15 +12,12 @@ export default function SubscribeBanner({ sub, subscribed, onSubscribe, go }) {
   if (subscribed) {
     if (!renewalSoon(sub)) return null;
     const days = daysToRenewal(sub);
-    const plan = knownPlan(sub);
     return (
       <Reveal className="sub-band renewing" i={1}>
         <span className="sb-ico" aria-hidden="true"><BellIcon /></span>
         <span className="txt">
           <b>{days <= 0 ? t("renew.today") : t("renew.soon", { n: days })}</b>
-          <small>{plan
-            ? t("renew.text", { price: money(plan.price, lang), date: onDate(sub.renews, lang) })
-            : t("renew.textPlain", { date: onDate(sub.renews, lang) })}</small>
+          <small>{t("renew.text", { date: onDate(sub.renews, lang) })}</small>
         </span>
         <span className="sb-actions">
           <button type="button" className="chip" onClick={() => go("plans")}>{t("profile.managePlan")}</button>
@@ -34,10 +31,10 @@ export default function SubscribeBanner({ sub, subscribed, onSubscribe, go }) {
       <span className="sb-ico" aria-hidden="true"><CrownIcon /></span>
       <span className="txt">
         <b>{t("home.subTitle")}</b>
-        <small>{t("home.subText", { n: TRIAL_DAYS, price: money(fromPrice(), lang) })}</small>
+        <small>{t("home.subText", { n: TRIAL_DAYS })}</small>
       </span>
       <span className="sb-actions">
-        <button type="button" className="chip" onClick={() => go("plans")}>{t("profile.getPlan")}</button>
+        <button type="button" className="chip" onClick={() => go("plans")}>{t("home.subMore")}</button>
         <button type="button" className="btn-play" onClick={onSubscribe}>{t("plans.subscribe")}</button>
       </span>
     </Reveal>

@@ -1,8 +1,7 @@
 /* Help & legal pages. English only for now — the menu labels are translated.
-   The free day and UNSUB 9825 are copied from Slypee's own subscription notice; the package prices
-   are the demo's own (that notice quoted a daily rate, which this build no longer offers).
-   Subscribing happens on Jazz's landing page — see lib/subscription.js and
-   public/jazz-subscribe.html, and keep the prices here in step with PLANS there.
+   The free day and UNSUB 9825 are copied from Slypee's own subscription notice. No prices are
+   stated here on purpose: packages and prices belong to Jazz's subscription page, and a price
+   copied into this repo would only go stale. See lib/subscription.js for the hand-over.
    Privacy/terms are a draft describing what this site actually does; have them reviewed before launch. */
 export const UPDATED = "22 September 2026";
 
@@ -13,7 +12,7 @@ export const INFO = {
     faq: [
       ["What is Slypee?", "Slypee is a games portal from Jazz, brought to you with GameNow. You can play HTML5 games instantly in your browser or download app games through Slypee. It is a Jazz value-added service on shortcode 9825, charged to your Jazz balance."],
       ["Do I need to install anything?", "HTML5 games open straight in your browser — no install or download. Games marked “App” are downloaded through Slypee."],
-      ["How much does it cost?", "New players get 1 day of free play. After that you pick a package: PKR 250 for 1 month, PKR 675 for 3 months, PKR 1,200 for 6 months or PKR 2,100 for 1 year (all including tax). The longer the package, the lower the monthly rate. It renews on its own from your Jazz account until you stop it."],
+      ["How much does it cost?", "New players get 1 day of free play. The packages and their prices are shown on Jazz\u2019s subscription page when you tap Subscribe, including tax, before you confirm anything. Whichever you pick renews on its own from your Jazz account until you stop it."],
       ["What does a plan include?", "Every game on Slypee — the HTML5 games that open in your browser and the app games you download — with no ads on the portal and nothing to pay per game. One plan works on any device you log in to with your number."],
       ["How do I subscribe?", "Tap Subscribe on the portal. A pop-up shows the ways to subscribe — today that is “Subscribe through Jazz”. Choosing it opens Jazz's sign-in page for Slypee, where you pick your package and confirm it on your Jazz number. When it's done you come back to Slypee and the plan is running."],
       ["Does Slypee take my payment?", "No. The portal never asks for a card, a PIN or a password for payment. The whole subscription is completed on Jazz's page and charged to your Jazz account, and Jazz texts you from 9825 to confirm it."],
@@ -32,7 +31,7 @@ export const INFO = {
     sections: [
       ["Game not starting", ["Make sure you have a stable internet connection.", "Reload the page, then tap Play Now again.", "Try a different browser (Chrome, Safari or Firefox)."]],
       ["Login code not arriving", ["Check the phone number and country code.", "Wait 30 seconds, then tap “Resend code”.", "Make sure your phone can receive SMS."]],
-      ["Subscription & billing", ["Subscribing happens on Jazz's page: tap Subscribe here, choose “Subscribe through Jazz”, confirm there and you are sent back.", "The first day is free, then the package renews on its own: PKR 250/month, PKR 675/3 months, PKR 1,200/6 months or PKR 2,100/year (incl. tax), charged to your Jazz account.", "Keep balance on your number so renewals go through.", "Stop any time with UNSUB to 9825. Stopping keeps your access until the period you paid for ends."]],
+      ["Subscription & billing", ["Subscribing happens on Jazz's page: tap Subscribe here, choose “Subscribe through Jazz”, confirm there and you are sent back.", "The first day is free, then the package you chose on Jazz\u2019s page renews on its own, charged to your Jazz account. The price is shown there before you confirm.", "Keep balance on your number so renewals go through.", "Stop any time with UNSUB to 9825. Stopping keeps your access until the period you paid for ends."]],
       ["The Jazz page didn't finish", ["If you came back without subscribing, nothing was started and nothing was charged — tap Subscribe and try again.", "Make sure you are using the Jazz number you want the subscription on.", "Send STATUS to 9825 to see whether the service is already running."]],
       ["Still need help?", ["Send HELP to 9825, or read the FAQ for more answers."]]
     ]
@@ -54,7 +53,7 @@ export const INFO = {
     intro: "By using Slypee you agree to these terms.",
     sections: [
       ["The service", ["Slypee lets you discover and play games from Jazz and GameNow. Games may be added, changed or removed at any time.", "Slypee is a value-added service provided over the Jazz network on shortcode 9825 and is available to Jazz subscribers."]],
-      ["Subscription & billing", ["New players get a 1-day free trial, once per device.", "After the trial the package you chose renews automatically, charged to your Jazz account: PKR 250 per month, PKR 675 per 3 months, PKR 1,200 per 6 months or PKR 2,100 per year (including tax).", "The subscription is taken out on Jazz's own subscription page, which you reach from the Subscribe button on this portal. Jazz confirms it, bills it and notifies you by SMS; this portal only shows the resulting status.", "Nothing is charged unless you complete the confirmation on Jazz's page.", "If a renewal cannot be charged, Jazz may retry and may end the subscription. You can subscribe again at any time.", "You can stop the subscription at any time in Profile → Plan & billing or by sending UNSUB to 9825. Access continues until the end of the period you paid for.", "Charges already made are not refunded when you stop the service."]],
+      ["Subscription & billing", ["New players get a 1-day free trial, once per device.", "After the trial the package you chose on Jazz\u2019s page renews automatically, charged to your Jazz account. Packages, prices and tax are shown on that page before you confirm; this portal quotes no prices of its own.", "The subscription is taken out on Jazz's own subscription page, which you reach from the Subscribe button on this portal. Jazz confirms it, bills it and notifies you by SMS; this portal only shows the resulting status.", "Nothing is charged unless you complete the confirmation on Jazz's page.", "If a renewal cannot be charged, Jazz may retry and may end the subscription. You can subscribe again at any time.", "You can stop the subscription at any time in Profile → Plan & billing or by sending UNSUB to 9825. Access continues until the end of the period you paid for.", "Charges already made are not refunded when you stop the service."]],
       ["Your account", ["Log in only with a mobile number you own and keep your login code private.", "You are responsible for activity on your account."]],
       ["Fair use", ["Don't misuse the service, try to break it, or interfere with other players."]],
       ["Games from partners", ["Some games are provided by third parties. Their content and availability are their responsibility."]],

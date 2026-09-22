@@ -779,39 +779,13 @@
 
   /* ---------- Plans & subscription ---------- */
   .plans .back-link { margin-bottom: -22px; }
-  .plan-list { display: grid; gap: 10px; }
-  .plan {
-    position: relative; display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px; border-radius: 16px; cursor: pointer;
-    background: rgba(255,255,255,.75); box-shadow: inset 0 0 0 1.5px var(--paper-2);
-    transition: box-shadow .15s, transform .1s, background-color .15s;
-  }
-  .plan:hover { background: #fff; }
-  .plan:active { transform: scale(.99); }
-  .plan.on { background: #fff; box-shadow: inset 0 0 0 2.5px var(--red), 0 6px 16px rgba(219,36,23,.18); }
-  .plan:focus-within { box-shadow: inset 0 0 0 2.5px var(--sun), 0 0 0 3px rgba(250,204,62,.4); }
-  .plan input { position: absolute; opacity: 0; pointer-events: none; }
-  .plan-tick { width: 22px; height: 22px; border-radius: 50%; flex: none; background: #fff; box-shadow: inset 0 0 0 2.5px var(--paper-2); transition: box-shadow .15s, background-color .15s; }
-  .plan.on .plan-tick { background: var(--red); box-shadow: inset 0 0 0 3.5px #fff, 0 0 0 2.5px var(--red); }
-  .plan-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-  .plan-main b { font-family: var(--display); font-weight: 400; font-size: 18px; line-height: 1.15; }
-  .plan-main small, .plan-cost small { font-size: 12px; font-weight: 700; color: var(--muted); }
-  .plan-save { font-style: normal; margin-inline-start: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(47,168,70,.16); color: #1D7A30; font-size: 11px; font-weight: 800; }
-  .plan-trial { color: var(--sun-deep) !important; }
-  .plan-cost { flex: none; display: flex; flex-direction: column; text-align: end; }
-  .plan-cost b { font-family: var(--display); font-weight: 400; font-size: 19px; line-height: 1.15; font-variant-numeric: tabular-nums; }
-  .plan-badge {
-    position: absolute; top: -9px; inset-inline-end: 12px; padding: 2px 9px 1px; border-radius: 999px;
-    background: var(--sun); color: var(--ink); font-size: 11px; font-weight: 800; box-shadow: 0 2px 6px rgba(34,26,22,.2);
-  }
-  /* price list (the choosing happens on Jazz's page) */
-  .plan-list.prices { list-style: none; padding: 0; margin: 0; }
-  .prices .plan { cursor: default; }
-  .prices .plan:hover { background: rgba(255,255,255,.75); }
-  .prices .plan:active { transform: none; }
-  .prices .plan.on { box-shadow: inset 0 0 0 2.5px var(--sun); background: #fff; }
   .plans .login-btn { width: 100%; margin-top: 14px; }
   .plan-hint { text-align: center; }
+  .offer { text-align: center; }
+  .offer .perks, .offer .sum { text-align: start; }
+  .offer-ico { width: 64px; height: 64px; margin: 0 auto 10px; border-radius: 20px; background: var(--sun); display: grid; place-items: center; }
+  .offer-ico svg { width: 44px; height: 44px; }
+  .offer p { margin-inline: auto; }
 
   /* what you're agreeing to, before anything is charged */
   .sum { margin: 0 0 14px; }

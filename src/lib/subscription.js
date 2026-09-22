@@ -32,26 +32,12 @@ export const JAZZ = {
 export const USE_DEMO_LP = false;
 export const DEMO_LP = "/jazz-subscribe.html";
 
-export const CURRENCY = "PKR";
 export const TRIAL_DAYS = 1;
 const DAY = 864e5;
 
-/* Monthly cycles and longer — the same subscription, just fewer renewals and a better rate.
-   Demo prices: Slypee's own notice quoted a daily rate, so these are ours to set. `days` is
-   what the renewal maths runs on; `months` is only for the label. */
-export const PLANS = [
-  { id: "month", months: 1, days: 30, price: 250 },
-  { id: "months3", months: 3, days: 90, price: 675 },
-  { id: "months6", months: 6, days: 180, price: 1200, best: true },
-  { id: "year", months: 12, days: 365, price: 2100 }
-];
-export const PLAN_BY_ID = Object.fromEntries(PLANS.map(p => [p.id, p]));
-export const planOf = id => PLAN_BY_ID[id] || PLANS[0];
-export const perMonth = p => p.price / p.months;
-/* how much cheaper per month than renewing every month — 0 for the monthly plan itself */
-export const savingPct = p => Math.round((1 - perMonth(p) / perMonth(PLANS[0])) * 100);
-/* the "from …" price: the best monthly rate on offer, which is the longest package */
-export const fromPrice = () => Math.min(...PLANS.map(perMonth));
+/* No package list lives here on purpose. Jazz's page is where packages and prices are shown
+   and chosen, so the portal states none of them — a price copied into this repo would only
+   go stale. What the portal knows is whether a subscription is running. */
 
 /* What a plan unlocks, counted from the real catalogue */
 export const COUNTS = {
@@ -60,11 +46,6 @@ export const COUNTS = {
   app: GAMES.filter(g => g.t === "app").length
 };
 
-export const money = (amount, lang = "en", digits = 0) => {
-  try {
-    return new Intl.NumberFormat(lang, { style: "currency", currency: CURRENCY, minimumFractionDigits: 0, maximumFractionDigits: digits }).format(amount);
-  } catch (_) { return `${CURRENCY} ${Math.round(amount * 100) / 100}`; }
-};
 export const onDate = (ts, lang = "en") => {
   try { return new Intl.DateTimeFormat(lang, { day: "numeric", month: "short" }).format(ts); }
   catch (_) { return new Date(ts).toDateString(); }
@@ -88,12 +69,12 @@ const write = (key, val) => { try { val == null ? localStorage.removeItem(key) :
    rolled on. (The real portal would refresh this from the status API.) */
 function settle(sub) {
   if (!sub) return null;
-  if (!sub.renews || !PLAN_BY_ID[sub.plan]) return sub;          // nothing to roll forward
-  if (sub.renews > Date.now()) return sub;
-  if (sub.status !== "active") return { ...sub, status: "ended" };
-  const plan = planOf(sub.plan);
-  const periods = Math.ceil((Date.now() - sub.renews) / (plan.days * DAY));
-  return { ...sub, trial: false, renews: sub.renews + periods * plan.days * DAY };
+  if (!sub.renews || sub.renews > Date.now()) return sub;
+  /* the date Jazz gave us has passed: a running subscription has renewed on its own, we
+     just don't know the new date — a stopped one has run out. */
+  return sub.status === "active"
+    ? { ...sub, trial: false, renews: 0 }
+    : { ...sub, status: "ended" };
 }
 
 export function loadSub() {
@@ -188,7 +169,6 @@ export const verifyReturn = result => result?.state === "success";
 export function applyReturn(result) {
   clearPending();
   if (!verifyReturn(result)) return null;
-  const plan = PLAN_BY_ID[result.plan || ""] || null;
   if (result.action === "unsub") {
     const current = loadSub();
     if (!current) return null;
@@ -197,14 +177,14 @@ export function applyReturn(result) {
     return stopped;
   }
   const now = Date.now();
-  const renews = result.renews > now ? result.renews
-    : plan ? now + (result.trial ? TRIAL_DAYS : plan.days) * DAY
-    : 0;                                             // 0 = Jazz didn't say; don't pretend
-  const sub = { status: "active", plan: plan ? plan.id : null, trial: result.trial, since: now, renews, txn: result.txn };
+  const sub = {
+    status: "active", trial: result.trial, since: now,
+    renews: result.renews > now ? result.renews : 0,      // 0 = Jazz didn't say; don't pretend
+    txn: result.txn
+  };
   write(SUB_KEY, sub);
   return sub;
 }
-
 
 /* ---------- Portal-side settings ----------
    Billing itself belongs to Jazz, so the only switch that is really ours is whether the
@@ -230,13 +210,10 @@ export function renewalSoon(sub, prefs = loadPrefs()) {
   return prefs.remind && days !== null && days <= REMIND_DAYS;
 }
 
-/* The plan Jazz named, when it named one — the mirror works without it too */
-export const knownPlan = sub => (sub && PLAN_BY_ID[sub.plan]) || null;
-
 /* Older demo accounts kept their free day on the user as `freeUntil` — carry it over */
 export function adoptFreeDay(until) {
   if (!(until > Date.now())) return null;
-  const sub = { status: "active", plan: PLANS[0].id, trial: true, since: until - TRIAL_DAYS * DAY, renews: until, txn: "" };
+  const sub = { status: "active", trial: true, since: until - TRIAL_DAYS * DAY, renews: until, txn: "" };
   write(SUB_KEY, sub);
   return sub;
 }

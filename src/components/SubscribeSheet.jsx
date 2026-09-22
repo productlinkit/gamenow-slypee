@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { CrownIcon, SimIcon } from "./icons.jsx";
-import { SERVICE, TRIAL_DAYS, fromPrice, jazzUrl, markPending, money } from "../lib/subscription.js";
-import { useI18n } from "../i18n/index.jsx";
+import { SERVICE, TRIAL_DAYS, jazzUrl, markPending } from "../lib/subscription.js";
+import { useT } from "../i18n/index.jsx";
 
 /* The pop-up an organic visitor gets after tapping Subscribe: the ways this service can be
    subscribed to. Today that's Jazz alone — one <li> per method keeps room for the next one.
    Picking Jazz hands the player to Jazz's own sign-in page, which takes the confirmation and
    the payment; they come back to the portal once it's done. */
 export default function SubscribeSheet({ onClose }) {
-  const { t, lang } = useI18n();
+  const t = useT();
   const ref = useRef(null);
 
   useEffect(() => { ref.current?.focus(); }, []);
@@ -53,7 +53,7 @@ export default function SubscribeSheet({ onClose }) {
         </ul>
 
         <p className="modal-fine">
-          {t("sheet.fine", { from: money(fromPrice(), lang), n: TRIAL_DAYS, word: SERVICE.unsub, to: SERVICE.shortcode })}
+          {t("sheet.fine", { n: TRIAL_DAYS, word: SERVICE.unsub, to: SERVICE.shortcode })}
         </p>
         <button type="button" className="link-btn modal-cancel" onClick={onClose}>{t("common.cancel")}</button>
       </div>

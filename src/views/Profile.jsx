@@ -4,7 +4,7 @@ import CodeBoxes from "../components/CodeBoxes.jsx";
 import { mask } from "../lib/phone.js";
 import { AVATARS, AVATAR_BY_ID, BellIcon, ClockIcon, CrownIcon, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, StopIcon, SupportIcon } from "../components/icons.jsx";
 import { stats, dur } from "../lib/history.js";
-import { REMIND_DAYS, TRIAL_DAYS, daysToRenewal, fromPrice, hoursLeft, loadPrefs, money, onDate, planOf, setPref, statusKey } from "../lib/subscription.js";
+import { REMIND_DAYS, TRIAL_DAYS, daysToRenewal, hoursLeft, loadPrefs, onDate, setPref, statusKey } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
 const DEMO_CODE = "1234";
@@ -182,14 +182,12 @@ function EditProfile({ user, save, cancel }) {
 function PlanCard({ sub, go }) {
   const { t, lang } = useI18n();
   const status = statusKey(sub);
-  const plan = planOf(sub?.plan);
-  const from = money(fromPrice(), lang);
   const line = {
     trial: () => t("profile.planTrial", { n: hoursLeft(sub) }),
-    active: () => t("profile.planActive", { plan: t(`plan.${plan.id}`), date: onDate(sub.renews, lang) }),
-    stopped: () => t("profile.planStopped", { plan: t(`plan.${plan.id}`), date: onDate(sub.renews, lang) }),
-    ended: () => t("profile.planEnded", { price: from }),
-    none: () => t("profile.planNone", { n: TRIAL_DAYS, price: from })
+    active: () => sub.renews ? t("profile.planActive", { date: onDate(sub.renews, lang) }) : t("profile.planOn"),
+    stopped: () => sub.renews ? t("profile.planStopped", { date: onDate(sub.renews, lang) }) : t("profile.planStopping"),
+    ended: () => t("profile.planEnded"),
+    none: () => t("profile.planNone", { n: TRIAL_DAYS })
   }[status]();
   const running = status === "trial" || status === "active" || status === "stopped";
 
