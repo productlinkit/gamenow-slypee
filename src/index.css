@@ -780,7 +780,9 @@
   /* ---------- Plans & subscription ---------- */
   .plans .back-link { margin-bottom: -22px; }
   .plans .login-btn { width: 100%; margin-top: 14px; }
-  .plan-hint { text-align: center; }
+  /* fine print closing a card: fills the card and stays centred, rather than hugging
+     the 44ch reading column that .sub p sets for body copy */
+  .sub .fine-print { max-width: none; margin-inline: auto; text-align: center; }
   .offer { text-align: center; }
   .offer .perks, .offer .sum { text-align: start; }
   .offer-ico { width: 64px; height: 64px; margin: 0 auto 10px; border-radius: 20px; background: var(--sun); display: grid; place-items: center; }
@@ -904,40 +906,47 @@
   /* ---------- Subscribe pop-up ---------- */
   .modal {
     position: fixed; z-index: 51; inset-inline: 0; bottom: 0; margin-inline: auto;
-    width: min(440px, 100%); max-height: 92vh; overflow: auto;
-    padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
-    background: var(--paper); border-radius: 26px 26px 0 0; box-shadow: var(--lift-lg);
+    width: min(460px, 100%); max-height: 92vh; overflow: auto;
+    padding: 30px 24px calc(26px + env(safe-area-inset-bottom, 0px));
+    background: var(--paper); border-radius: 28px 28px 0 0; box-shadow: var(--lift-lg);
     text-align: center; animation: sheet-in .3s cubic-bezier(.2,.7,.2,1) both;
   }
   @media (min-width: 600px) {
-    .modal { bottom: auto; top: 50%; transform: translateY(-50%); border-radius: 26px; animation: pop-in .3s cubic-bezier(.34,1.3,.64,1) both; }
+    .modal {
+      bottom: auto; top: 50%; transform: translateY(-50%); border-radius: 28px;
+      padding: 34px 32px 30px; animation: pop-in .3s cubic-bezier(.34,1.3,.64,1) both;
+    }
     @keyframes pop-in { from { opacity: 0; transform: translateY(calc(-50% + 18px)) scale(.96); } }
   }
   .modal-x {
-    position: absolute; top: 12px; inset-inline-end: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%;
+    position: absolute; top: 14px; inset-inline-end: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%;
     background: var(--paper-2); color: var(--ink); font-size: 14px; cursor: pointer; line-height: 1;
   }
   .modal-x:hover { background: var(--sun); }
-  .modal-ico { width: 62px; height: 62px; margin: 0 auto 10px; border-radius: 20px; background: var(--sun); display: grid; place-items: center; }
+  .modal-ico { width: 62px; height: 62px; margin: 0 auto 16px; border-radius: 20px; background: var(--sun); display: grid; place-items: center; }
   .modal-ico svg { width: 42px; height: 42px; }
-  .modal h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 23px; line-height: 1.15; }
-  .modal-sub { margin: 4px 0 16px; font-size: 14px; font-weight: 600; color: var(--muted); }
-  .methods { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .modal h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 23px; line-height: 1.2; }
+  .modal-sub { margin: 8px 0 22px; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--muted); }
+  .methods { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .method {
-    width: 100%; display: flex; align-items: center; gap: 12px; text-align: start; cursor: pointer;
-    padding: 12px 14px; border: 0; border-radius: 16px; background: #fff;
+    width: 100%; display: flex; align-items: center; gap: 14px; text-align: start; cursor: pointer;
+    padding: 16px; border: 0; border-radius: 18px; background: #fff;
     box-shadow: inset 0 0 0 2px var(--paper-2); transition: box-shadow .15s, transform .1s;
   }
   .method:hover { box-shadow: inset 0 0 0 2.5px var(--red), 0 6px 16px rgba(219,36,23,.15); }
   .method:active { transform: scale(.99); }
-  .method-logo { width: 42px; height: 42px; flex: none; border-radius: 13px; background: var(--paper-2); display: grid; place-items: center; }
+  .method-logo { width: 44px; height: 44px; flex: none; border-radius: 14px; background: var(--paper-2); display: grid; place-items: center; }
   .method-logo svg { width: 30px; height: 30px; }
-  .method-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-  .method-txt b { font-family: var(--display); font-weight: 400; font-size: 18px; line-height: 1.15; }
-  .method-txt small { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .method-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .method-txt b { font-family: var(--display); font-weight: 400; font-size: 18px; line-height: 1.2; }
+  .method-txt small { font-size: 12.5px; font-weight: 700; line-height: 1.4; color: var(--muted); }
   .method-chev { width: 18px; height: 18px; flex: none; color: var(--muted); }
-  .modal-fine { margin: 14px 0 0; font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: start; }
-  .modal-cancel { margin-top: 14px; font-size: 14px; }
+  /* the fine print gets room of its own, and a rule to sit under rather than crowd the method */
+  .modal-fine {
+    margin: 22px 0 0; padding-top: 18px; border-top: 1.5px solid var(--paper-2);
+    font-size: 12.5px; font-weight: 600; line-height: 1.6; color: var(--muted); text-align: center;
+  }
+  .modal-cancel { margin-top: 20px; font-size: 14px; }
   .subscribe-btn svg { width: 22px; height: 22px; }
 
   /* app games on the detail page: covered by the plan, or not yet */

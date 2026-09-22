@@ -19,7 +19,7 @@ function Benefits() {
         <li>{t("plans.b6")}</li>
         <li>{t("plans.b7", { word: SERVICE.unsub, to: SERVICE.shortcode })}</li>
       </ul>
-      <p className="hint">{t("plans.fine", { to: SERVICE.shortcode })}</p>
+      <p className="hint fine-print">{t("plans.fine", { to: SERVICE.shortcode })}</p>
     </Reveal>
   );
 }
@@ -71,7 +71,7 @@ export default function Plans({ sub, result, intent, onSubscribe, onStatus, clea
               <button type="button" className="chip" onClick={() => onSubscribe()}>{t("back.again")}</button>
               <button type="button" className="btn-play" onClick={onStatus}>{t("back.check")}</button>
             </div>
-            <p className="hint">{t("back.apiNote")}</p>
+            <p className="hint fine-print">{t("back.apiNote")}</p>
           </Reveal>
         )}
 
@@ -84,7 +84,7 @@ export default function Plans({ sub, result, intent, onSubscribe, onStatus, clea
               <button type="button" className="chip" onClick={() => go("help")}>{t("info.help")}</button>
               <button type="button" className="btn-play" onClick={() => { clearResult(); onSubscribe(); }}>{t("back.again")}</button>
             </div>
-            <p className="hint">{t("back.note", { word: SERVICE.unsub, to: SERVICE.shortcode })}</p>
+            <p className="hint fine-print">{t("back.note", { word: SERVICE.unsub, to: SERVICE.shortcode })}</p>
           </Reveal>
         )}
 
@@ -100,7 +100,7 @@ export default function Plans({ sub, result, intent, onSubscribe, onStatus, clea
               <button className="btn-play login-btn subscribe-btn" type="button" onClick={() => onSubscribe()}>
                 <CrownIcon />{t("plans.subscribe")}
               </button>
-              <p className="hint plan-hint">{t("plans.handover", { name: SERVICE.name })}</p>
+              <p className="hint fine-print">{t("plans.handover", { name: SERVICE.name })}</p>
             </Reveal>
             <Benefits />
           </div>
@@ -176,8 +176,8 @@ function Mirror({ sub, go, intent, clearIntent }) {
           <li>{t("manage.where2", { word: SERVICE.unsub, to: SERVICE.shortcode })}</li>
           <li>{t("manage.where3", { word: SERVICE.status, to: SERVICE.shortcode })}</li>
         </ul>
-        <p className="hint">{t("manage.demoNote")}</p>
-        <p className="hint"><button type="button" className="link-btn" onClick={() => go("faq")}>{t("info.faq")}</button></p>
+        <p className="hint fine-print">{t("manage.demoNote")}</p>
+        <p className="hint fine-print"><button type="button" className="link-btn" onClick={() => go("faq")}>{t("info.faq")}</button></p>
       </Reveal>
     </div>
   );
