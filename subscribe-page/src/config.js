@@ -3,6 +3,15 @@
    it is the only figure on this page. */
 export const CHARGE = { amount: 12, per: "day", every: "every day" };
 
+/* Portals this page may send a player back to. The portal is on a host of its own, so
+   same-origin is not enough — add its address here, or a blocked pop-up leaves the player
+   stranded on this page instead of back where they started. */
+export const PORTAL_ORIGINS = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173"
+  // , "https://gamenow-slypee.vercel.app"   ← add the deployed portal
+];
+
 export const TRIAL_DAYS = 1;
 export const DAY = 864e5;
 

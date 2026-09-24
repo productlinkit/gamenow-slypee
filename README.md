@@ -15,7 +15,7 @@ Mobile-first redesign of the Slypee gaming portal homepage (jazz.slypee.pk), bui
 Subscribing happens off the portal: **Subscribe** → pop-up with the available method
 (*Subscribe through Jazz*) → the subscription page, opened in its own window → it posts the
 result back and closes, landing the player on `#home`, subscribed and signed in. That page
-lives in `subscribe-page/`, deploys anywhere, and `SUBSCRIBE_ORIGIN` in
+lives in `subscribe-page/` and is deployed at `lp-gamenow-slypee.vercel.app`; `SUBSCRIBE_URL` in
 `src/lib/subscription.js` points the portal at it — see `subscribe-page/README.md`.
 
 The portal itself quotes no price and holds no packages: it mirrors whether a subscription is

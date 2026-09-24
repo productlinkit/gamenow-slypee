@@ -60,7 +60,7 @@ served anywhere else is ignored.
 | `ref`, `var`, `camp` | Jazz's attribution. The portal forwards whatever the visitor arrived with, or the organic defaults. Shown at the bottom of the page and passed through untouched. |
 | `action` | `subscribe` (default) or `unsub` / `manage` — both of the latter open the stop screen. |
 | `mode` | `window` means the portal opened this in its own window and is listening; see below. |
-| `return_url` | Where to send the player back to. Only same-origin URLs are accepted. |
+| `return_url` | Where to send the player back to. Only origins listed in `PORTAL_ORIGINS` at the top of the script are accepted — add the portal's address there, or the player is dropped back on this page instead. |
 
 ## What it sends back
 

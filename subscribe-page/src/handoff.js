@@ -4,6 +4,8 @@
 
    Demo rules: any number is accepted, no code is sent and nothing is charged. */
 
+import { PORTAL_ORIGINS } from "./config.js";
+
 export const query = new URLSearchParams(location.search);
 export const action = query.get("action") || "subscribe";
 
@@ -24,15 +26,23 @@ export function finish(params) {
   return false;
 }
 
+/* Who asked for this. The result is posted straight back to them — it says nothing a portal
+   should act on without checking with the operator, so it is answered wherever it came from. */
 function portalOrigin() {
   try { return new URL(query.get("return_url") || "/", location.origin).origin; } catch (e) { return location.origin; }
 }
 
-/* only ever return to where we came from */
-function goBack(params) {
+/* Sending a browser somewhere is a different matter: only a portal we know. Anything else
+   and the player stays here rather than being redirected off to a stranger. */
+export const allowedReturn = raw => {
   let url;
-  try { url = new URL(query.get("return_url") || "/", location.origin); } catch (e) { url = new URL("/", location.origin); }
-  if (url.origin !== location.origin) url = new URL("/", location.origin);
+  try { url = new URL(raw || "/", location.origin); } catch (e) { return null; }
+  const allowed = [location.origin, ...PORTAL_ORIGINS];
+  return allowed.includes(url.origin) ? url : null;
+};
+
+function goBack(params) {
+  const url = allowedReturn(query.get("return_url")) || new URL("/", location.origin);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   location.replace(url.toString());
 }

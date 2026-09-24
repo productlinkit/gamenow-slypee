@@ -36,8 +36,11 @@ export const JAZZ = {
 /* The landing page the Subscribe button opens. Ours is the working one; point this at the
    operator's landing page (a temporary "https://lp.example.com" stands for it in the brief)
    or set USE_JAZZ_LP for Jazz's own sign-in, and nothing else has to change. */
-export const SUBSCRIBE_ORIGIN = "";                  // "" = same host; else "https://subscribe.…"
-export const SUBSCRIBE_PAGE = "/subscribe/index.html";
+/* The landing page the Subscribe button opens, as a full URL. It is a page of its own on a
+   host of its own, so the portal only ever hands over and waits for an answer. Set it to ""
+   to use the copy this repo serves (public/subscribe.html, source in subscribe-page/). */
+export const SUBSCRIBE_URL = "https://lp-gamenow-slypee.vercel.app/";
+
 /* true → hand over to Jazz's own page instead of ours (needs a live Jazz connection) */
 export const USE_JAZZ_LP = false;
 
@@ -148,14 +151,17 @@ export function jazzUrl(action = "subscribe") {
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
     return url.toString();
   }
-  const q = new URLSearchParams({ ...params, action, mode: "window", return_url: returnUrl() });
-  return `${SUBSCRIBE_ORIGIN}${SUBSCRIBE_PAGE}?${q}`;
+  const url = new URL(SUBSCRIBE_URL || "/subscribe.html", location.origin);
+  for (const [k, v] of Object.entries({ ...params, action, mode: "window", return_url: returnUrl() })) {
+    url.searchParams.set(k, v);
+  }
+  return url.toString();
 }
 
 /* The one origin the portal accepts a subscription result from */
 export const subscribeOrigin = () => {
-  if (!SUBSCRIBE_ORIGIN) { try { return location.origin; } catch (_) { return ""; } }
-  try { return new URL(SUBSCRIBE_ORIGIN).origin; } catch (_) { return SUBSCRIBE_ORIGIN; }
+  try { return new URL(SUBSCRIBE_URL || "/subscribe.html", location.origin).origin; }
+  catch (_) { try { return location.origin; } catch (__) { return ""; } }
 };
 
 /* Open the subscription page in its own window, so the portal stays where it is and can
