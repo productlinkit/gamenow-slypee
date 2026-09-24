@@ -266,8 +266,10 @@ export function daysToRenewal(sub) {
   if (!active(sub) || !sub.renews) return null;
   return Math.ceil((sub.renews - Date.now()) / DAY);
 }
-/* true when the portal should show the renewal reminder */
+/* true when the portal should warn that a renewal is coming. A stopped subscription has no
+   renewal to warn about — stopped means stopped. */
 export function renewalSoon(sub, prefs = loadPrefs()) {
+  if (!sub || (sub.status !== "active" && sub.status !== "trial")) return false;
   const days = daysToRenewal(sub);
   return prefs.remind && days !== null && days <= REMIND_DAYS;
 }
