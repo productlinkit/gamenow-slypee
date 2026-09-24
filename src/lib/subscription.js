@@ -17,8 +17,9 @@ export const SERVICE = { name: "Slypee Games", shortcode: "9825", unsub: "UNSUB"
 
 /* Where Subscribe sends people.
 
-   The subscription page is its own page on its own address (public/subscribe.html). Leave
-   SUBSCRIBE_ORIGIN empty and it is served from this host; set it to the separate subdomain
+   The subscription page is its own Vite app on its own address (subscribe-page/; npm run
+   sync:subscribe builds a copy into public/subscribe/). Leave SUBSCRIBE_ORIGIN empty and that
+   copy is served from this host; set it to the separate subdomain
    once DNS points there — e.g. "https://subscribe.slypee.pk" — and nothing else changes,
    because the page talks back to the portal by postMessage and the origin below is the only
    one the portal will listen to.
@@ -36,7 +37,7 @@ export const JAZZ = {
    operator's landing page (a temporary "https://lp.example.com" stands for it in the brief)
    or set USE_JAZZ_LP for Jazz's own sign-in, and nothing else has to change. */
 export const SUBSCRIBE_ORIGIN = "";                  // "" = same host; else "https://subscribe.…"
-export const SUBSCRIBE_PAGE = "/subscribe.html";
+export const SUBSCRIBE_PAGE = "/subscribe/index.html";
 /* true → hand over to Jazz's own page instead of ours (needs a live Jazz connection) */
 export const USE_JAZZ_LP = false;
 

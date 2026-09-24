@@ -4,23 +4,41 @@ The page a player is sent to when they tap **Subscribe** on the Slypee portal, a
 that stops a subscription again. It is deliberately separate from the portal: its own folder,
 its own host, its own link. Nothing here imports anything from the portal.
 
+It is a small React + Vite app of its own, with its own `package.json`:
+
 ```
 subscribe-page/
-  index.html        the whole page — markup, styles and logic in one file
-  assets/           logos and backgrounds, so it stands on its own
+  index.html        Vite entry
+  src/App.jsx       the screens: number → confirmation → hand-back, and the stop screen
+  src/config.js     the charge, the free days and the countries offered
+  src/handoff.js    the URL contract — reads the link, sends the result back
+  src/styles.css    all styles
+  src/assets/       logos and backgrounds, so it stands on its own
+```
+
+```bash
+cd subscribe-page
+npm install
+npm run dev       # dev server
+npm run build     # production build → dist/
+npm run preview   # serve the build
 ```
 
 ## Deploy
 
-Static files, nothing to build. Point any static host at this folder:
+Build, then point any static host at `dist/`. Paths in the build are relative, so it runs at
+any address — its own host, a subfolder, a `file://` preview.
 
 ```bash
-# Vercel
+# Vercel — vercel.json holds the build settings
 vercel deploy subscribe-page --prod
 
-# nginx / Apache — copy the folder to the web root
-rsync -av subscribe-page/ user@host:/var/www/subscribe/
+# nginx / Apache — build and copy dist/ to the web root
+npm run build && rsync -av dist/ user@host:/var/www/subscribe/
 ```
+
+The portal's dev server serves a built copy at `/subscribe/index.html`; after changing this
+page, run `npm run sync:subscribe` in the portal to refresh `public/subscribe/`.
 
 Then tell the portal where it now lives, in `src/lib/subscription.js`:
 
@@ -76,11 +94,11 @@ free day, the first charge date and how to stop. Nothing is sent until the box i
 
 | Change | Where |
 |---|---|
-| The charge | `var CHARGE = { amount: 12, per: "day", … }` — the only price on the page |
-| Free days | `var TRIAL_DAYS = 1` |
-| Countries offered | `var COUNTRIES = [ … ]` |
-| Wording | The markup; the page is English only |
-| Look | The `:root` tokens at the top — they mirror the portal's |
+| The charge | `CHARGE = { amount: 12, per: "day", … }` in `src/config.js` — the only price on the page |
+| Free days | `TRIAL_DAYS` in `src/config.js` |
+| Countries offered | `COUNTRIES` in `src/config.js` |
+| Wording | `src/App.jsx`; the page is English only |
+| Look | The `:root` tokens at the top of `src/styles.css` — they mirror the portal's |
 
 ## Before this takes real money
 

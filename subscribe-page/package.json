@@ -1,13 +1,12 @@
 {
-  "name": "slypee-play-portal",
+  "name": "slypee-subscribe-page",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "sync:subscribe": "npm --prefix subscribe-page install && npm --prefix subscribe-page run build && rm -rf public/subscribe public/subscribe.html && cp -R subscribe-page/dist public/subscribe"
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.3.0",

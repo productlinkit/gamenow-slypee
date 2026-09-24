@@ -6,7 +6,7 @@ Mobile-first redesign of the Slypee gaming portal homepage (jazz.slypee.pk), bui
 - `src/views/` — Home, HTML5, Library, Profile, Plans (the offer, the subscribe pop-up and the plan status)
 - `src/components/` — header, nav tabs, trending carousel, category browser, game card, icons
 - `src/lib/subscription.js` — plans, the hand-over to Jazz and the mirror of what Jazz returns
-- `subscribe-page/` — the subscription page, standalone and ready for its own host (`npm run sync:subscribe` copies it into `public/` so the dev server serves it too)
+- `subscribe-page/` — the subscription page, its own React + Vite app ready for its own host (`npm run sync:subscribe` builds it into `public/subscribe/` so the dev server serves it too)
 - `src/data/games.json` — game catalogue
 - `src/index.css` — all styles
 - `public/assets/` — backgrounds, logo, trending banners, game thumbnails
