@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:subscribe": "cp subscribe-page/index.html public/subscribe.html"
   },
   "dependencies": {
     "react": "^19.3.0",
