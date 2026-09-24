@@ -99,6 +99,7 @@
 
   .legal { margin: 0; text-align: center; font-size: 12px; font-weight: 600; color: var(--paper); text-shadow: 0 1px 3px rgba(34,26,22,.5); }
   .done-card { text-align: center; }
+  .done-card .sum { margin: 18px 0 4px; text-align: start; }
   .done-ico { width: 74px; height: 74px; margin: 0 auto 12px; border-radius: 24px; background: var(--sun); display: grid; place-items: center; box-shadow: inset 0 -4px 0 var(--sun-deep); }
   .done-ico svg { width: 50px; height: 50px; }
   .dim { opacity: .55; }
@@ -322,21 +323,35 @@
 
   $("cancel").onclick = function () { finish({ sub: "cancelled", action: action }); };
 
-  /* stopping comes through the same page */
-  if (action === "unsub") {
+  /* Managing an existing subscription comes through this page too, and for a VAS there is
+     only one thing to manage: whether it keeps running. So "manage" and "unsub" land on the
+     same screen — see what you're paying and stop it here. */
+  if (action === "unsub" || action === "manage") {
     $("step-phone").hidden = true;
     $("step-confirm").hidden = true;
     $("step-done").hidden = false;
-    $("step-done").querySelector("h2").textContent = "Stop your subscription?";
-    $("done-text").innerHTML = "You keep playing until the period you paid for ends.";
-    $("step-done").querySelector(".bar").hidden = true;
+    $("step-done").querySelector(".done-ico").hidden = false;
+    $("step-done").querySelector("h2").textContent = "Your Slypee Games subscription";
+    $("done-text").textContent = money(CHARGE.amount) + " per " + CHARGE.per +
+      ", taken from your balance. Stop it here whenever you like — you keep playing until the period you paid for ends.";
+    var bar = $("step-done").querySelector(".bar"); if (bar) bar.hidden = true;
+
+    var rows = document.createElement("dl");
+    rows.className = "sum";
+    rows.innerHTML = [
+      ["Service", "Slypee Games"],
+      ["Charge", money(CHARGE.amount) + " per " + CHARGE.per + ", incl. tax"],
+      ["Taken from", "Your mobile balance"],
+      ["Stopping", "Here, or UNSUB to 9825"]
+    ].map(function (r) { return '<div class="row"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></div>"; }).join("");
+
     var stop = document.createElement("button");
     stop.className = "btn"; stop.textContent = "Stop the subscription";
     stop.onclick = function () { finish({ sub: "success", action: "unsub", txn: "SL" + Math.random().toString(36).slice(2, 8).toUpperCase() }); };
     var keep = document.createElement("button");
     keep.className = "link"; keep.textContent = "Keep it running";
-    keep.onclick = function () { finish({ sub: "cancelled", action: "unsub" }); };
-    $("step-done").append(stop, keep);
+    keep.onclick = function () { finish({ sub: "cancelled", action: action }); };
+    $("step-done").append(rows, stop, keep);
   }
 
   var camp = ["ref", "var", "camp"].filter(function (k) { return q.get(k); })
