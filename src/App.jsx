@@ -306,7 +306,10 @@ export default function App() {
         />
         <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
         <Library active={view === "library"} user={account} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
-        <Profile active={view === "profile"} user={account} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} />
+        <Profile
+          active={view === "profile"} user={account} login={setUser} logout={logout} notify={notify}
+          history={playHistory} go={go} sub={sub} subscribed={active(sub)}
+        />
         {view === "plans" && (
           <Plans
             sub={sub} intent={planIntent} onSubscribe={openSubscribe} clearIntent={() => setPlanIntent(null)}

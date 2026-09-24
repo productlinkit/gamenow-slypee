@@ -54,6 +54,9 @@ export default {
   "profile.name": "Nama tampilan", "profile.avatar": "Avatar", "profile.edit": "Ubah profil", "common.save": "Simpan", "common.cancel": "Batal", "toast.profileSaved": "Profil diperbarui",
   "lang.title": "Pilih bahasa", "lang.search": "Cari bahasa…",
   /* Langganan & header */
+  "info.plans": "Langganan", "profile.managePlan": "Kelola langganan",
+  "settings.state.trial": "Hari gratis", "settings.state.active": "Aktif", "settings.state.stopped": "Akan berhenti",
+  "settings.state.ended": "Berakhir", "settings.state.none": "Belum langganan",
   "plans.subscribe": "Berlangganan",
   "toast.subscribed": "Langganan berhasil! Selamat menikmati.",
   "toast.stopped": "Langganan kamu dihentikan di Jazz.",

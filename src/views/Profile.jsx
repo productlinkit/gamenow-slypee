@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
 import CodeBoxes from "../components/CodeBoxes.jsx";
 import { mask } from "../lib/phone.js";
-import { AVATARS, AVATAR_BY_ID, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, SupportIcon } from "../components/icons.jsx";
+import { AVATARS, AVATAR_BY_ID, CrownIcon, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, SupportIcon } from "../components/icons.jsx";
+import { statusKey } from "../lib/subscription.js";
 import { stats, dur } from "../lib/history.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
@@ -177,7 +178,7 @@ function EditProfile({ user, save, cancel }) {
   );
 }
 
-function PlayerCard({ user, login, logout, notify, history, go }) {
+function PlayerCard({ user, login, logout, notify, history, go, sub, subscribed }) {
   const t = useT();
   const st = stats(history);
   const [editing, setEditing] = useState(false);
@@ -212,6 +213,14 @@ function PlayerCard({ user, login, logout, notify, history, go }) {
       <Reveal as="section" className="card-panel info-menu" i={3}>
         <h2>{t("info.heading")}</h2>
         <ul>
+          <li>
+            <a href="#plans" onClick={e => { e.preventDefault(); go("plans"); }}>
+              <span className="im-ico" aria-hidden="true"><CrownIcon /></span>
+              <span className="im-label">{t(subscribed ? "profile.managePlan" : "info.plans")}</span>
+              <span className="im-value">{t(`settings.state.${statusKey(sub)}`)}</span>
+              <svg className="im-chev flip-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </a>
+          </li>
           {INFO_MENU.map(([id, icon]) => (
             <li key={id}>
               <a href={`#${id}`} onClick={e => { e.preventDefault(); go(id); }}>
@@ -249,12 +258,12 @@ function Agree({ go }) {
   );
 }
 
-export default function Profile({ active, user, login, logout, notify, history, go }) {
+export default function Profile({ active, user, login, logout, notify, history, go, sub, subscribed }) {
   return (
     <div className="view" hidden={!active}>
       <section className={user ? undefined : "center-col"}>
       <Reveal className="head"><h2 className="title"><Title k={user ? "title.profile" : "title.login"} /></h2></Reveal>
-      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} /> : <LoginCard login={login} notify={notify} go={go} />}
+      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} sub={sub} subscribed={subscribed} /> : <LoginCard login={login} notify={notify} go={go} />}
       </section>
     </div>
   );
