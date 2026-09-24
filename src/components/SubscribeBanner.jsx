@@ -1,13 +1,34 @@
 import { Reveal } from "../lib/reveal.jsx";
-import { BellIcon, CrownIcon } from "./icons.jsx";
+import { BellIcon, ClockIcon, CrownIcon, LockIcon } from "./icons.jsx";
 import { TRIAL_DAYS, daysToRenewal, onDate, renewalSoon } from "../lib/subscription.js";
 import { useI18n } from "../i18n/index.jsx";
 
 /* One band, two jobs. No subscription → the offer, opening the same pop-up as everywhere
    else. Subscribed and renewing in the next few days → the reminder the settings toggle
    switches on, so nobody is surprised by a charge. Otherwise nothing. */
-export default function SubscribeBanner({ sub, subscribed, onSubscribe, go }) {
+export default function SubscribeBanner({ sub, subscribed, onSubscribe, go, result, onRetry, onStatus, clearResult }) {
   const { t, lang } = useI18n();
+
+  /* just back from the subscription window without a confirmed subscription */
+  if (result && !subscribed) {
+    const unknown = result === "unknown";
+    return (
+      <Reveal className={"sub-band " + (unknown ? "waiting" : "missed")} i={1}>
+        <span className="sb-ico" aria-hidden="true">{unknown ? <ClockIcon /> : <LockIcon />}</span>
+        <span className="txt">
+          <b>{t(`back.${unknown ? "unknown" : result}Title`)}</b>
+          <small>{t(`back.${unknown ? "unknown" : result}Text`, { name: "Slypee Games" })}</small>
+        </span>
+        <span className="sb-actions">
+          {unknown
+            ? <button type="button" className="chip" onClick={onStatus}>{t("back.check")}</button>
+            : <button type="button" className="chip" onClick={() => go("help")}>{t("info.help")}</button>}
+          <button type="button" className="btn-play" onClick={onRetry}>{t("back.again")}</button>
+        </span>
+        <button type="button" className="sb-x" aria-label={t("common.dismiss")} onClick={clearResult}>✕</button>
+      </Reveal>
+    );
+  }
 
   if (subscribed) {
     if (!renewalSoon(sub)) return null;

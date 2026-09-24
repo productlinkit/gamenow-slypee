@@ -15,22 +15,27 @@ import { GAMES } from "./games.js";
 
 export const SERVICE = { name: "Slypee Games", shortcode: "9825", unsub: "UNSUB", status: "STATUS" };
 
-/* Where Subscribe sends people: Jazz's own sign-in page for Slypee.
-     https://services.jazz.com.pk/signin/Slypee?ref=15&var=1&camp=Slypee_Default
-   ref / var / camp are Jazz's attribution parameters, and the defaults below are the organic
-   entry — someone who found the portal on their own, through no campaign. A visitor who did
-   arrive through a campaign carries their own values in the portal's URL; those are captured
-   on arrival and passed straight through, so Jazz attributes the subscription correctly.
+/* Where Subscribe sends people.
 
-   Note the page takes no plan: the package is chosen and confirmed on Jazz's side, which is
-   why the portal only shows what the plans cost. */
+   The subscription page is its own page on its own address (public/subscribe.html). Leave
+   SUBSCRIBE_ORIGIN empty and it is served from this host; set it to the separate subdomain
+   once DNS points there — e.g. "https://subscribe.slypee.pk" — and nothing else changes,
+   because the page talks back to the portal by postMessage and the origin below is the only
+   one the portal will listen to.
+
+   Jazz's own page (below) needs a live Jazz data connection, so it can't be walked through
+   anywhere else; switch to it with USE_JAZZ_LP when that's wanted. Either way ref / var / camp
+   are Jazz's attribution parameters, and the defaults are the organic entry — someone who
+   found the portal on their own. A visitor who arrived through a campaign carries their own
+   values in the portal's URL; those are captured on arrival and passed straight through. */
 export const JAZZ = {
   url: "https://services.jazz.com.pk/signin/Slypee",
   params: { ref: "15", var: "1", camp: "Slypee_Default" }
 };
-/* true → use the offline stand-in in public/ instead, for demos with no Jazz page */
-export const USE_DEMO_LP = false;
-export const DEMO_LP = "/jazz-subscribe.html";
+export const SUBSCRIBE_ORIGIN = "";                  // "" = same host; else "https://subscribe.…"
+export const SUBSCRIBE_PAGE = "/subscribe.html";
+/* true → hand over to Jazz's own page instead of ours (needs a live Jazz connection) */
+export const USE_JAZZ_LP = false;
 
 export const TRIAL_DAYS = 1;
 const DAY = 864e5;
@@ -104,20 +109,56 @@ export function captureCampaign(search = "") {
 export const campaign = () => ({ ...JAZZ.params, ...(read(CAMP_KEY, null) || {}) });
 export const isOrganic = () => !read(CAMP_KEY, null);
 
-/* Where the stand-in page sends players back to. Jazz's real page returns them to the URL
-   configured on their side, so this is only used by the demo landing page. */
+/* Where the subscription page sends the player back to: the home page, ready to play —
+   this is a VAS sign-up, not a shop checkout, so there's nothing to review afterwards.
+   (Jazz's own page returns them to the URL configured on their side.) */
 export const returnUrl = () => {
-  try { return location.origin + location.pathname + "#plans"; } catch (_) { return "#plans"; }
+  try { return location.origin + location.pathname + "#home"; } catch (_) { return "#home"; }
 };
 
 export function jazzUrl(action = "subscribe") {
   const params = campaign();
-  if (!USE_DEMO_LP) {
-    const url = new URL(JAZZ.url);
+  if (USE_JAZZ_LP) {
+    const url = new URL(JAZZ.url);                      // Jazz's page sets its own return
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
     return url.toString();
   }
-  return `${DEMO_LP}?${new URLSearchParams({ ...params, action, return_url: returnUrl() })}`;
+  const q = new URLSearchParams({ ...params, action, mode: "window", return_url: returnUrl() });
+  return `${SUBSCRIBE_ORIGIN}${SUBSCRIBE_PAGE}?${q}`;
+}
+
+/* The one origin the portal accepts a subscription result from */
+export const subscribeOrigin = () => {
+  if (!SUBSCRIBE_ORIGIN) { try { return location.origin; } catch (_) { return ""; } }
+  try { return new URL(SUBSCRIBE_ORIGIN).origin; } catch (_) { return SUBSCRIBE_ORIGIN; }
+};
+
+/* Open the subscription page in its own window, so the portal stays where it is and can
+   pick the result up the moment it lands. Returns the window, or null if the browser blocked
+   it — in which case the caller navigates instead and the page comes back by redirect. */
+export function openSubscribeWindow(action = "subscribe") {
+  const url = jazzUrl(action);
+  try {
+    const w = window.open(url, "slypee-subscribe", "popup=yes,width=480,height=780,noopener=no");
+    if (w) { w.focus?.(); return w; }
+  } catch (_) { /* blocked */ }
+  location.assign(url);
+  return null;
+}
+
+/* A result posted back by that window. Anything that isn't ours is ignored. */
+export function readMessage(origin, data) {
+  if (origin !== subscribeOrigin()) return null;
+  if (!data || typeof data !== "object" || data.source !== "slypee-subscribe") return null;
+  const state = String(data.sub || "");
+  if (!["success", "cancelled", "failed"].includes(state)) return null;
+  return {
+    state,
+    trial: data.trial === "1" || data.trial === true,
+    renews: Number(data.renews) || 0,
+    txn: typeof data.txn === "string" ? data.txn.slice(0, 32) : "",
+    action: data.action === "unsub" ? "unsub" : "subscribe"
+  };
 }
 
 /* Remember that we sent them out, so a return without a result still makes sense */

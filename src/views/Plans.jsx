@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
-import { ClockIcon, CrownIcon, LockIcon, SimIcon } from "../components/icons.jsx";
+import { CrownIcon, SimIcon } from "../components/icons.jsx";
 import { COUNTS, SERVICE, TRIAL_DAYS, active, hoursLeft, jazzUrl, markPending, onDate, onDateTime, statusKey } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
@@ -29,7 +29,7 @@ const Row = ({ k, children }) => {
   return <div className="sum-row"><dt>{t(k)}</dt><dd>{children}</dd></div>;
 };
 
-export default function Plans({ sub, result, intent, onSubscribe, onStatus, clearResult, clearIntent, go, back }) {
+export default function Plans({ sub, intent, onSubscribe, clearIntent, go, back }) {
   const { t, lang } = useI18n();
   const has = active(sub);
 
@@ -39,59 +39,13 @@ export default function Plans({ sub, result, intent, onSubscribe, onStatus, clea
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>{t("common.back")}
       </button>
 
-      <section className={has && !result ? undefined : "center-col"}>
+      <section className={has ? undefined : "center-col"}>
         <Reveal className="head"><h2 className="title"><Title k={has ? "title.plans" : "title.subscribe"} /></h2></Reveal>
 
-        {result === "success" && (
-          <Reveal as="section" className="card-panel sub narrow done" i={1}>
-            <span className="done-ico"><CrownIcon /></span>
-            <h2>{t("done.title")}</h2>
-            <p>{sub?.renews
-              ? t(sub.trial ? "done.trial" : "done.text", { date: onDate(sub.renews, lang), n: TRIAL_DAYS })
-              : t("done.plain", { name: SERVICE.name })}</p>
-            <ul className="perks">
-              <li>{t("done.p1", { n: COUNTS.all })}</li>
-              {sub?.renews && <li>{t("done.p2", { date: onDate(sub.renews, lang) })}</li>}
-              <li>{t("done.p3", { word: SERVICE.unsub, to: SERVICE.shortcode })}</li>
-            </ul>
-            <div className="edit-actions">
-              <button type="button" className="chip" onClick={clearResult}>{t("done.manage")}</button>
-              <button type="button" className="btn-play" onClick={() => go("home")}>{t("done.play")}</button>
-            </div>
-          </Reveal>
-        )}
-
-        {/* back from Jazz with nothing to go on — the normal case when Jazz appends no result */}
-        {result === "unknown" && (
-          <Reveal as="section" className="card-panel sub narrow done" i={1}>
-            <span className="done-ico waiting"><ClockIcon /></span>
-            <h2>{t("back.unknownTitle")}</h2>
-            <p>{t("back.unknownText", { name: SERVICE.name, word: SERVICE.status, to: SERVICE.shortcode })}</p>
-            <div className="edit-actions">
-              <button type="button" className="chip" onClick={() => onSubscribe()}>{t("back.again")}</button>
-              <button type="button" className="btn-play" onClick={onStatus}>{t("back.check")}</button>
-            </div>
-            <p className="hint fine-print">{t("back.apiNote")}</p>
-          </Reveal>
-        )}
-
-        {(result === "cancelled" || result === "failed") && (
-          <Reveal as="section" className="card-panel sub narrow done" i={1}>
-            <span className="done-ico low"><LockIcon /></span>
-            <h2>{t(`back.${result}Title`)}</h2>
-            <p>{t(`back.${result}Text`, { name: SERVICE.name })}</p>
-            <div className="edit-actions">
-              <button type="button" className="chip" onClick={() => go("help")}>{t("info.help")}</button>
-              <button type="button" className="btn-play" onClick={() => { clearResult(); onSubscribe(); }}>{t("back.again")}</button>
-            </div>
-            <p className="hint fine-print">{t("back.note", { word: SERVICE.unsub, to: SERVICE.shortcode })}</p>
-          </Reveal>
-        )}
-
-        {has && !result && <Mirror sub={sub} go={go} intent={intent} clearIntent={clearIntent} />}
+        {has && <Mirror sub={sub} go={go} intent={intent} clearIntent={clearIntent} />}
 
         {/* the offer, and the one button that starts it */}
-        {!has && !result && (
+        {!has && (
           <div className="two tight">
             <Reveal as="section" className="card-panel sub offer" i={1}>
               <span className="offer-ico"><CrownIcon /></span>

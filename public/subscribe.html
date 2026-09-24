@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#221A16" />
+<meta name="robots" content="noindex" />
+<title>Subscribe — Slypee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap">
+<!--
+  Slypee's own subscription page, on its own URL and separate from the portal app.
+  The portal's Subscribe button hands over to here (see src/lib/subscription.js), the
+  subscription is taken out here, and the player is sent back to `return_url` with the result.
+
+  In:   ?ref=15&var=1&camp=Slypee_Default&action=subscribe|manage|unsub&return_url=…
+  Out:  postMessage to the opener, or <return_url>?sub=success&trial=1&renews=<epoch ms>&txn=…
+        <return_url>?sub=cancelled
+
+  Demo rules: any number is accepted, no code is sent and nothing is charged. Swap
+  JAZZ.url back in src/lib/subscription.js when the real operator page takes over.
+-->
+<style>
+  /* Slypee tokens, same as the portal's src/index.css */
+  :root {
+    --red: #DB2417; --red-deep: #A3180D; --sun: #FACC3E; --sun-deep: #B98208;
+    --ink: #221A16; --paper: #FFFBF4; --paper-2: #F4E6CF; --muted: #7B604F; --leaf: #2FA846;
+    --lift: 0 8px 22px rgba(28,72,120,.18); --lift-lg: 0 12px 32px rgba(28,72,120,.24);
+    --glass-strong: rgba(255,255,255,.88); --glass-line: rgba(255,255,255,.95);
+    --blur: blur(16px) saturate(1.4);
+    --display: "Lilita One", "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
+    --body: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; min-height: 100vh; background: #7CC4F2; color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; -webkit-tap-highlight-color: transparent; }
+  img { max-width: 100%; display: block; }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  .world { position: fixed; inset: -4% 0; z-index: -1; background: #7CC4F2 url("/assets/bg-mobile.jpg") center top / cover no-repeat; }
+  .world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(34,26,22,.25) 0%, rgba(34,26,22,0) 20%, rgba(34,26,22,0) 70%, rgba(34,26,22,.2) 100%); }
+  @media (min-width: 960px), (min-aspect-ratio: 1/1) { .world { background-image: url("/assets/bg-desktop.jpg"); background-position: center; } }
+
+  /* header: the portal's own lockup */
+  .top { position: sticky; top: 0; z-index: 5; background: rgba(34,26,22,.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .top-in { max-width: 560px; margin: 0 auto; padding: 0 20px; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .brand img { height: 40px; width: auto; margin-inline-start: -8px; }
+  .partner { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 999px; background: rgba(255,247,232,.1); color: var(--paper); font-family: var(--display); font-size: 13px; white-space: nowrap; }
+  .partner small { font-family: var(--body); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
+  .partner img { height: 12px; width: auto; }
+
+  main { max-width: 560px; margin: 0 auto; padding: 22px 20px 48px; display: flex; flex-direction: column; gap: 18px; }
+  .title { margin: 0; text-align: center; font-family: var(--display); font-weight: 400; font-size: clamp(26px, 8vw, 36px); line-height: 1.05; color: #fff; -webkit-text-stroke: 5px var(--ink); paint-order: stroke fill; text-shadow: 0 4px 0 var(--ink); }
+  .title .hot { color: var(--sun); }
+
+  .card { background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1.5px solid var(--glass-line); border-radius: 22px; box-shadow: var(--lift-lg); padding: 20px; animation: rise .45s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+  .steps { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+  .steps i { width: 8px; height: 8px; border-radius: 999px; background: var(--paper-2); transition: width .3s, background-color .3s; }
+  .steps i.on { width: 22px; background: var(--red); }
+  .card h2 { margin: 0 0 4px; font-family: var(--display); font-weight: 400; font-size: 21px; line-height: 1.2; }
+  .card .lede { margin: 0 0 18px; font-size: 14px; font-weight: 600; color: var(--muted); }
+  label.field { display: block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+
+  /* country + number, drawn as one field (same as the portal's login) */
+  .phone-field { display: flex; align-items: stretch; height: 52px; border: 2px solid var(--paper-2); border-radius: 14px; background: #fff; transition: border-color .15s, box-shadow .15s; }
+  .phone-field:focus-within { border-color: var(--sun); box-shadow: 0 0 0 3px rgba(250,204,62,.3); }
+  .cc { position: relative; display: flex; align-items: center; gap: 6px; flex: none; padding: 0 10px 0 13px; border-right: 2px solid var(--paper-2); cursor: pointer; font-weight: 800; }
+  .cc:hover { background: #FFF8EA; border-radius: 12px 0 0 12px; }
+  .cc .flag { font-size: 19px; }
+  .cc .dial { font-size: 15px; font-variant-numeric: tabular-nums; }
+  .cc .chev { width: 12px; height: 12px; color: var(--muted); }
+  .cc select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+  .phone-field input { flex: 1; min-width: 0; border: 0; background: none; padding: 0 14px; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; outline: none; }
+  .demo-hint { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding: 9px 9px 9px 13px; border-radius: 12px; background: rgba(250,204,62,.25); border: 1.5px dashed var(--sun-deep); font-size: 13px; font-weight: 700; }
+  .err { margin: 10px 0 0; color: var(--red); font-size: 13px; font-weight: 800; }
+
+  /* packages */
+  /* the charge, spelled out before the button */
+
+  .sum { margin: 0 0 16px; }
+  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--paper-2); }
+  .row:last-child { border-bottom: 0; }
+  .row dt { font-size: 12.5px; font-weight: 800; color: var(--muted); }
+  .row dd { margin: 0; font-size: 14px; font-weight: 700; text-align: end; }
+  .consent { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 14px; background: rgba(250,204,62,.18); box-shadow: inset 0 0 0 1.5px var(--sun); font-size: 13px; font-weight: 700; cursor: pointer; }
+  .consent input { width: 22px; height: 22px; flex: none; margin: 0; accent-color: var(--red); }
+
+  .btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; padding: 15px 18px 13px; border: 0; border-radius: 14px; cursor: pointer; font-family: var(--display); font-weight: 400; font-size: 17px; letter-spacing: .02em; line-height: 1; color: #fff; background: var(--red); box-shadow: inset 0 -3px 0 var(--red-deep), 0 4px 10px rgba(219,36,23,.3); transition: transform .08s, background-color .12s; }
+  .btn:hover { background: #E83424; }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .chip { padding: 8px 13px 7px; border: 0; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--paper-2); font-weight: 700; font-size: 13px; cursor: pointer; flex: none; }
+  .chip:hover { box-shadow: inset 0 0 0 2px var(--sun); }
+  .link { display: block; margin: 14px auto 0; background: none; border: 0; padding: 0; cursor: pointer; font-weight: 800; font-size: 14px; color: var(--red); text-decoration: underline; text-underline-offset: 2px; }
+
+  .legal { margin: 0; text-align: center; font-size: 12px; font-weight: 600; color: var(--paper); text-shadow: 0 1px 3px rgba(34,26,22,.5); }
+  .done-card { text-align: center; }
+  .done-ico { width: 74px; height: 74px; margin: 0 auto 12px; border-radius: 24px; background: var(--sun); display: grid; place-items: center; box-shadow: inset 0 -4px 0 var(--sun-deep); }
+  .done-ico svg { width: 50px; height: 50px; }
+  .dim { opacity: .55; }
+  .bar { height: 8px; border-radius: 999px; background: var(--paper-2); overflow: hidden; margin-top: 16px; }
+  .bar i { display: block; height: 100%; width: 40%; border-radius: 999px; background: var(--leaf); animation: slide 1.2s ease-in-out infinite; }
+  @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+  <div class="world" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="top-in">
+      <span class="brand"><img src="/assets/slypee-logo.png" alt="Slypee" width="310" height="130" /></span>
+      <span class="partner"><small>with</small><img src="/assets/gamenow-logo.png" alt="GameNow" width="547" height="65" /></span>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="title">Subscribe to <span class="hot">Slypee</span></h1>
+
+    <!-- 1. the number the subscription runs on -->
+    <section class="card" id="step-phone">
+      <div class="steps"><i class="on"></i><i></i></div>
+      <h2>Your mobile number</h2>
+      <p class="lede">The subscription runs on this number, and the charge comes off its balance.</p>
+      <label class="field" for="msisdn">Mobile number</label>
+      <div class="phone-field" dir="ltr">
+        <label class="cc" id="cc">
+          <span class="flag" id="flag">🇵🇰</span>
+          <span class="dial" id="dial">+92</span>
+          <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <select id="country" aria-label="Country code"></select>
+        </label>
+        <input id="msisdn" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="300 1234567" />
+      </div>
+      <div class="demo-hint">
+        <span>Demo page — any number works, nothing is sent or charged.</span>
+        <button type="button" class="chip" id="fill">Fill a number</button>
+      </div>
+      <p class="err" id="phone-err" hidden></p>
+      <button type="button" class="btn" id="to-confirm">Continue</button>
+      <button type="button" class="link" id="cancel">Cancel and go back</button>
+    </section>
+
+    <!-- 2. what it costs, and the confirmation -->
+    <section class="card" id="step-confirm" hidden>
+      <div class="steps"><i class="on"></i><i class="on"></i></div>
+      <h2>Confirm your subscription</h2>
+      <p class="lede">This is exactly what you're agreeing to. Nothing is charged until you confirm.</p>
+      <dl class="sum" id="sum"></dl>
+      <label class="consent">
+        <input type="checkbox" id="agree" />
+        <span id="agree-text"></span>
+      </label>
+      <button type="button" class="btn" id="confirm" disabled>Subscribe</button>
+      <button type="button" class="link" id="back">Change number</button>
+    </section>
+
+    <!-- 3. short hand-off back to the portal -->
+    <section class="card done-card" id="step-done" hidden>
+      <div class="done-ico">
+        <svg viewBox="0 0 36 36" fill="none" stroke="#221A16" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l5.5 4L18 7l7.5 9L31 12l-2.5 16h-21z" fill="#FACC3E" /><path class="dim" d="M12.5 22.5h11" stroke-width="2.2" /><circle cx="18" cy="19" r="1.6" fill="#DB2417" stroke-width="1.6" />
+        </svg>
+      </div>
+      <h2>You're subscribed!</h2>
+      <p class="lede" id="done-text">Taking you back to Slypee…</p>
+      <div class="bar"><i></i></div>
+    </section>
+
+    <p class="legal" id="legal"></p>
+  </main>
+
+<script>
+  /* A value-added service: one subscription, taken from the number's balance. There is no
+     package to choose — the rate below is the one from Slypee's own subscription notice, and
+     it is the only figure on this page. */
+  var CHARGE = { amount: 12, per: "day", every: "every day" };
+
+  var COUNTRIES = [
+    ["PK", "🇵🇰", "Pakistan", "+92", "300 1234567"],
+    ["ID", "🇮🇩", "Indonesia", "+62", "812 3456 7890"],
+    ["IN", "🇮🇳", "India", "+91", "98765 43210"],
+    ["BD", "🇧🇩", "Bangladesh", "+880", "1712 345678"],
+    ["MY", "🇲🇾", "Malaysia", "+60", "12 345 6789"],
+    ["SG", "🇸🇬", "Singapore", "+65", "8123 4567"],
+    ["PH", "🇵🇭", "Philippines", "+63", "917 123 4567"],
+    ["TH", "🇹🇭", "Thailand", "+66", "81 234 5678"],
+    ["VN", "🇻🇳", "Vietnam", "+84", "91 234 56 78"],
+    ["SA", "🇸🇦", "Saudi Arabia", "+966", "50 123 4567"],
+    ["AE", "🇦🇪", "UAE", "+971", "50 123 4567"],
+    ["TR", "🇹🇷", "Türkiye", "+90", "532 123 45 67"],
+    ["EG", "🇪🇬", "Egypt", "+20", "100 123 4567"],
+    ["NG", "🇳🇬", "Nigeria", "+234", "802 123 4567"],
+    ["KE", "🇰🇪", "Kenya", "+254", "712 345678"],
+    ["GB", "🇬🇧", "United Kingdom", "+44", "7400 123456"],
+    ["US", "🇺🇸", "United States", "+1", "201 555 0123"]
+  ].map(function (c) { return { id: c[0], flag: c[1], name: c[2], dial: c[3], example: c[4] }; });
+
+  var TRIAL_DAYS = 1, DAY = 864e5;
+  var q = new URLSearchParams(location.search);
+  var action = q.get("action") || "subscribe";
+  var country = COUNTRIES[0];
+  var $ = function (id) { return document.getElementById(id); };
+  var money = function (n) { return "PKR " + n.toLocaleString("en-US"); };
+  var onDate = function (ts) { return new Date(ts).toLocaleDateString("en-GB", { day: "numeric", month: "short" }); };
+
+  /* Opened in its own window by the portal → hand the result straight back and close, so the
+     player is returned to the tab they started in. Opened on its own (popup blocked, or the
+     link shared) → fall back to redirecting to return_url. */
+  function finish(params) {
+    var target = portalOrigin();
+    if (q.get("mode") === "window" && window.opener && !window.opener.closed && target) {
+      try {
+        window.opener.postMessage(Object.assign({ source: "slypee-subscribe" }, params), target);
+        window.close();
+        showClosing();
+        return;
+      } catch (e) { /* fall through to the redirect */ }
+    }
+    goBack(params);
+  }
+
+  function portalOrigin() {
+    try { return new URL(q.get("return_url") || "/", location.origin).origin; } catch (e) { return location.origin; }
+  }
+
+  /* window.close() is ignored in a few browsers — say so rather than sit there */
+  function showClosing() {
+    setTimeout(function () {
+      $("step-phone").hidden = true; $("step-confirm").hidden = true; $("step-done").hidden = false;
+      $("step-done").querySelector("h2").textContent = "All done";
+      $("done-text").textContent = "You can close this window and carry on playing.";
+      var bar = $("step-done").querySelector(".bar"); if (bar) bar.hidden = true;
+    }, 400);
+  }
+
+  /* only ever return to where we came from */
+  function goBack(params) {
+    var raw = q.get("return_url") || "/";
+    var url;
+    try { url = new URL(raw, location.origin); } catch (e) { url = new URL("/", location.origin); }
+    if (url.origin !== location.origin) url = new URL("/", location.origin);
+    Object.keys(params).forEach(function (k) { url.searchParams.set(k, params[k]); });
+    location.replace(url.toString());
+  }
+
+  /* ---- the number ---- */
+  $("country").innerHTML = COUNTRIES.map(function (c) {
+    return '<option value="' + c.id + '">' + c.flag + " " + c.name + " (" + c.dial + ")</option>";
+  }).join("");
+  $("country").onchange = function (e) {
+    var picked = e.target.value;
+    country = COUNTRIES.find(function (c) { return c.id === picked; }) || COUNTRIES[0];
+    $("flag").textContent = country.flag;
+    $("dial").textContent = country.dial;
+    $("msisdn").placeholder = country.example;
+    $("phone-err").hidden = true;
+    drawTerms();
+  };
+  $("msisdn").oninput = function () {
+    this.value = this.value.replace(/[^\d\s-]/g, "").slice(0, 18);
+    $("phone-err").hidden = true;
+    drawTerms();
+  };
+  $("fill").onclick = function () { $("msisdn").value = country.example; $("phone-err").hidden = true; };
+
+  $("to-confirm").onclick = function () {
+    var digits = $("msisdn").value.replace(/\D/g, "");
+    if (digits.length < 4) {                       // any number will do, it just can't be empty
+      $("phone-err").textContent = "Enter a number — any digits are fine on this demo page.";
+      $("phone-err").hidden = false;
+      $("msisdn").focus();
+      return;
+    }
+    drawTerms();
+    $("step-phone").hidden = true;
+    $("step-confirm").hidden = false;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  $("back").onclick = function () { $("step-confirm").hidden = true; $("step-phone").hidden = false; };
+
+  /* ---- what subscribing costs, spelled out before the button ---- */
+  function drawTerms() {
+    var digits = $("msisdn").value.replace(/\D/g, "");
+    var firstCharge = Date.now() + TRIAL_DAYS * DAY;
+    var rows = [
+      ["Service", "Slypee Games"],
+      ["Number", country.dial + " " + digits],
+      ["Charge", money(CHARGE.amount) + " per " + CHARGE.per + ", incl. tax"],
+      ["Taken from", "Your mobile balance"],
+      ["Free trial", TRIAL_DAYS + " day, free"],
+      ["First charge", money(CHARGE.amount) + " on " + onDate(firstCharge)],
+      ["Stopping", "UNSUB to 9825, any time"]
+    ];
+    $("sum").innerHTML = rows.map(function (r) {
+      return '<div class="row"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
+    }).join("");
+    $("agree-text").textContent = "I agree that " + money(CHARGE.amount) + " is taken from my balance " +
+      CHARGE.every + ", after the free day, until I stop the subscription.";
+  }
+
+  $("agree").onchange = function () { $("confirm").disabled = !this.checked; };
+
+  $("confirm").onclick = function () {
+    $("step-confirm").hidden = true;
+    $("step-done").hidden = false;
+    $("done-text").textContent = "Your free day has started. Taking you back to Slypee…";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(function () {
+      finish({
+        sub: "success", action: action, trial: "1",
+        renews: String(Date.now() + TRIAL_DAYS * DAY),
+        txn: "SL" + Math.random().toString(36).slice(2, 8).toUpperCase()
+      });
+    }, 1600);
+  };
+
+  $("cancel").onclick = function () { finish({ sub: "cancelled", action: action }); };
+
+  /* stopping comes through the same page */
+  if (action === "unsub") {
+    $("step-phone").hidden = true;
+    $("step-confirm").hidden = true;
+    $("step-done").hidden = false;
+    $("step-done").querySelector("h2").textContent = "Stop your subscription?";
+    $("done-text").innerHTML = "You keep playing until the period you paid for ends.";
+    $("step-done").querySelector(".bar").hidden = true;
+    var stop = document.createElement("button");
+    stop.className = "btn"; stop.textContent = "Stop the subscription";
+    stop.onclick = function () { finish({ sub: "success", action: "unsub", txn: "SL" + Math.random().toString(36).slice(2, 8).toUpperCase() }); };
+    var keep = document.createElement("button");
+    keep.className = "link"; keep.textContent = "Keep it running";
+    keep.onclick = function () { finish({ sub: "cancelled", action: "unsub" }); };
+    $("step-done").append(stop, keep);
+  }
+
+  var camp = ["ref", "var", "camp"].filter(function (k) { return q.get(k); })
+    .map(function (k) { return k + "=" + q.get(k); }).join(" · ");
+  $("legal").textContent = "Prices include tax. Demo page — no real subscription is created." + (camp ? "  ·  " + camp : "");
+</script>
+</body>
+</html>

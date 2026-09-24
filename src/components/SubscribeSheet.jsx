@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 import { CrownIcon, SimIcon } from "./icons.jsx";
-import { SERVICE, TRIAL_DAYS, jazzUrl, markPending } from "../lib/subscription.js";
+import { SERVICE, TRIAL_DAYS } from "../lib/subscription.js";
 import { useT } from "../i18n/index.jsx";
 
 /* The pop-up an organic visitor gets after tapping Subscribe: the ways this service can be
    subscribed to. Today that's Jazz alone — one <li> per method keeps room for the next one.
    Picking Jazz hands the player to Jazz's own sign-in page, which takes the confirmation and
    the payment; they come back to the portal once it's done. */
-export default function SubscribeSheet({ onClose }) {
+export default function SubscribeSheet({ onPick, onClose }) {
   const t = useT();
   const ref = useRef(null);
 
@@ -25,11 +25,6 @@ export default function SubscribeSheet({ onClose }) {
     return () => { html.style.overflow = prev; };
   }, []);
 
-  const goToJazz = () => {
-    markPending("subscribe");                       // so a return with no result still makes sense
-    location.assign(jazzUrl("subscribe"));          // → services.jazz.com.pk/signin/Slypee
-  };
-
   return (
     <>
       <div className="sheet-backdrop" onClick={onClose} />
@@ -41,7 +36,7 @@ export default function SubscribeSheet({ onClose }) {
 
         <ul className="methods">
           <li>
-            <button type="button" className="method" ref={ref} onClick={goToJazz}>
+            <button type="button" className="method" ref={ref} onClick={onPick}>
               <span className="method-logo" aria-hidden="true"><SimIcon /></span>
               <span className="method-txt">
                 <b>{t("sheet.jazz")}</b>

@@ -14,7 +14,10 @@ import Plans from "./views/Plans.jsx";
 import { INFO_PAGES } from "./content/info.js";
 import { byId, gameId } from "./lib/games.js";
 import { loadHistory, startPlay, finishPlay, rate, dur } from "./lib/history.js";
-import { active, adoptFreeDay, applyReturn, captureCampaign, checkStatus, clearPending, clearSub, loadPending, loadSub, readReturn } from "./lib/subscription.js";
+import {
+  active, adoptFreeDay, applyReturn, captureCampaign, checkStatus, clearPending, clearSub,
+  loadPending, loadSub, markPending, openSubscribeWindow, readMessage, readReturn
+} from "./lib/subscription.js";
 import { useT } from "./i18n/index.jsx";
 
 const VIEWS = ["home", "html5", "library", "profile", "plans", ...INFO_PAGES];
@@ -55,7 +58,8 @@ export default function App() {
     if (from === "game" && scrollMemo.current[view] != null) window.scrollTo({ top: scrollMemo.current[view], behavior: "auto" });
     else window.scrollTo({ top: 0, behavior: shown.current.has(view) ? "smooth" : "auto" });
     shown.current.add(view);
-    if (view !== "plans") { setResult(null); setPlanIntent(null); }   // both belong to that visit only
+    if (view !== "home") setResult(null);        // the "back from subscribing" card belongs to home
+    if (view !== "plans") setPlanIntent(null);
     try { history.replaceState(null, "", "#" + view); } catch (_) {}
   }, [nav]);
 
@@ -66,16 +70,6 @@ export default function App() {
   /* The Slypee plan (lib/subscription.js): a mirror of the subscription Jazz runs.
      Logging out doesn't stop it — the subscription belongs to the number, not the browser tab. */
   const [sub, setSub] = useState(loadSub);
-  const [subSheet, setSubSheet] = useState(null);   // the "how do you want to subscribe" pop-up
-  const [result, setResult] = useState(null);       // what came back from the Jazz landing page
-  const [planIntent, setPlanIntent] = useState(null);  // "cancel" → open the stop step on #plans
-  const openSubscribe = useCallback(() => {
-    setSubSheet({});
-    try { if (!history.state?.subscribe) history.pushState({ subscribe: true }, ""); } catch (_) {}
-  }, []);
-  const closeSubscribe = useCallback(() => {
-    if (history.state?.subscribe) history.back(); else setSubSheet(null);
-  }, []);
   useEffect(() => {
     // older demo accounts kept their free day on the user as `freeUntil`
     if (!user?.freeUntil) return;
@@ -83,6 +77,17 @@ export default function App() {
     setUser(u => { const { freeUntil, ...rest } = u; return rest; });
     if (carried) setSub(carried);
   }, [user?.freeUntil]);
+
+  const [subSheet, setSubSheet] = useState(null);   // the "how do you want to subscribe" pop-up
+  const [planIntent, setPlanIntent] = useState(null);  // "cancel" → open the stop step on #plans
+  const [result, setResult] = useState(null);       // what came back from the subscription page
+  const openSubscribe = useCallback(() => {
+    setSubSheet({});
+    try { if (!history.state?.subscribe) history.pushState({ subscribe: true }, ""); } catch (_) {}
+  }, []);
+  const closeSubscribe = useCallback(() => {
+    if (history.state?.subscribe) history.back(); else setSubSheet(null);
+  }, []);
 
   /* Warm every thumbnail after first paint so category switches never show empty tiles */
   const [warmAll, setWarmAll] = useState(false);
@@ -181,34 +186,69 @@ export default function App() {
     toastT.current = setTimeout(() => setToast(t => ({ ...t, on: false })), 2600);
   }, []);
 
-  /* Arrival and return, both read off the URL we were opened with.
-     Arrival: a campaign's ref/var/camp are kept so they still reach Jazz later (an organic
-     visit just uses the defaults). Return: Jazz's own page decides what it appends, and it
-     may append nothing at all — in that case we know only that we sent them out, so we ask
-     rather than assume. The real build settles it with Jazz's status API (checkStatus). */
+  /* One place that turns a subscription result into state, however it arrived: posted back by
+     the subscription window, or carried on the URL when the browser blocked that window and
+     the page came home by redirect. Either way the player lands on the home page, ready to
+     play — this is a VAS sign-up, not a checkout with a receipt to read. */
+  const subWindow = useRef(null);
+  const answered = useRef(false);
+  const goHome = useCallback(() => setNav(p => (p.view === "home" ? p : { view: "home", n: p.n + 1 })), []);
+  const takeResult = useCallback(back => {
+    answered.current = true;
+    const applied = applyReturn(back);
+    if (applied && back.action === "unsub") { setSub(applied); setResult(null); notify(t("toast.stopped")); }
+    else if (applied) { setSub(applied); setResult(null); notify(t("toast.subscribed")); }
+    else setResult(back.state === "cancelled" ? "cancelled" : back.state === "failed" ? "failed" : "unknown");
+    setSubSheet(null);
+    goHome();
+  }, [goHome, notify, t]);
+
+  /* Opening the subscription page: its own window, so the portal stays put and picks the
+     result up the moment it lands. If the window is closed without an answer, we say so
+     rather than guess. */
+  const startSubscribe = useCallback((action = "subscribe") => {
+    answered.current = false;
+    markPending(action);
+    const win = openSubscribeWindow(action);          // null → it navigated this tab instead
+    setSubSheet(null);
+    if (!win) return;
+    subWindow.current = win;
+    const watch = setInterval(() => {
+      if (!win.closed) return;
+      clearInterval(watch);
+      if (answered.current) return;
+      clearPending();
+      setResult("unknown");
+      goHome();
+    }, 700);
+  }, [goHome]);
+
+  useEffect(() => {
+    const onMessage = e => {
+      const back = readMessage(e.origin, e.data);
+      if (!back) return;
+      takeResult(back);
+      try { subWindow.current?.close(); } catch (_) {}
+    };
+    addEventListener("message", onMessage);
+    return () => removeEventListener("message", onMessage);
+  }, [takeResult]);
+
+  /* Arrival, and the redirect fallback. A campaign's ref/var/camp are kept on arrival so they
+     still reach the subscription page later; an organic visit just uses the defaults. */
   useEffect(() => {
     const search = location.search;
     captureCampaign(search);
-    const toPlans = () => setNav(p => ({ view: "plans", n: p.n + 1 }));
-    const tidy = () => { try { history.replaceState(null, "", location.pathname + "#plans"); } catch (_) {} };
+    const tidy = () => { try { history.replaceState(null, "", location.pathname + "#home"); } catch (_) {} };
     const back = readReturn(search);
-    const pending = loadPending();
-    if (back) {
-      const applied = applyReturn(back);
-      if (applied && back.action === "unsub") { setSub(applied); notify(t("toast.stopped")); }
-      else if (applied) { setSub(applied); setResult("success"); notify(t("toast.subscribed")); }
-      else setResult(back.state === "cancelled" ? "cancelled" : "failed");
-      tidy();
-      toPlans();
-      return;
-    }
-    if (pending) { clearPending(); setResult("unknown"); toPlans(); }
+    if (back) { takeResult(back); tidy(); return; }
+    if (loadPending()) { clearPending(); setResult("unknown"); goHome(); }
   }, []);
 
   /* "Check again" on the return card: in production this is Jazz's status API answering */
   const refreshStatus = useCallback(async () => {
     const fresh = await checkStatus();
-    if (fresh) { setSub(fresh); setResult("success"); notify(t("toast.subscribed")); }
+    if (fresh) { setSub(fresh); setResult(null); notify(t("toast.subscribed")); }
     else notify(t("toast.stillWaiting"));
   }, [t, notify]);
 
@@ -248,11 +288,12 @@ export default function App() {
     <>
       <div className="world" aria-hidden="true" ref={worldRef}></div>
       <Petals />
-      <Header view={navView} go={go} loggedIn={!!user} />
+      <Header view={navView} go={go} loggedIn={!!user} subscribed={active(sub)} onSubscribe={openSubscribe} />
       <main>
         <Home
           active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory}
           sub={sub} subscribed={active(sub)} onSubscribe={openSubscribe}
+          result={result} onRetry={openSubscribe} onStatus={refreshStatus} clearResult={() => setResult(null)}
         />
         <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
         <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
@@ -262,8 +303,7 @@ export default function App() {
         />
         {view === "plans" && (
           <Plans
-            sub={sub} result={result} intent={planIntent} onSubscribe={openSubscribe} onStatus={refreshStatus}
-            clearResult={() => setResult(null)} clearIntent={() => setPlanIntent(null)}
+            sub={sub} intent={planIntent} onSubscribe={openSubscribe} clearIntent={() => setPlanIntent(null)}
             go={go} back={() => { setResult(null); go("profile"); }}
           />
         )}
@@ -286,7 +326,7 @@ export default function App() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
       </button>
       {search && <SearchSheet initialType={search.type} onClose={closeSearch} />}
-      {subSheet && <SubscribeSheet onClose={closeSubscribe} />}
+      {subSheet && <SubscribeSheet onPick={() => startSubscribe("subscribe")} onClose={closeSubscribe} />}
       <div className={"toast" + (toast.on ? " on" : "")} role="status">{toast.msg}</div>
     </>
   );

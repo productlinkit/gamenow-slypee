@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import NavTabs from "./NavTabs.jsx";
 import LangPicker from "./LangPicker.jsx";
+import { CrownIcon } from "./icons.jsx";
 import { useT } from "../i18n/index.jsx";
 
-export default function Header({ view, go, loggedIn }) {
+export default function Header({ view, go, loggedIn, subscribed, onSubscribe }) {
   const t = useT();
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -26,6 +27,12 @@ export default function Header({ view, go, loggedIn }) {
         <nav className="desk-nav" aria-label="Main"><NavTabs view={view} go={go} loggedIn={loggedIn} /></nav>
         <div className="top-actions">
           <span className="partner"><small>{t("header.with")}</small><img src="/assets/gamenow-logo.png" alt="GameNow" width="547" height="65" /></span>
+          {/* the way in, wherever the player happens to be */}
+          {!subscribed && (
+            <button type="button" className="top-sub" onClick={onSubscribe}>
+              <CrownIcon /><span>{t("plans.subscribe")}</span>
+            </button>
+          )}
           <LangPicker />
         </div>
       </div>
