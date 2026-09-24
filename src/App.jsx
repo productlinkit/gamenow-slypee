@@ -198,6 +198,11 @@ export default function App() {
   const goHome = useCallback(() => setNav(p => (p.view === "home" ? p : { view: "home", n: p.n + 1 })), []);
   const takeResult = useCallback(back => {
     answered.current = true;
+    if (back.action === "manage" && back.state !== "success") {   // "keep it running" — nothing changed
+      setResult(null);
+      goHome();
+      return;
+    }
     const applied = applyReturn(back);
     if (applied && back.action === "unsub") { setSub(applied); setResult(null); notify(t("toast.stopped")); }
     else if (applied) {
@@ -310,7 +315,7 @@ export default function App() {
         />
         {view === "plans" && (
           <Plans
-            sub={sub} onSubscribe={openSubscribe}
+            sub={sub} onSubscribe={openSubscribe} onManage={() => startSubscribe("manage")}
             go={go} back={() => { setResult(null); go("profile"); }}
           />
         )}

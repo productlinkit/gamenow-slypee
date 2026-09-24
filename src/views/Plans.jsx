@@ -1,6 +1,6 @@
 import { Reveal } from "../lib/reveal.jsx";
 import { CrownIcon, SimIcon } from "../components/icons.jsx";
-import { COUNTS, SERVICE, TRIAL_DAYS, active, hoursLeft, jazzUrl, markPending, onDate, onDateTime, statusKey } from "../lib/subscription.js";
+import { COUNTS, SERVICE, TRIAL_DAYS, active, hoursLeft, onDate, onDateTime, statusKey } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
 /* Why the plan is worth it — every line is something this service really does */
@@ -28,7 +28,7 @@ const Row = ({ k, children }) => {
   return <div className="sum-row"><dt>{t(k)}</dt><dd>{children}</dd></div>;
 };
 
-export default function Plans({ sub, onSubscribe, go, back }) {
+export default function Plans({ sub, onSubscribe, onManage, go, back }) {
   const { t, lang } = useI18n();
   const has = active(sub);
 
@@ -41,7 +41,7 @@ export default function Plans({ sub, onSubscribe, go, back }) {
       <section className={has ? undefined : "center-col"}>
         <Reveal className="head"><h2 className="title"><Title k={has ? "title.plans" : "title.subscribe"} /></h2></Reveal>
 
-        {has && <Mirror sub={sub} go={go} />}
+        {has && <Mirror sub={sub} go={go} onManage={onManage} />}
 
         {/* the offer, and the one button that starts it */}
         {!has && (
@@ -64,11 +64,9 @@ export default function Plans({ sub, onSubscribe, go, back }) {
 }
 
 /* Everything here is Jazz's to change — the portal shows what it knows and hands back over */
-function Mirror({ sub, go }) {
+function Mirror({ sub, go, onManage }) {
   const { t, lang } = useI18n();
   const status = statusKey(sub);
-
-  const toJazz = action => { markPending(action); location.assign(jazzUrl(action)); };
 
   return (
     <div className="two tight">
@@ -100,7 +98,7 @@ function Mirror({ sub, go }) {
 
         {status !== "stopped" && (
           <div className="edit-actions">
-            <button type="button" className="btn-play" onClick={() => toJazz("manage")}>{t("manage.onJazz")}</button>
+            <button type="button" className="btn-play" onClick={onManage}>{t("manage.onJazz")}</button>
           </div>
         )}
       </Reveal>
