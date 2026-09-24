@@ -95,6 +95,27 @@ export function loadSub() {
 export const active = sub => !!sub && sub.status !== "ended" && (!sub.renews || sub.renews > Date.now());
 export const statusKey = sub => (active(sub) ? (sub.trial ? "trial" : sub.status) : sub ? "ended" : "none");
 export const hoursLeft = sub => Math.ceil(Math.max(0, sub.renews - Date.now()) / 36e5);
+/* While this is a prototype the subscription and the session aren't remembered between page
+   loads: every refresh starts the flow from the beginning, so it can be walked again and
+   again. Set REMEMBER to true and a subscription lasts between visits, as it will in
+   production. `wipeAll` (the ?reset link) clears play history and saved games as well, and
+   keeps only the language. Returns what it removed. */
+export const REMEMBER = false;
+const FRESH_KEYS = [SUB_KEY, PENDING_KEY, "slypee.user", "slypee.session"];
+/* everything this portal keeps in the browser, language apart — named rather than scanned,
+   so clearing works the same wherever it runs */
+export const STORED_KEYS = [...FRESH_KEYS, "slypee.camp", "slypee.subprefs", "slypee.saved", "slypee.history", "slypee.recent"];
+
+export function startFresh({ wipeAll = false, remember = REMEMBER } = {}) {
+  let keys = [];
+  try {
+    const wanted = wipeAll ? STORED_KEYS : remember ? [] : FRESH_KEYS;
+    keys = wanted.filter(k => localStorage.getItem(k) != null);
+    keys.forEach(k => localStorage.removeItem(k));
+  } catch (_) { /* storage blocked — nothing to clear */ }
+  return keys;
+}
+
 export const clearSub = () => { write(SUB_KEY, null); write(PENDING_KEY, null); write(CAMP_KEY, null); write(PREFS_KEY, null); };
 
 /* ---------- Handover to Jazz ---------- */

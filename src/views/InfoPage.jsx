@@ -1,15 +1,14 @@
 import { INFO, UPDATED } from "../content/info.js";
 import { Reveal } from "../lib/reveal.jsx";
+import { startFresh } from "../lib/subscription.js";
 import { useI18n } from "../i18n/index.jsx";
-
-const DATA_KEYS = ["slypee.user", "slypee.saved", "slypee.history", "slypee.session", "slypee.sub", "slypee.recent", "slypee.lang"];
 
 export default function InfoPage({ id, back, go, notify, onClearData }) {
   const { t, lang, info } = useI18n();
   const page = INFO[id];
 
   const clearData = () => {
-    try { DATA_KEYS.forEach(k => localStorage.removeItem(k)); } catch (_) {}
+    startFresh({ wipeAll: true });
     onClearData();
     notify(t("info.cleared"));
   };

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
 import { CrownIcon, SimIcon } from "../components/icons.jsx";
 import { COUNTS, SERVICE, TRIAL_DAYS, active, hoursLeft, jazzUrl, markPending, onDate, onDateTime, statusKey } from "../lib/subscription.js";
@@ -29,7 +28,7 @@ const Row = ({ k, children }) => {
   return <div className="sum-row"><dt>{t(k)}</dt><dd>{children}</dd></div>;
 };
 
-export default function Plans({ sub, intent, onSubscribe, clearIntent, go, back }) {
+export default function Plans({ sub, onSubscribe, go, back }) {
   const { t, lang } = useI18n();
   const has = active(sub);
 
@@ -42,7 +41,7 @@ export default function Plans({ sub, intent, onSubscribe, clearIntent, go, back 
       <section className={has ? undefined : "center-col"}>
         <Reveal className="head"><h2 className="title"><Title k={has ? "title.plans" : "title.subscribe"} /></h2></Reveal>
 
-        {has && <Mirror sub={sub} go={go} intent={intent} clearIntent={clearIntent} />}
+        {has && <Mirror sub={sub} go={go} />}
 
         {/* the offer, and the one button that starts it */}
         {!has && (
@@ -65,10 +64,8 @@ export default function Plans({ sub, intent, onSubscribe, clearIntent, go, back 
 }
 
 /* Everything here is Jazz's to change — the portal shows what it knows and hands back over */
-function Mirror({ sub, go, intent, clearIntent }) {
+function Mirror({ sub, go }) {
   const { t, lang } = useI18n();
-  // arriving from Settings → "Stop my subscription" opens straight on the confirm step
-  const [asking, setAsking] = useState(intent === "cancel");
   const status = statusKey(sub);
 
   const toJazz = action => { markPending(action); location.assign(jazzUrl(action)); };
@@ -101,24 +98,9 @@ function Mirror({ sub, go, intent, clearIntent }) {
         {!sub.renews && <p className="plan-queued">{t("manage.noDates", { word: SERVICE.status, to: SERVICE.shortcode })}</p>}
         {status === "stopped" && <p className="plan-warn">{t(sub.renews ? "manage.stoppedNote" : "manage.stoppedPlain", { date: onDate(sub.renews, lang) })}</p>}
 
-        {asking ? (
-          <div className="cancel-box">
-            <b>{t("cancel.title")}</b>
-            <p>{t("cancel.text")}</p>
-            <ul className="perks small">
-              <li>{sub.renews ? t("cancel.keep", { date: onDate(sub.renews, lang) }) : t("cancel.keepPlain")}</li>
-              <li>{t("cancel.noCharge")}</li>
-              <li>{t("cancel.sms", { word: SERVICE.unsub, to: SERVICE.shortcode })}</li>
-            </ul>
-            <div className="edit-actions">
-              <button type="button" className="chip" onClick={() => { setAsking(false); clearIntent?.(); }}>{t("cancel.back")}</button>
-              <button type="button" className="btn-play danger" onClick={() => toJazz("unsub")}>{t("cancel.confirm")}</button>
-            </div>
-          </div>
-        ) : status !== "stopped" && (
+        {status !== "stopped" && (
           <div className="edit-actions">
-            <button type="button" className="chip" onClick={() => toJazz("manage")}>{t("manage.onJazz")}</button>
-            <button type="button" className="link-btn cancel-link" onClick={() => setAsking(true)}>{t("manage.cancel")}</button>
+            <button type="button" className="btn-play" onClick={() => toJazz("manage")}>{t("manage.onJazz")}</button>
           </div>
         )}
       </Reveal>

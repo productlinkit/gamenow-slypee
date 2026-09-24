@@ -60,7 +60,6 @@ export default function App() {
     else window.scrollTo({ top: 0, behavior: shown.current.has(view) ? "smooth" : "auto" });
     shown.current.add(view);
     if (view !== "home") setResult(null);        // the "back from subscribing" card belongs to home
-    if (view !== "plans") setPlanIntent(null);
     try { history.replaceState(null, "", "#" + view); } catch (_) {}
   }, [nav]);
 
@@ -84,7 +83,6 @@ export default function App() {
   }, [user?.freeUntil]);
 
   const [subSheet, setSubSheet] = useState(null);   // the "how do you want to subscribe" pop-up
-  const [planIntent, setPlanIntent] = useState(null);  // "cancel" → open the stop step on #plans
   const [result, setResult] = useState(null);       // what came back from the subscription page
   const openSubscribe = useCallback(() => {
     setSubSheet({});
@@ -312,7 +310,7 @@ export default function App() {
         />
         {view === "plans" && (
           <Plans
-            sub={sub} intent={planIntent} onSubscribe={openSubscribe} clearIntent={() => setPlanIntent(null)}
+            sub={sub} onSubscribe={openSubscribe}
             go={go} back={() => { setResult(null); go("profile"); }}
           />
         )}
