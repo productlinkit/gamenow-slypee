@@ -2,9 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Reveal } from "../lib/reveal.jsx";
 import CodeBoxes from "../components/CodeBoxes.jsx";
 import { mask } from "../lib/phone.js";
-import { AVATARS, AVATAR_BY_ID, BellIcon, ClockIcon, CrownIcon, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, StopIcon, SupportIcon } from "../components/icons.jsx";
+import { AVATARS, AVATAR_BY_ID, DocIcon, FaqIcon, KeyIcon, LockIcon, PencilIcon, SupportIcon } from "../components/icons.jsx";
 import { stats, dur } from "../lib/history.js";
-import { REMIND_DAYS, TRIAL_DAYS, daysToRenewal, hoursLeft, loadPrefs, onDate, setPref, statusKey } from "../lib/subscription.js";
 import { Title, useI18n, useT } from "../i18n/index.jsx";
 
 const DEMO_CODE = "1234";
@@ -178,31 +177,7 @@ function EditProfile({ user, save, cancel }) {
   );
 }
 
-/* Where the plan shows up in the app: current state in one line, then through to #plans */
-function PlanCard({ sub, go }) {
-  const { t, lang } = useI18n();
-  const status = statusKey(sub);
-  const line = {
-    trial: () => t("profile.planTrial", { n: hoursLeft(sub) }),
-    active: () => sub.renews ? t("profile.planActive", { date: onDate(sub.renews, lang) }) : t("profile.planOn"),
-    stopped: () => sub.renews ? t("profile.planStopped", { date: onDate(sub.renews, lang) }) : t("profile.planStopping"),
-    ended: () => t("profile.planEnded"),
-    none: () => t("profile.planNone", { n: TRIAL_DAYS })
-  }[status]();
-  const running = status === "trial" || status === "active" || status === "stopped";
-
-  return (
-    <Reveal as="section" className="card-panel sub" i={2}>
-      <h2>{t("profile.planTitle")}</h2>
-      {running
-        ? <p className={"active-pass" + (status === "stopped" ? " ending" : "")}><span className="pass-ico"><CrownIcon /></span>{line}</p>
-        : <p>{line}</p>}
-      <button className="btn-play" type="button" onClick={() => go("plans")}>{t(running ? "profile.managePlan" : "profile.getPlan")}</button>
-    </Reveal>
-  );
-}
-
-function PlayerCard({ user, login, logout, notify, history, go, sub, onStop }) {
+function PlayerCard({ user, login, logout, notify, history, go }) {
   const t = useT();
   const st = stats(history);
   const [editing, setEditing] = useState(false);
@@ -221,7 +196,7 @@ function PlayerCard({ user, login, logout, notify, history, go, sub, onStop }) {
           <div className="avatar" style={{ background: avatar.bg }}>{avatar.svg}</div>
           <div className="grow">
             <h2>{user.name || t("profile.player")}</h2>
-            <p><bdi>{mask(user.msisdn)}</bdi> · {t("profile.plays", { n: st.plays })}</p>
+            <p>{user.msisdn ? <><bdi>{mask(user.msisdn)}</bdi> · </> : null}{t("profile.plays", { n: st.plays })}</p>
           </div>
           {!editing && (
             <button type="button" className="icon-round" aria-label={t("profile.edit")} onClick={() => setEditing(true)}><PencilIcon /></button>
@@ -234,10 +209,8 @@ function PlayerCard({ user, login, logout, notify, history, go, sub, onStop }) {
           <div><b>{st.topGenre ? t(`cat.${st.topGenre}`) : "—"}</b><span>{t("profile.genre")}</span></div>
         </div>
       </Reveal>
-      <PlanCard sub={sub} go={go} />
       <Reveal as="section" className="card-panel info-menu" i={3}>
-        <SubSettings sub={sub} go={go} onStop={onStop} notify={notify} />
-        <h2 className="mt">{t("info.heading")}</h2>
+        <h2>{t("info.heading")}</h2>
         <ul>
           {INFO_MENU.map(([id, icon]) => (
             <li key={id}>
@@ -252,70 +225,6 @@ function PlayerCard({ user, login, logout, notify, history, go, sub, onStop }) {
         <p className="hint logout-row"><button type="button" className="link-btn logout" onClick={() => { logout(); notify(t("toast.loggedOut")); }}>{t("profile.logout")}</button></p>
       </Reveal>
     </div>
-  );
-}
-
-/* Subscription settings, sitting under Plan & billing: what the portal can honestly offer
-   next to a subscription Jazz owns — see it, be reminded before it renews, or stop it. */
-function SubSettings({ sub, go, onStop, notify }) {
-  const { t, lang } = useI18n();
-  const [prefs, setPrefs] = useState(loadPrefs);
-  const status = statusKey(sub);
-  const running = status === "trial" || status === "active";
-  const left = daysToRenewal(sub);
-
-  const toggleRemind = () => {
-    const next = setPref("remind", !prefs.remind);
-    setPrefs(next);
-    notify(t(next.remind ? "toast.remindOn" : "toast.remindOff", { n: REMIND_DAYS }));
-  };
-
-  return (
-    <>
-      <h2>{t("settings.subscription")}</h2>
-      <ul>
-        <li>
-          <a href="#plans" onClick={e => { e.preventDefault(); go("plans"); }}>
-            <span className="im-ico" aria-hidden="true"><CrownIcon /></span>
-            <span className="im-label">{t("info.plans")}</span>
-            <span className="im-value">{t(`settings.state.${status}`)}</span>
-            <svg className="im-chev flip-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </a>
-        </li>
-
-        {running && sub.renews > 0 && (
-          <li>
-            <a href="#plans" onClick={e => { e.preventDefault(); go("plans"); }}>
-              <span className="im-ico" aria-hidden="true"><ClockIcon /></span>
-              <span className="im-label">{t("settings.renewal")}</span>
-              <span className="im-value">{onDate(sub.renews, lang)}{left != null && left <= 14 ? ` · ${t("settings.inDays", { n: Math.max(left, 0) })}` : ""}</span>
-              <svg className="im-chev flip-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </a>
-          </li>
-        )}
-
-        {running && (
-          <li>
-            <label className="im-row">
-              <span className="im-ico" aria-hidden="true"><BellIcon /></span>
-              <span className="im-label">{t("settings.remind")}<small>{t("settings.remindNote", { n: REMIND_DAYS })}</small></span>
-              <input type="checkbox" className="switch" checked={prefs.remind} onChange={toggleRemind} />
-              <span className="switch-track" aria-hidden="true"><i /></span>
-            </label>
-          </li>
-        )}
-
-        {running && (
-          <li>
-            <button type="button" className="im-row danger-row" onClick={onStop}>
-              <span className="im-ico" aria-hidden="true"><StopIcon /></span>
-              <span className="im-label">{t("settings.stop")}<small>{t("settings.stopNote")}</small></span>
-              <svg className="im-chev flip-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </button>
-          </li>
-        )}
-      </ul>
-    </>
   );
 }
 
@@ -338,12 +247,12 @@ function Agree({ go }) {
   );
 }
 
-export default function Profile({ active, user, login, logout, notify, history, go, sub, onStop }) {
+export default function Profile({ active, user, login, logout, notify, history, go }) {
   return (
     <div className="view" hidden={!active}>
       <section className={user ? undefined : "center-col"}>
       <Reveal className="head"><h2 className="title"><Title k={user ? "title.profile" : "title.login"} /></h2></Reveal>
-      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} sub={sub} onStop={onStop} /> : <LoginCard login={login} notify={notify} go={go} />}
+      {user ? <PlayerCard user={user} login={login} logout={logout} notify={notify} history={history} go={go} /> : <LoginCard login={login} notify={notify} go={go} />}
       </section>
     </div>
   );
