@@ -222,7 +222,9 @@ function PlayerCard({ user, login, logout, notify, history, go }) {
             </li>
           ))}
         </ul>
-        <p className="hint logout-row"><button type="button" className="link-btn logout" onClick={() => { logout(); notify(t("toast.loggedOut")); }}>{t("profile.logout")}</button></p>
+        {!user.fromSub && (
+          <p className="hint logout-row"><button type="button" className="link-btn logout" onClick={() => { logout(); notify(t("toast.loggedOut")); }}>{t("profile.logout")}</button></p>
+        )}
       </Reveal>
     </div>
   );

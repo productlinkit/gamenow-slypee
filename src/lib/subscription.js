@@ -232,6 +232,11 @@ export function applyReturn(result) {
   return sub;
 }
 
+/* A live subscription is the account. Someone who has subscribed has already proved the
+   number is theirs, so the portal never asks them to log in again — not after the return,
+   not after a reload. */
+export const accountFor = sub => (active(sub) ? { msisdn: sub.msisdn || "", country: "", fromSub: true } : null);
+
 /* "0812****789" — enough of the number for the subscriber to recognise their own, no more.
    Keeps the dial code when the number carries one. */
 export function maskMsisdn(number) {

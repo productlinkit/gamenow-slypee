@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Header from "./components/Header.jsx";
 import NavTabs from "./components/NavTabs.jsx";
 import Home from "./views/Home.jsx";
@@ -16,7 +16,7 @@ import { byId, gameId } from "./lib/games.js";
 import { loadHistory, startPlay, finishPlay, rate, dur } from "./lib/history.js";
 import {
   active, adoptFreeDay, applyReturn, captureCampaign, checkStatus, clearPending, clearSub,
-  loadPending, loadSub, markPending, openSubscribeWindow, readMessage, readReturn
+  accountFor, loadPending, loadSub, markPending, openSubscribeWindow, readMessage, readReturn
 } from "./lib/subscription.js";
 import { useT } from "./i18n/index.jsx";
 
@@ -72,6 +72,9 @@ export default function App() {
   /* The Slypee plan (lib/subscription.js): a mirror of the subscription Jazz runs.
      Logging out doesn't stop it — the subscription belongs to the number, not the browser tab. */
   const [sub, setSub] = useState(loadSub);
+  /* Who the portal is talking to: whoever logged in, or — with no login at all — whoever the
+     running subscription belongs to. Subscribing is signing in. */
+  const account = useMemo(() => user || accountFor(sub), [user, sub]);
   useEffect(() => {
     // older demo accounts kept their free day on the user as `freeUntil`
     if (!user?.freeUntil) return;
@@ -200,10 +203,8 @@ export default function App() {
     const applied = applyReturn(back);
     if (applied && back.action === "unsub") { setSub(applied); setResult(null); notify(t("toast.stopped")); }
     else if (applied) {
-      setSub(applied);
+      setSub(applied);          // which, being a subscription, also signs the player in
       setResult(null);
-      // a confirmed subscription is a signed-in player: the number it runs on is the account
-      setUser(u => u || { msisdn: applied.msisdn || "", country: "" });
       notify(t("toast.subscribed"));
     }
     else setResult(back.state === "cancelled" ? "cancelled" : back.state === "failed" ? "failed" : "unknown");
@@ -284,28 +285,28 @@ export default function App() {
   const onRate = useCallback((g, stars) => { setHistory(rate(gameId(g), stars)); notify(t("toast.thanks")); }, [notify, t]);
 
   const toggleSave = useCallback(g => {
-    if (!user) return notify(t("toast.loginToSave"));
+    if (!account) return notify(t("toast.loginToSave"));
     const id = gameId(g);
     const on = saved.includes(id);
     setSaved(on ? saved.filter(x => x !== id) : [id, ...saved]);
     notify(t(on ? "toast.removed" : "toast.saved"));
-  }, [user, saved, notify, t]);
+  }, [account, saved, notify, t]);
   const game = view === "game" ? byId(nav.id) : null;
 
   return (
     <>
       <div className="world" aria-hidden="true" ref={worldRef}></div>
       <Petals />
-      <Header view={navView} go={go} loggedIn={!!user} />
+      <Header view={navView} go={go} loggedIn={!!account} />
       <main>
         <Home
-          active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory}
+          active={view === "home"} go={go} warmAll={warmAll} user={account} openSearch={openSearch} history={playHistory}
           sub={sub} subscribed={active(sub)} onSubscribe={openSubscribe}
           result={result} onRetry={openSubscribe} onStatus={refreshStatus} clearResult={() => setResult(null)}
         />
         <Html5 active={view === "html5"} warmAll={warmAll} openSearch={openSearch} />
-        <Library active={view === "library"} user={user} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
-        <Profile active={view === "profile"} user={user} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} />
+        <Library active={view === "library"} user={account} go={go} saved={saved.map(byId).filter(Boolean)} history={playHistory} />
+        <Profile active={view === "profile"} user={account} login={setUser} logout={logout} notify={notify} history={playHistory} go={go} />
         {view === "plans" && (
           <Plans
             sub={sub} intent={planIntent} onSubscribe={openSubscribe} clearIntent={() => setPlanIntent(null)}
@@ -326,7 +327,7 @@ export default function App() {
           />
         )}
       </main>
-      <div className="bottom"><nav aria-label="Main"><NavTabs view={navView} go={go} loggedIn={!!user} /></nav></div>
+      <div className="bottom"><nav aria-label="Main"><NavTabs view={navView} go={go} loggedIn={!!account} /></nav></div>
       <button type="button" className={"to-top" + (far ? " on" : "")} aria-label={t("common.backToTop")} tabIndex={far ? 0 : -1} onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
       </button>
