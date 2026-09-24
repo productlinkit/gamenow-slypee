@@ -30,6 +30,12 @@ const parseHash = () => {
   return { view: VIEWS.includes(h) ? h : "home" };
 };
 
+/* Prototype switch: a subscription good enough to show the header's other state */
+const demoSub = msisdn => ({
+  status: "active", trial: true, since: Date.now(), renews: Date.now() + 864e5,
+  txn: "DEMO", msisdn: msisdn || "+62 81234567890"
+});
+
 /* Demo session & saved games: kept in this browser only */
 const USER_KEY = "slypee.user";
 const SAVED_KEY = "slypee.saved";
@@ -66,6 +72,7 @@ export default function App() {
   const [user, setUser] = useState(() => load(USER_KEY, null));
   useEffect(() => { store(USER_KEY, user); }, [user]);
   const logout = useCallback(() => setUser(null), []);
+
 
   /* The Slypee plan (lib/subscription.js): a mirror of the subscription Jazz runs.
      Logging out doesn't stop it — the subscription belongs to the number, not the browser tab. */
@@ -186,6 +193,16 @@ export default function App() {
     toastT.current = setTimeout(() => setToast(t => ({ ...t, on: false })), 2600);
   }, []);
 
+/* "Keluar" in the header: ends the session this browser is showing. It does not stop the
+     subscription — that only happens at Jazz, with UNSUB or the stop flow. */
+  const leaveAccount = useCallback(() => {
+    clearSub();
+    setSub(null);
+    setUser(null);
+    setResult(null);
+    notify(t("toast.leftAccount"));
+  }, [notify, t]);
+
   /* One place that turns a subscription result into state, however it arrived: posted back by
      the subscription window, or carried on the URL when the browser blocked that window and
      the page came home by redirect. Either way the player lands on the home page, ready to
@@ -288,7 +305,10 @@ export default function App() {
     <>
       <div className="world" aria-hidden="true" ref={worldRef}></div>
       <Petals />
-      <Header view={navView} go={go} loggedIn={!!user} subscribed={active(sub)} onSubscribe={openSubscribe} />
+      <Header
+        view={navView} go={go} loggedIn={!!user}
+        sub={sub} subscribed={active(sub)} onSubscribe={() => startSubscribe("subscribe")} onLeave={leaveAccount}
+      />
       <main>
         <Home
           active={view === "home"} go={go} warmAll={warmAll} user={user} openSearch={openSearch} history={playHistory}
@@ -322,6 +342,16 @@ export default function App() {
         )}
       </main>
       <div className="bottom"><nav aria-label="Main"><NavTabs view={navView} go={go} loggedIn={!!user} /></nav></div>
+      {/* prototype only: flip the header between its two states — delete this block to ship */}
+      <button
+        type="button" className={"demo-switch" + (active(sub) ? " on" : "")} aria-pressed={active(sub)}
+        onClick={() => {
+          if (active(sub)) { clearSub(); setSub(null); return; }
+          setSub(demoSub(user?.msisdn));
+        }}
+      >
+        <i aria-hidden="true" />{t(active(sub) ? "demo.subscribed" : "demo.guest")}
+      </button>
       <button type="button" className={"to-top" + (far ? " on" : "")} aria-label={t("common.backToTop")} tabIndex={far ? 0 : -1} onClick={() => scrollTo({ top: 0, behavior: "smooth" })}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
       </button>

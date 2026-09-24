@@ -32,6 +32,9 @@ export const JAZZ = {
   url: "https://services.jazz.com.pk/signin/Slypee",
   params: { ref: "15", var: "1", camp: "Slypee_Default" }
 };
+/* The landing page the Subscribe button opens. Ours is the working one; point this at the
+   operator's landing page (a temporary "https://lp.example.com" stands for it in the brief)
+   or set USE_JAZZ_LP for Jazz's own sign-in, and nothing else has to change. */
 export const SUBSCRIBE_ORIGIN = "";                  // "" = same host; else "https://subscribe.…"
 export const SUBSCRIBE_PAGE = "/subscribe.html";
 /* true → hand over to Jazz's own page instead of ours (needs a live Jazz connection) */
@@ -157,6 +160,7 @@ export function readMessage(origin, data) {
     trial: data.trial === "1" || data.trial === true,
     renews: Number(data.renews) || 0,
     txn: typeof data.txn === "string" ? data.txn.slice(0, 32) : "",
+    msisdn: typeof data.msisdn === "string" ? data.msisdn.slice(0, 20) : "",
     action: data.action === "unsub" ? "unsub" : "subscribe"
   };
 }
@@ -191,6 +195,7 @@ export function readReturn(search = "") {
     trial: q.get("trial") === "1",
     renews: Number(q.get("renews")) || 0,
     txn: q.get("txn") || q.get("ref_id") || "",
+    msisdn: q.get("msisdn") || "",
     action: q.get("action") || "subscribe",
     reason: q.get("reason") || ""
   };
@@ -221,10 +226,21 @@ export function applyReturn(result) {
   const sub = {
     status: "active", trial: result.trial, since: now,
     renews: result.renews > now ? result.renews : 0,      // 0 = Jazz didn't say; don't pretend
-    txn: result.txn
+    txn: result.txn, msisdn: result.msisdn || ""
   };
   write(SUB_KEY, sub);
   return sub;
+}
+
+/* "0812****789" — enough of the number for the subscriber to recognise their own, no more.
+   Keeps the dial code when the number carries one. */
+export function maskMsisdn(number) {
+  if (!number) return "";
+  const m = /^(\+\d+)[\s-]*(\d+)$/.exec(String(number).trim());
+  if (m && m[2].length >= 6) return `${m[1]} ${m[2].slice(0, 3)}****${m[2].slice(-3)}`;
+  const digits = String(number).replace(/\D/g, "");
+  if (digits.length < 7) return digits;
+  return `${digits.slice(0, 4)}****${digits.slice(-3)}`;
 }
 
 /* ---------- Portal-side settings ----------

@@ -52,5 +52,18 @@ export default {
   "dur.lt1": "<1 menit", "dur.min": "{n} menit", "dur.hm": "{h} j {m} m",
   "info.heading": "Bantuan & info", "info.faq": "FAQ", "info.help": "Bantuan & dukungan", "info.privacy": "Kebijakan privasi", "info.terms": "Syarat penggunaan", "info.updated": "Terakhir diperbarui {date}", "info.clearData": "Hapus data saya di perangkat ini", "info.cleared": "Data kamu sudah dihapus dari perangkat ini", "login.agree": "Dengan melanjutkan, kamu menyetujui [Syarat Penggunaan] dan [Kebijakan Privasi] kami.",
   "profile.name": "Nama tampilan", "profile.avatar": "Avatar", "profile.edit": "Ubah profil", "common.save": "Simpan", "common.cancel": "Batal", "toast.profileSaved": "Profil diperbarui",
-  "lang.title": "Pilih bahasa", "lang.search": "Cari bahasa…"
+  "lang.title": "Pilih bahasa", "lang.search": "Cari bahasa…",
+  /* Langganan & header */
+  "plans.subscribe": "Berlangganan", "acct.leave": "Keluar",
+  "acct.state.trial": "Aktif · hari gratis", "acct.state.active": "Aktif", "acct.state.grace": "Aktif",
+  "acct.state.stopped": "Akan berhenti", "acct.state.ended": "Berakhir",
+  "toast.subscribed": "Langganan berhasil! Selamat menikmati.",
+  "toast.leftAccount": "Kamu sudah keluar. Langganannya tidak diubah.",
+  "toast.stopped": "Langganan kamu dihentikan di Jazz.",
+  "demo.subscribed": "Demo: sudah langganan", "demo.guest": "Demo: belum langganan",
+  "sheet.title": "Berlangganan {name}", "sheet.sub": "Pilih cara berlangganan.",
+  "sheet.jazz": "Berlangganan lewat Jazz",
+  "sheet.jazzNote": "Masukkan nomor kamu di halaman langganan — setelah selesai kamu kembali ke sini",
+  "home.subTitle": "Buka semua game di Slypee", "home.subText": "Hari pertama gratis, lalu dipotong dari pulsa kamu",
+  "home.subMore": "Apa yang didapat",
 };

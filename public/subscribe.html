@@ -15,7 +15,7 @@
   subscription is taken out here, and the player is sent back to `return_url` with the result.
 
   In:   ?ref=15&var=1&camp=Slypee_Default&action=subscribe|manage|unsub&return_url=…
-  Out:  postMessage to the opener, or <return_url>?sub=success&trial=1&renews=<epoch ms>&txn=…
+  Out:  postMessage to the opener, or <return_url>?status=success&trial=1&renews=…&msisdn=…&txn=…
         <return_url>?sub=cancelled
 
   Demo rules: any number is accepted, no code is sent and nothing is charged. Swap
@@ -314,6 +314,7 @@
       finish({
         sub: "success", action: action, trial: "1",
         renews: String(Date.now() + TRIAL_DAYS * DAY),
+        msisdn: country.dial + " " + $("msisdn").value.replace(/\D/g, ""),
         txn: "SL" + Math.random().toString(36).slice(2, 8).toUpperCase()
       });
     }, 1600);
